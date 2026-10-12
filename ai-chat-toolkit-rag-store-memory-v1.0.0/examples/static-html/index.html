@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Chat Widget — Static HTML Example</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        background: #f1f5f9;
+        color: #0f172a;
+      }
+
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 48px 24px;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        line-height: 1.6;
+        color: #475569;
+      }
+
+      code {
+        background: #e2e8f0;
+        padding: 0.15em 0.4em;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>AI Chat Widget Demo</h1>
+      <p>
+        The widget is loaded from the
+        <a href="https://www.jsdelivr.com/package/npm/ai-chat-toolkit-widget">jsDelivr CDN</a>
+        — no build step or npm install needed. Click the floating button in the
+        corner to open the chat panel.
+      </p>
+      <p>
+        <strong>Backend required:</strong> the widget sends
+        <code>POST /ai-chat/custom</code> to the same origin by default. Point
+        it at your server with <code>backend-url</code> and <code>path</code>
+        attributes. It expects <code>{ "message": "..." }</code> or
+        <code>{ "response": "..." }</code> in the response body.
+      </p>
+      <p>
+        See
+        <a href="https://www.npmjs.com/package/ai-chat-toolkit-server">ai-chat-toolkit-server</a>
+        for a ready-made Express backend that works with this widget.
+      </p>
+    </main>
+
+    <!-- Load the widget from CDN — no install required -->
+    <script src="https://cdn.jsdelivr.net/npm/ai-chat-toolkit-widget@1.0.0/dist/widget.global.js"></script>
+
+    <ai-chat
+      title="AI Assistant"
+      subtitle="How can I help today?"
+      primary-color="#2563eb"
+      placeholder="Ask me anything…"
+      path="/ai-chat/custom"
+    ></ai-chat>
+  </body>
+</html>

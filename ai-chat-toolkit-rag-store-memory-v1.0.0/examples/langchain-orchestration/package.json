@@ -1,0 +1,31 @@
+{
+  "name": "langchain-orchestration-example",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n server,web -c blue,green \"npm run dev:server\" \"npm run dev:web\"",
+    "dev:web": "vite --host 0.0.0.0 --port 5174",
+    "dev:server": "tsx server/index.ts",
+    "build": "tsc -b && vite build"
+  },
+  "dependencies": {
+    "ai-chat-toolkit-widget": "^1.0.0",
+    "ai-chat-toolkit-server": "^1.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "express": "^5.1.0",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "concurrently": "^9.1.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}

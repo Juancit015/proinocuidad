@@ -1,0 +1,44 @@
+{
+  "name": "ai-chat-toolkit-rag-store-memory",
+  "version": "1.0.0",
+  "description": "In-memory vector store adapter for ai-chat-toolkit-rag",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "prebuild": "pnpm --filter ai-chat-toolkit-rag build",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "test": "node --import tsx/esm --test src/memoryStore.test.ts"
+  },
+  "peerDependencies": {
+    "ai-chat-toolkit-rag": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "ai-chat-toolkit-rag": "workspace:*",
+    "tsup": "^8.5.0",
+    "tsx": "^4.22.4",
+    "typescript": "^5.8.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

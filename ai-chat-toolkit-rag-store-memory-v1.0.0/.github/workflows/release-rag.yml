@@ -1,0 +1,71 @@
+name: Release ai-chat-toolkit-rag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version bump (use 'current' to publish package.json as-is)"
+        required: true
+        default: "current"
+        type: choice
+        options:
+          - current
+          - patch
+          - minor
+          - major
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter ai-chat-toolkit-rag build
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Bump and tag rag version
+        if: github.event.inputs.version != 'current'
+        run: |
+          cd packages/rag
+          npm version ${{ github.event.inputs.version }} \
+            --tag-version-prefix "rag-v" \
+            -m "chore(release): ai-chat-toolkit-rag v%s"
+
+      - name: Tag current rag version
+        if: github.event.inputs.version == 'current'
+        run: |
+          cd packages/rag
+          VERSION=$(node -p "require('./package.json').version")
+          git tag "rag-v${VERSION}" -m "chore(release): ai-chat-toolkit-rag v${VERSION}"
+
+      - name: Publish rag to npm
+        run: |
+          cd packages/rag
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Push version commit and tag
+        run: |
+          git push
+          git push --tags
