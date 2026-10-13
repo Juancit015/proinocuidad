@@ -3,6 +3,30 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-13 (SEO por keywords en local: servicios, guía y metadatos)
+
+### Added
+
+- Páginas de servicio en `servicios/`: registro sanitario DIGESA, certificación HACCP, implementación FSSC 22000 y BRCGS Food Safety. Cada una con un único `<h1>`, canonical propio y JSON-LD `Service`. Texto solo del documento base, sin precios ni plazos.
+- Guía `inocuidad-alimentaria/`: concepto, programas BPM/POES/HACCP y normativa citada en los cursos.
+- Enlaces desde `servicios/index.html` a cada servicio y a la guía. Cinco URLs nuevas en `sitemap.xml` (de 13 a 18).
+
+### Changed
+
+- `<title>` y meta description de Inicio, Nosotros, Cursos y Servicios dentro de rango (título ≤ 60, descripción 120–160).
+- Fichas de curso: título y descripción SEO propios (`seoTitle` y `seoDesc` en `tools/generar-fichas.mjs`). El `h1` y el contenido visible no cambian.
+
+### Fixed
+
+- Títulos de fichas sin "| Proinocuidad" repetido; antes salía dos veces.
+
+### Verified
+
+- 18 páginas HTML: un `<h1>`, canonical presente, títulos ≤ 60, descripciones 120–160 y sin enlaces internos rotos.
+- Regeneración de fichas idempotente. Diff frente al respaldo: solo cambian `<title>`, `og:title` y `description`.
+- Sin cambios en CSS ni JS. Sin publicación: los cambios viven en el repo local; `proinocuidad.com` no se modificó.
+- Volúmenes de referencia de SE Ranking (Perú, octubre 2026); re-medir antes de publicar.
+
 ## 2026-10-12 (listados de cursos en HTML estático)
 
 ### Changed

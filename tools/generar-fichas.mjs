@@ -153,16 +153,17 @@ function jsonLdCurso(curso) {
 
 function ficha(curso, contenido) {
   const url = `https://proinocuidad.com/cursos/${curso.slug}/`;
+  const tituloFicha = curso.seoTitle || (/Proinocuidad/.test(curso.title) ? curso.title : `${curso.title} | Proinocuidad`);
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${curso.title} | Proinocuidad</title>
-<meta property="og:title" content="${curso.title.replace(/"/g, "&quot;")} | Proinocuidad">
+<title>${tituloFicha}</title>
+<meta property="og:title" content="${tituloFicha.replace(/"/g, "&quot;")}">
 <meta property="og:image" content="${img_og}">
 <meta property="og:url" content="${url}">
-<meta name="description" content="${curso.desc}">
+<meta name="description" content="${curso.seoDesc || curso.desc}">
 <link rel="canonical" href="${url}">
 <script type="application/ld+json">
 ${jsonLdCurso(curso)}
@@ -314,6 +315,8 @@ const DIPLOMADO = {
   pen: 120,
   usd: 37,
   title: "Diplomado de Especialización: Gestión de la Calidad e Inocuidad en la Industria Alimentaria | Proinocuidad",
+  seoTitle: "Diplomado en gestión de calidad e inocuidad | Proinocuidad",
+  seoDesc: "Diplomado de 6 sesiones asíncronas en gestión de la calidad e inocuidad: HACCP, ISO 9001, ISO 22000 y BRCGS. Certificado digital con QR.",
   desc:
     "Diplomado asíncrono (grabado) de 384 horas académicas en 6 sesiones: programas prerrequisitos, HACCP, ISO 9001, ISO 22000, BRCGS V9 y auditoría de sistemas integrados. Certificado digital con QR y aula virtual permanente.",
   fondo: "ficha-diplomado.avif",
@@ -471,6 +474,8 @@ const LEGISLACION = {
   pen: 45,
   usd: 15,
   title: "Curso: Legislación Sanitaria de Alimentos Nacional e Internacional | Proinocuidad",
+  seoTitle: "Legislación sanitaria de alimentos | Proinocuidad",
+  seoDesc: "Curso asíncrono de 3 sesiones sobre la normativa sanitaria de alimentos en el Perú y el marco internacional. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: marco normativo sanitario peruano (DL 1062, DS 007-98, RM 591-2008, entre otras) y normativa internacional (Codex Alimentarius, Estados Unidos). Certificado digital con QR.",
   fondo: "ficha-legislacion.avif",
@@ -537,6 +542,8 @@ const BPM_POES = {
   pen: 45,
   usd: 15,
   title: "Curso: Implementación y Auditoría de las BPM, Higiene y Saneamiento, POES, POE, Plan HACCP | Proinocuidad",
+  seoTitle: "Curso BPM, POES y plan HACCP en Perú | Proinocuidad",
+  seoDesc: "Curso asíncrono de 3 sesiones sobre implementación y auditoría de BPM, higiene y saneamiento, POES, POE y plan HACCP. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: BPM, los POES 1 al 8, POE 1 al 9 y el Sistema HACCP con sus 7 principios y 12 pasos, con talleres prácticos. Certificado digital con QR.",
   fondo: "ficha-bpm.avif",
@@ -660,6 +667,8 @@ const DIGESA = {
   pen: 45,
   usd: 15,
   title: "Curso de Especialización: HACCP Implementación y Certificación en Perú (DIGESA/SENASA) | Proinocuidad",
+  seoTitle: "Curso HACCP DIGESA y SENASA en Perú | Proinocuidad",
+  seoDesc: "Curso asíncrono de 3 sesiones para implementar y certificar un sistema HACCP según DIGESA y SENASA en Perú. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: fundamentos de HACCP y marco normativo peruano, diseño e implementación del sistema y validación, certificación y auditoría conforme a DIGESA y SENASA.",
   fondo: "ficha-haccp.avif",
@@ -805,6 +814,8 @@ const BPM_CODEX = {
   pen: 45,
   usd: 15,
   title: "Curso: Buenas Prácticas de Manufactura y Programas Prerrequisitos según Codex 2022 e ISO 22002-1:2009 | Proinocuidad",
+  seoTitle: "Curso BPM según Codex 2022 e ISO 22002-1 | Proinocuidad",
+  seoDesc: "Curso asíncrono de 3 sesiones sobre BPM y programas prerrequisitos según Codex 2022 e ISO 22002-1. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: BPM y programas prerrequisitos según Codex Alimentarius 2022 e ISO 22002-1:2009, con talleres prácticos. Certificado digital con QR.",
   fondo: "ficha-codex.avif",
@@ -915,6 +926,8 @@ const PHS = {
   pen: 45,
   usd: 15,
   title: "Curso: Programas de Higiene y Saneamiento en la Industria Alimentaria | Proinocuidad",
+  seoTitle: "Curso de programas de higiene y saneamiento | Proinocuidad",
+  seoDesc: "Curso asíncrono de 3 sesiones sobre higiene y saneamiento en alimentos: agua, limpieza, plagas y residuos. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: diseño, ejecución y validación de los Programas de Higiene y Saneamiento (PHS): agua, limpieza y desinfección, higiene del personal, plagas, residuos, productos químicos y gestión documentaria.",
   fondo: "ficha-higiene.avif",
@@ -968,6 +981,8 @@ const FSSC = {
   pen: 45,
   usd: 15,
   title: "Curso: Sistema HACCP según FSSC 22000 y Codex Alimentarius Revisión 2022 | Proinocuidad",
+  seoTitle: "Curso HACCP según FSSC 22000 y Codex 2022 | Proinocuidad",
+  seoDesc: "Curso asíncrono de 3 sesiones sobre el sistema HACCP según FSSC 22000 y el Codex Alimentarius revisión 2022. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: Sistema HACCP según la revisión 2022 del Codex Alimentarius y los requisitos de certificación del esquema FSSC 22000 V6. Certificado digital con QR.",
   fondo: "ficha-fssc.avif",
@@ -1066,6 +1081,8 @@ const AUDITOR = {
   pen: 45,
   usd: 15,
   title: "Curso: Formación de Auditor Interno del Sistema HACCP | Proinocuidad",
+  seoTitle: "Curso de auditor interno HACCP | Proinocuidad",
+  seoDesc: "Curso asíncrono de 3 sesiones para planificar, ejecutar y cerrar auditorías internas del sistema HACCP según ISO 19011. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: planificación, ejecución y cierre de auditorías internas del sistema HACCP bajo la norma ISO 19011, con hallazgos, informe de auditoría y acciones correctivas.",
   fondo: "ficha-auditor.avif",
