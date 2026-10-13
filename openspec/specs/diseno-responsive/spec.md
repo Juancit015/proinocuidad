@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Definir la alineación del footer en móvil, la disposición de las tarjetas de Cursos y Servicios por ancho de pantalla, y el procedimiento de auditoría responsive del sitio.
+Definir la alineación del footer en móvil, la disposición de las tarjetas de Cursos y Servicios por ancho de pantalla, la visibilidad de la barra superior por ancho de pantalla, y el procedimiento de auditoría responsive del sitio.
 
 ## Requirements
 
@@ -75,3 +75,14 @@ Las imágenes de los bloques de dos columnas SHALL conservar su proporción orig
 #### Scenario: Imagen en columna estrecha
 - **WHEN** la columna mide menos que el ancho natural de la imagen
 - **THEN** la imagen se reduce proporcionalmente sin recortarse
+
+### Requirement: Barra superior oculta en móvil
+La barra superior (`.topbar`, con la línea de contacto y los iconos de redes) SHALL estar oculta cuando el ancho sea ≤860px. Por encima de 860px SHALL mostrarse como hasta ahora. La barra SHALL permanecer en el DOM (ocultada por CSS) y los datos de contacto SHALL seguir disponibles en el footer en móvil, sin cambios en el footer.
+
+#### Scenario: móvil sin barra superior
+- **WHEN** el usuario abre cualquier página con un ancho de 390px
+- **THEN** no se muestra la línea "Contacto: +51 981 365 982 · administracion@proinocuidad.com" ni los iconos de redes sobre la cabecera, y el teléfono y correo siguen visibles en el footer
+
+#### Scenario: escritorio sin cambios
+- **WHEN** el ancho es mayor a 860px
+- **THEN** la barra superior se muestra con la línea de contacto y las redes como hasta ahora

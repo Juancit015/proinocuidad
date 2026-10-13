@@ -365,6 +365,14 @@ section:has(> .identidad-grid) { overflow-x: clip; }
 .identidad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
 .identidad img { border-radius: var(--radio); box-shadow: var(--sombra); width: 100%; }
 .identidad-grid img { max-width: 100%; height: auto; }
+
+/* ---------- Servicios: marco uniforme de imágenes y cierre a la guía ---------- */
+#capacitacion-empresarial img, #normativa-sanitaria img, #sistemas-gestion img, #registro-sanitario img { aspect-ratio: 4 / 3; object-fit: cover; }
+#sistemas-gestion img { object-position: 50% 30%; }
+.cierre-guia { max-width: 720px; margin: 0 auto; text-align: center; }
+.cierre-guia .card-body { align-items: center; padding: 32px 28px; gap: 14px; }
+.cierre-guia h2 { color: var(--azul); font-size: clamp(1.3rem, 2.2vw, 1.7rem); line-height: 1.3; }
+.cierre-guia p { color: var(--gris); }
 .identidad .mvv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; max-width: 1000px; margin: 0 auto; padding-top: 28px; }
 .identidad .mvv-card { position: relative; border: 1px solid var(--gris-linea); padding: 56px 20px 24px; text-align: center; transition: var(--transicion); }
 .identidad .mvv-icon { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; background: var(--azul); border: 4px solid #fff; box-shadow: 0 0 0 1px var(--gris-linea); display: grid; place-items: center; transition: var(--transicion); }
@@ -470,12 +478,15 @@ section:has(> .identidad-grid) { overflow-x: clip; }
 }
 
 @media (max-width: 860px) {
+  .site-header { position: relative; }
+  .page-head--servicios, .page-head--nosotros, .page-head--noticias, .page-head--cursos { background-attachment: scroll; }
   .hero-grid { grid-template-columns: 1fr; }
   .identidad-grid { grid-template-columns: minmax(0, 1fr); }
   .identidad-grid > * { min-width: 0; }
   .hero img { max-height: 340px; }
   .cards-grid, .cards-grid.four { grid-template-columns: 1fr; }
   .nota-card { grid-template-columns: 1fr; min-height: 0; }
+  .topbar { display: none; }
   .topbar .topbar-social { display: none; }
 
   /* Menú móvil: botón + acordeón */
@@ -529,8 +540,14 @@ section:has(> .identidad-grid) { overflow-x: clip; }
 .page-head--nosotros { background-image: linear-gradient(rgba(11, 14, 86, 0.72), rgba(11, 14, 86, 0.55)), url("../img/hero-nosotros.avif"); }
 .page-head--noticias { background-image: linear-gradient(rgba(11, 14, 86, 0.72), rgba(11, 14, 86, 0.55)), url("../img/hero-noticias.avif"); }
 .page-head--cursos { background-image: linear-gradient(rgba(11, 14, 86, 0.72), rgba(11, 14, 86, 0.55)), url("../img/hero-cursos.avif"); }
+.page-head--servicios, .page-head--nosotros, .page-head--noticias, .page-head--cursos { background-attachment: fixed; }
+@media (min-width: 861px) {
+  .page-head--servicios, .page-head--nosotros, .page-head--noticias, .page-head--cursos { min-height: clamp(306px, 46.75vh, 442px); display: flex; align-items: center; }
+  .page-head--servicios h1, .page-head--nosotros h1, .page-head--noticias h1, .page-head--cursos h1 { font-size: clamp(2.04rem, 3.4vw, 2.72rem); }
+}
 .page-head p { color: #d7d9f2; max-width: 760px; margin-top: 10px; }
 .page-head h1 { color: var(--blanco); }
+.page-head h1 span { color: #ff8f96; }
 
 /* ---------- Migas de pan (estilo Crecepe, sobre fondo oscuro) ---------- */
 .breadcrumbs {
@@ -546,7 +563,9 @@ section:has(> .identidad-grid) { overflow-x: clip; }
   border: 2px solid var(--azul); background: transparent; color: var(--azul);
   font-weight: 700; font-size: 0.95rem; padding: 10px 26px;
   border-radius: 999px; cursor: pointer; transition: var(--transicion);
+  display: inline-flex; align-items: center; gap: 8px;
 }
+.pestanas button svg { width: 16px; height: 16px; flex: none; }
 .pestanas button:hover { background: var(--azul-claro); }
 .pestanas button.activo { background: var(--azul); color: var(--blanco); }
 .panel { display: none; }
@@ -682,4 +701,37 @@ html.js-anim .identidad-grid.en-vista > :not(img) { animation: entrada-izq 700ms
 html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-out 120ms both; }
 @media (prefers-reduced-motion: reduce) {
   html.js-anim .hero-grid > *, html.js-anim .identidad-grid > * { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .page-head--servicios, .page-head--nosotros, .page-head--noticias, .page-head--cursos { background-attachment: scroll; }
+}
+
+/* ---------- CTA final de la home ---------- */
+.cta-home {
+  background-color: var(--azul-oscuro);
+  background-image: linear-gradient(rgba(11, 14, 86, 0.84), rgba(11, 14, 86, 0.8)), url("../img/normativa-higiene-planta.jpg");
+  background-position: center; background-size: cover; background-repeat: no-repeat;
+  color: var(--blanco);
+}
+.cta-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
+.cta-home h2 { color: var(--blanco); font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.25; }
+.cta-home h2 span { color: #ff8f96; }
+.cta-info > p { color: #d7d9f2; margin-top: 10px; max-width: 60ch; }
+.cta-items { display: grid; gap: 12px; margin-top: 22px; }
+.cta-item { display: flex; gap: 14px; align-items: center; color: var(--blanco); text-decoration: none; }
+.cta-home a:hover, .cta-home a:focus-visible { text-decoration: none; }
+.cta-item strong { display: block; color: var(--blanco); }
+.cta-item > span > span { display: block; color: #d7d9f2; font-size: 0.88rem; }
+.cta-icon { width: 46px; height: 46px; flex: none; border-radius: 12px; background: rgba(255, 255, 255, 0.12); display: grid; place-items: center; color: var(--blanco); }
+.cta-icon svg { width: 22px; height: 22px; display: block; }
+.cta-icon--wa { background: var(--whatsapp); color: var(--blanco); }
+.cta-icon--mail, .cta-icon--reloj, .cta-icon--lugar { background: var(--blanco); color: var(--azul-oscuro); }
+.cta-card { text-align: center; }
+.cta-card .card-body { gap: 12px; align-items: center; }
+.cta-card h3 { color: var(--azul); font-size: 1.4rem; }
+.cta-card h3 { color: var(--azul); }
+.cta-card p { color: var(--gris); font-size: 0.92rem; }
+.cta-card .btn { align-self: stretch; justify-content: center; }
+.cta-card small { color: var(--gris); font-size: 0.8rem; }
+.cta-card small a { color: var(--azul-oscuro); font-weight: 700; }
+@media (max-width: 860px) {
+  .cta-grid { grid-template-columns: 1fr; }
 }

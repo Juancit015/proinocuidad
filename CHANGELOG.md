@@ -3,6 +3,91 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-13 (Refinamiento del CTA de la home)
+
+### Changed
+
+- Tarjeta del CTA: título a 1.4rem centrado con descripción centrada y botones a ancho completo con iconos (soporte y sobre).
+- Nota de la tarjeta: "Escríbenos y recibe una propuesta personalizada. O llámanos directo." (`tel:+51981365982` en azul oscuro), sin plazos.
+- Chips de contacto con color (WhatsApp verde, resto blancos con glifo azul oscuro); "inocuidad" en `#ff8f96`.
+
+### Removed
+
+- Subrayado al hover sobre el número de WhatsApp del bloque.
+
+### Verified
+
+- Un solo `<h1>`, iconos 18px por regla existente, llaves balanceadas. Archivos del change: `index.html` (bloque CTA) y `assets/css/main.css`. Sin commit/push ni publicación.
+
+## 2026-10-13 (Banners 15% más compactos)
+
+### Changed
+
+- Banners en escritorio: `min-height: clamp(306px, 46.75vh, 442px)` y título `clamp(2.04rem, 3.4vw, 2.72rem)` (−15% exacto). Overlay, efecto fijo, breakpoint y móvil intactos.
+
+### Verified
+
+- Llaves balanceadas, valores viejos fuera, dos líneas cambiadas en `assets/css/main.css`. Sin commit/push ni publicación.
+
+## 2026-10-13 (Títulos de banner enriquecidos con palabra clave)
+
+### Changed
+
+- `h1` descriptivos en los 4 índices (Servicios, Cursos, Nosotros, Noticias) y palabra clave resaltada con `<span>` en esos 4 más las 4 páginas de detalle y la guía. Fichas y Hero intactos.
+- `.page-head h1 span` en `#ff8f96` (tono ya usado en el hover de la barra superior).
+
+### Verified
+
+- Un solo `<h1>` por página, sin enlaces rotos, llaves CSS balanceadas. Sin commit/push ni publicación.
+
+### Fixed (2026-10-13)
+
+- Imagen de "Quiénes somos" en Nosotros con borde redondeado (la sección adopta la clase `identidad`, igual que sistemas).
+- Pestañas de Cursos con iconos: reproducir en "Asíncronos" y señal en vivo en "En vivo" (SVG inline, 16px).
+
+## 2026-10-13 (CTA final en home, banners amplios y header no fijo en móvil)
+
+### Added
+
+- Bloque final de contacto en `index.html` (solo home): título con palabra resaltada, 4 contactos reales con ícono, tarjeta con botones "Solicitar asesoría por WhatsApp" y "Escríbenos un correo", y nota de horario. Fondo oscuro con `normativa-higiene-planta.jpg`, paleta y radios propios.
+
+### Changed
+
+- Banners de subpágina en escritorio (`min-width: 861px`): `min-height: clamp(360px, 55vh, 520px)`, contenido centrado y título `clamp(2.4rem, 4vw, 3.2rem)`; overlay, efecto fijo y móvil intactos.
+- Cabecera (`.site-header`) con `position: relative` en ≤860px; `sticky` intacto en escritorio y anclaje del menú móvil conservado.
+
+### Verified
+
+- Un solo `<h1>` en home, enlaces wa.me/mailto correctos, CTA ausente en subpáginas, llaves CSS balanceadas, sin colores ni fuentes de Crecepe. Archivos del change: `index.html` (sección añadida, 0 líneas eliminadas), `assets/css/main.css` (estilos `cta-*`, tamaño de banners, header móvil) y `CHANGELOG.md`. Sin commit/push ni publicación.
+
+## 2026-10-13 (Banners con fondo fijo y barra oculta en móvil)
+
+### Changed
+
+- Barra superior (`.topbar`) oculta cuando el ancho es ≤860px; sigue en el HTML y visible en escritorio. El teléfono y correo permanecen en el footer.
+- Banners de subpágina (`.page-head--servicios`, `--nosotros`, `--noticias`, `--cursos`) con `background-attachment: fixed` en escritorio; vuelven a `scroll` en ≤860px y con `prefers-reduced-motion`. Sin cambios en el Hero, las fichas ni el HTML.
+
+### Verified
+
+- Llaves CSS balanceadas; Hero y fichas no usan las clases de banner; Cursos conserva un solo `<h1>` y sin enlaces rotos. Diff propio limitado a `assets/css/main.css`. Sin publicación.
+
+## 2026-10-13 (Mejora visual de Servicios: fotos, marco uniforme y cierre)
+
+### Changed
+
+- Fotos de normativa y sistemas en `servicios/index.html` sustituidas por versiones de mayor resolución (1600 px de ancho): `normativa-higiene-planta.jpg` y `sistemas-operaria-planta.jpg`. Las anteriores se conservan porque `index.html` las sigue usando en sus tarjetas.
+- Las 4 imágenes de servicio comparten marco (radio `--radio`, sombra) y relación de aspecto 4:3; la sección de sistemas adopta la clase `identidad`.
+- Bloque de cierre "¿Quieres entender primero la base?" rediseñado como tarjeta centrada con título, texto y botón a la guía, con componentes existentes y sin colores nuevos.
+
+### Fotos (licencia Pexels: uso comercial permitido, sin atribución obligatoria)
+
+- `normativa-higiene-planta.jpg`: https://www.pexels.com/photo/woman-in-uniform-working-on-food-industry-factory-5953687/
+- `sistemas-operaria-planta.jpg`: https://www.pexels.com/photo/food-industry-workers-5964489/
+
+### Verified
+
+- Un solo `<h1>`, sin enlaces internos rotos, llaves CSS balanceadas y diff limitado a `servicios/index.html`, `assets/css/main.css` y las 2 fotos nuevas. Sin cambios en metadatos, sitemap ni producción.
+
 ## 2026-10-13 (SEO por keywords en local: servicios, guía y metadatos)
 
 ### Added
