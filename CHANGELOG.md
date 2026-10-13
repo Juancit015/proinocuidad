@@ -3,6 +3,17 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-13 (CTA final estilo AZ en 6 subpáginas)
+
+### Added
+
+- Sección `.cta-sub` (badge, H2 único con keyword, texto, botones WhatsApp y "Ver todos los servicios") al final de las 4 páginas de detalle, la guía y Nosotros. Fondo y botones existentes.
+- En `servicios/index.html` la sección `.cta-sub` reemplaza la tarjeta de cierre (el acceso a la guía se conserva como botón secundario).
+
+### Verified
+
+- H2 únicos, un `<h1>` por página, enlaces relativos correctos (incluida corrección `../servicios/` en guía y nosotros), llaves balanceadas. Sin commit/push ni publicación.
+
 ## 2026-10-13 (Refinamiento del CTA de la home)
 
 ### Changed
@@ -42,8 +53,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
 ### Fixed (2026-10-13)
 
+- Botones del CTA de subpáginas con icono: soporte en WhatsApp, capas en "Ver todos los servicios" y libro en "Leer la guía" (SVG inline, 18px por regla `.btn svg` existente).
+
 - Imagen de "Quiénes somos" en Nosotros con borde redondeado (la sección adopta la clase `identidad`, igual que sistemas).
 - Pestañas de Cursos con iconos: reproducir en "Asíncronos" y señal en vivo en "En vivo" (SVG inline, 16px).
+- Chips de modalidad en cards (Cursos e Inicio) con el icono de "Asíncronos" vía `chipModalidad()` en `tools/generar-listados.mjs`; regeneración idempotente.
 
 ## 2026-10-13 (CTA final en home, banners amplios y header no fijo en móvil)
 

@@ -355,6 +355,8 @@ input[type="submit"] { border-radius: 4px; }
   border-radius: 999px;
 }
 .chips li.precio { background: #fbeef0; color: var(--rojo); }
+.chips li svg { width: 14px; height: 14px; flex: none; }
+.chips li { display: inline-flex; align-items: center; gap: 6px; }
 .card-acciones { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin-top: auto; }
 .card-acciones .btn { flex: 1; justify-content: center; text-align: center; font-weight: 500; font-size: 1rem; white-space: nowrap; }
 .ver-todos { display: flex; justify-content: center; margin-top: 32px; }
@@ -732,6 +734,15 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 .cta-card .btn { align-self: stretch; justify-content: center; }
 .cta-card small { color: var(--gris); font-size: 0.8rem; }
 .cta-card small a { color: var(--azul-oscuro); font-weight: 700; }
+
+/* ---------- CTA final de subpáginas ---------- */
+.cta-sub { background-color: var(--azul-oscuro); background-image: linear-gradient(rgba(11, 14, 86, 0.84), rgba(11, 14, 86, 0.8)), url("../img/normativa-higiene-planta.jpg"); background-position: center; background-size: cover; background-repeat: no-repeat; color: var(--blanco); text-align: center; }
+.cta-sub .container { max-width: 760px; }
+.cta-sub h2 { color: var(--blanco); font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.25; }
+.cta-sub h2 span { color: #ff8f96; }
+.cta-sub p { color: #d7d9f2; margin: 10px auto 0; max-width: 60ch; }
+.cta-sub .hero-acciones { justify-content: center; margin-top: 22px; }
+.cta-badge { display: inline-block; padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.3); color: #d7d9f2; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
 @media (max-width: 860px) {
   .cta-grid { grid-template-columns: 1fr; }
 }

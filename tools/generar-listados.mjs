@@ -23,6 +23,19 @@ const SVG_WA =
   '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="' +
   WA_PATH +
   '"/></svg>';
+const SVG_ASINCRONO =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>';
+const SVG_ENVIVO =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M4.9 19.1a10 10 0 0 1 0-14.2"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M19.1 4.9a10 10 0 0 1 0 14.2"/></svg>';
+
+function chipModalidad(c) {
+  const icono = c.modalidad.startsWith("Asíncrono")
+    ? SVG_ASINCRONO
+    : c.modalidad.startsWith("En vivo")
+      ? SVG_ENVIVO
+      : "";
+  return icono ? icono + " " + c.modalidad : c.modalidad;
+}
 const SIN_FLYER_SLUG = "haccp-implementacion-certificacion-digesa-senasca";
 
 function sinComillas(t) {
@@ -47,7 +60,7 @@ function tarjetaCursos(c, P) {
     imgBloque +
     '<div class="card-body">' +
     '<ul class="chips"><li>' +
-    c.modalidad +
+    chipModalidad(c) +
     "</li><li>" +
     c.sesiones +
     "</li><li>Curso " +
@@ -90,7 +103,7 @@ function tarjetaHome(c) {
     '" loading="lazy"></div>' +
     '<div class="card-body">' +
     '<ul class="chips"><li>' +
-    c.modalidad +
+    chipModalidad(c) +
     "</li><li>" +
     c.horas +
     " h</li>" +
