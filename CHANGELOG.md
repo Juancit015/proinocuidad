@@ -3,6 +3,92 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-14 (Noticias: foto de portada arriba)
+
+### Added
+
+- Foto `assets/img/noticia-digesa-haccp.jpg` (220 KB) en la tarjeta de la noticia DIGESA-HACCP: Unsplash, licencia Unsplash (uso gratuito, comercial). Fuente: https://unsplash.com/es/fotos/equipos-de-procesamiento-industrial-en-un-entorno-de-laboratorio-_iB2Ou3hca4 (aprobada por Juan; autor no visible por bloqueo antibots de Unsplash, ver fuente).
+
+### Changed
+
+- Tarjeta `.nota-card` a layout vertical en escritorio: foto arriba a ancho completo (`object-fit: cover`, alto 300px) y texto debajo; etiquetas conservadas sobre la imagen con degradado.
+- En móvil la imagen lleva más altura (260px).
+- "Noticia · Regulación sanitaria" en píldora blanca dentro de la imagen (arriba) y "DIGESA" en texto blanco sobre la pastilla roja.
+- Card de noticia al 80% de ancho y centrada en desktop; en móvil a ancho completo.
+- Sin cambios en el contenido de la nota, migas, CTA ni footer.
+
+## 2026-10-14 (Subpáginas de servicios: contenido visible)
+
+### Added
+
+- Contenido complementario visible en las 4 subpáginas: BRCGS Food Safety, FSSC 22000, certificación HACCP y registro sanitario, sin "Ver más" (decisión del dueño: el plegable no tiene sentido en estas páginas).
+- Detalle por norma con base del docx ya publicado en `servicios/index.html`: alcance y listas en BRCGS (v9) y FSSC (ISO 9001/22000/FSSC/BRCGS); "Nuestro servicio comprende" en HACCP; requisitos, expediente y objetivo en registro sanitario, con aclaración de autoridad.
+
+### Changed
+
+- Registro sanitario (`servicios/registro-sanitario-digesa/`): resumen y meta description sin "en el menor tiempo posible"; se aclara que la aprobación depende de la autoridad sanitaria.
+- Sin cambios en CSS/JS, `servicios/index.html`, menú, canonical, JSON-LD ni CTA final.
+
+## 2026-10-14 (Servicios: descripción detallada con "Ver más")
+
+### Added
+
+- Servicio "3. Inspecciones higiénico-sanitarias" en `servicios/index.html`, con resumen, "Ver más" y aclaración de asesoría privada (texto del docx "servicios descripcion.docx").
+- Imagen `assets/img/servicio-inspeccion-planta.jpg`: Anna Shvets, Pexels, licencia Pexels (uso gratuito, comercial). Fuente: https://www.pexels.com/photo/5953794/
+- Detalle "Ver más" en Capacitación, Normativa, Sistemas de gestión y Registro sanitario, con el texto del docx.
+- Componente genérico `.ampliar` (CSS y JS) para los bloques "Ver más"; Nosotros conserva `nosotros-ampliar` para el sticky.
+
+### Changed
+
+- Los servicios pasan de 4 a 5 y se numeran 1 a 5 en el orden del docx.
+- Registro sanitario: se retira "en el menor tiempo posible" y se aclara que la aprobación depende de la autoridad sanitaria.
+- La imagen de cada bloque con "Ver más" abierto se mantiene fija al hacer scroll en escritorio (>860px), como en Nosotros.
+- Al abrir un "Ver más", los demás abiertos en la página se cierran con la misma animación.
+
+### Pendiente
+
+- Revisión visual en escritorio y 390px (tarea 4.3 del change).
+- El menú desplegable de las 18 páginas sigue diciendo "Alimentos y bebidas en el menor tiempo posible" (fuera de este change).
+
+## 2026-10-14 (Ajustes de Nosotros, topbar, footer y WhatsApp flotante)
+
+### Added
+
+- Imagen sticky en escritorio (>860px) en la sección "Quiénes somos" de `nosotros/index.html`, activa solo cuando "Ver más" está abierto (regla `:has()` en `main.css`).
+- Etiqueta "Envíanos un mensaje!" al pasar el mouse (o enfocar) el botón flotante de WhatsApp, con borde verde oscuro. Aplicado en las 18 páginas y en `tools/generar-fichas.mjs`.
+
+### Changed
+
+- Foto de "Quiénes somos" en `nosotros/index.html` e `index.html` (home): ahora `nosotros.webp` (raíz del sitio). Texto alternativo actualizado.
+- Topbar de todas las páginas: se añade el RUC 20615307603 después del correo.
+
+### Removed
+
+- Línea "Dirección exacta: Próximamente" del footer en todas las páginas y en `tools/generar-fichas.mjs`.
+
+### Pendiente
+
+- Confirmar origen y licencia de `nosotros.webp` (no está registrado con URL fuente, como exige la política de fotos).
+
+## 2026-10-14 (Nosotros: descripción ampliable)
+
+### Added
+
+- Bloque "Ver más" (`<details>`) debajo de "Quiénes somos" en `nosotros/index.html`, con la descripción institucional complementaria. Estilos `.nosotros-ampliar` en `main.css`. Change `nosotros-descripcion-ver-mas`.
+- Botón "Ver más" con recuadro e ícono de ojo, y apertura/cierre animado en `main.js` (400 ms; respeta `prefers-reduced-motion`).
+
+## 2026-10-14 (Piloto FX en ficha del diplomado)
+
+### Revertido (2026-10-14)
+
+- El piloto no gustó: generador, CSS, JS y las 8 fichas restaurados al estado previo (verificado byte por byte, regeneración idempotente). Change `ficha-piloto-diseno-fx` eliminado.
+
+## 2026-10-14 (Meta description del inicio recortada)
+
+### Changed
+
+- Description de 157 a 127 caracteres (mismas keywords + "en Trujillo, Perú"); el slogan queda solo en el H1. Sin commit/push ni publicación.
+
 ## 2026-10-13 (CTA final estilo AZ en 6 subpáginas)
 
 ### Added

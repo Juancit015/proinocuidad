@@ -75,4 +75,38 @@
     window.addEventListener("scroll", mostrarSubir, { passive: true });
     mostrarSubir();
   }
+
+  // --- Desplegable "Ver más" con transición suave ---
+  var reducirMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)");
+  document.querySelectorAll(".ampliar").forEach(function (det) {
+    var resumen = det.querySelector("summary");
+    var anim = null;
+    var alturaCerrada = function () {
+      return resumen.getBoundingClientRect().bottom - det.getBoundingClientRect().top;
+    };
+    var terminar = function () {
+      det.style.overflow = "";
+      anim = null;
+    };
+    resumen.addEventListener("click", function (e) {
+      if (reducirMovimiento.matches) return;
+      e.preventDefault();
+      if (anim) { anim.cancel(); terminar(); }
+      var abriendo = !det.open;
+      if (abriendo) {
+        document.querySelectorAll(".ampliar[open]").forEach(function (otro) {
+          if (otro !== det) otro.querySelector("summary").click();
+        });
+      }
+      var desde = abriendo ? alturaCerrada() : det.getBoundingClientRect().height;
+      if (abriendo) det.open = true;
+      var hasta = abriendo ? det.getBoundingClientRect().height : alturaCerrada();
+      det.style.overflow = "hidden";
+      anim = det.animate({ height: [desde + "px", hasta + "px"] }, { duration: 400, easing: "cubic-bezier(0.4, 0, 0.2, 1)" });
+      anim.onfinish = function () {
+        if (!abriendo) det.open = false;
+        terminar();
+      };
+    });
+  });
 })();
