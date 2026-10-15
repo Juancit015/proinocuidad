@@ -1427,6 +1427,27 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
   border-left: 3px solid var(--azul);
 }
 
+/* Ficha sin desborde en escritorio ancho (>1040px): extiende la contención
+   ya aplicada en ≤1040px (la fila CCI de ~385px desbordaba la tarjeta de
+   ~272–381px entre 1041 y 1280px; los hijos de grids forzaban sus tracks) */
+.ficha-layout > *,
+.ficha-main-col > *,
+.ficha-stats-grid > *,
+.beneficios-grid > *,
+.competencias-grid > *,
+.pagos-grid-moderno > *,
+.pago-qr-destacado > * {
+  min-width: 0;
+}
+.pago-copiable,
+.pago-card-top {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pago-copiable {
+  overflow-wrap: anywhere;
+}
+
 /* Responsive ficha */
 @media (max-width: 1040px) {
   .ficha-layout {
@@ -1519,7 +1540,18 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
   font-size: 0.95rem; color: var(--grafito); background: var(--blanco);
   font-family: inherit;
 }
-.form-inscripcion input:focus {
+.form-inscripcion select {
+  width: 100%; max-width: 100%; padding: 11px 40px 11px 14px;
+  border: 1.5px solid var(--gris-linea); border-radius: var(--radio-sm);
+  font-size: 0.95rem; color: var(--grafito); background-color: var(--blanco);
+  font-family: inherit;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23101477' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; background-size: 16px;
+  cursor: pointer;
+}
+.form-inscripcion input:focus,
+.form-inscripcion select:focus {
   outline: none; border-color: var(--azul);
   box-shadow: 0 0 0 3px rgba(16, 20, 119, 0.12);
 }
@@ -1541,6 +1573,21 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 }
 .form-inscripcion .campo-honey {
   position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0;
+}
+/* Honeypot antispam: el CSS base pierde especificidad frente a la regla
+   width:100% de inputs (el input quedaba de ~1572px y generaba ~219px de
+   desborde a la derecha). Selector reforzado que fija 1px sin padding/borde. */
+.form-inscripcion input.campo-honey {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  max-width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  opacity: 0;
 }
 .form-inscripcion .btn { justify-self: start; }
 @media (max-width: 680px) {

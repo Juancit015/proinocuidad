@@ -341,7 +341,10 @@ function formInscripcionBloque(curso) {
 <input type="email" name="correo" required autocomplete="email">
 </label>
 <label>País
-<input type="text" name="pais" value="Perú" autocomplete="country-name">
+<select name="pais" autocomplete="country-name">
+<option value="Perú" selected>Perú</option>
+<option value="Extranjero">Extranjero</option>
+</select>
 </label>
 <label>Enviar Comprobante De Pago
 <input type="file" name="voucher" accept="image/*,.pdf" required>

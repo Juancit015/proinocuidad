@@ -91,3 +91,48 @@ si una ficha se editó a mano, el cambio se pierde al regenerar — editar el sc
 - Flujo de trabajo: proponer un cambio con `/opsx-propose`, implementarlo con `/opsx-apply`,
   archivarlo con `/opsx-archive`. Los cambios de comportamiento del sitio deben partir de
   esas especificaciones (actualizarlas en el change, nunca a mano suelto).
+
+## Despliegue (publicación a proinocuidad.com)
+
+Sitio 100% estático, sin build ni CI: se publica subiendo archivos al hosting.
+Los cambios de la sesión 2026-10-15 pendientes de publicar son 3 (ver `CHANGELOG.md`):
+
+1. **Home con portada en noticia** (`home-noticia-con-portada`, archivado):
+   `index.html` (tarjeta `#noticias` con `<img noticia-digesa-haccp.jpg>`).
+2. **Fichas sin banda derecha** (`ficha-sin-desborde-general`, archivado):
+   `assets/css/main.css` (fix honeypot `.campo-honey` + contención en escritorio).
+3. **País como desplegable** (`formulario-select-pais`, implementado 6/6, pendiente de archivar):
+   `tools/generar-fichas.mjs` + las 8 fichas regeneradas + `assets/css/main.css`
+   (regla `.form-inscripcion select`).
+
+### Qué subir (mínimo)
+
+- `index.html`
+- `assets/css/main.css`
+- `cursos/*/index.html` (las 8 fichas)
+- `CHANGELOG.md` (opcional, informativo)
+
+### Qué NO subir
+
+- `openspec/`, `tools/`, `_archivo/`, `.opencode/`, `logos-metodos-de-pago/`,
+  `ai-chat-toolkit-rag-store-memory-v1.0.0/`, `openapitools.json`
+  (trabajo local, generadores y especificaciones; no forman parte del sitio).
+- Nota: `.opencode/*` y `openapitools.json` tienen modificaciones/presencia
+  previas a esta sesión, ajenas a estos cambios; revisarlas aparte antes de
+  cualquier commit.
+
+### Verificación post-deploy (Ctrl+F5 para evitar caché)
+
+- Home: la tarjeta DIGESA muestra la foto con las píldoras legibles.
+- Ficha del diplomado en 1280 y en móvil: sin scroll horizontal ni banda
+  blanca a la derecha (el bug medía +219px por el honeypot).
+- Formulario de cualquier ficha: País es desplegable con Perú por defecto
+  y opción Extranjero, con flecha azul integrada.
+- Enviar una inscripción de prueba llega a `administracion@proinocuidad.com`
+  con `pais=Perú` (o `Extranjero`).
+
+### Rollback
+
+- CSS y generador: respaldos en `%TEMP%\opencode\respaldo-*` de cada change.
+- Todo el repo: `git diff` / `git stash` antes de subir; último commit
+  publicado: `aa1676b FORM:CONTENT-CURSOS`.

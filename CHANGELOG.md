@@ -3,6 +3,24 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-15 (Formulario: País como desplegable Perú/Extranjero)
+
+### Changed
+
+- El campo País del formulario de inscripción pasa de texto libre a lista desplegable con Perú (por defecto) y Extranjero, con estilo propio del sitio (misma base que los inputs, flecha azul, sin apariencia básica del navegador). Mismo `name="pais"`, mismo envío por FormSubmit. Aplicado a las 8 fichas vía `tools/generar-fichas.mjs`. Verificado: valor Perú, opciones Perú/Extranjero, `appearance: none` con flecha propia, sin desborde en 1280 y 390.
+
+## 2026-10-15 (Fichas: sin banda derecha en escritorio ancho)
+
+### Fixed
+
+- Las fichas de curso ya no generan desplazamiento horizontal ni banda blanca a la derecha: el culpable era el honeypot antispam del formulario (`input.campo-honey`): su `width: 1px` perdía especificidad frente al `width: 100%` de inputs y quedaba de ~1572px, sumando ~219px de desborde en todos los anchos. Se reforzó el selector (1px real, sin padding/borde, anclado arriba-izquierda). Además se extendió a escritorio la contención ya usada en ≤1040px (`min-width: 0` en hijos de grids, `flex-wrap` en filas de pago, `overflow-wrap` en la fila CCI). Solo CSS (`assets/css/main.css`); sin cambios de contenido, markup, sticky ni apilado. Alcance: las 8 fichas. Verificado con Chrome headless (scrollWidth = viewport en 504, 750, 882, 1072, 1252 y 1572px; ficha corta limpia en 768/1100/1600) y captura a 1600 sin banda.
+
+## 2026-10-15 (Home: portada en tarjeta de noticia)
+
+### Fixed
+
+- La tarjeta de noticia DIGESA en `index.html` (sección Noticias y eventos) muestra de nuevo la foto de portada (`assets/img/noticia-digesa-haccp.jpg`, mismo archivo y `alt` que `noticias/index.html`), con las píldoras Noticia/DIGESA legibles sobre la imagen y layout vertical (foto arriba, texto debajo). Sin cambios de textos, enlaces ni SEO.
+
 ## 2026-10-15 (CSS: revertido fix de Antigravity)
 
 ### Removed
