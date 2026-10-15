@@ -7,7 +7,7 @@
  *
  * Fuente única: assets/js/cursos-data.js (window.PROINO_CURSOS).
  * La plantilla replica el markup que generaba el JS en línea de cada página
- * (mismas clases, mismos SVG, misma excepción de flyer DIGESA/SENASA).
+ * (mismas clases, mismos SVG).
  * No editar las tarjetas a mano: se sobrescriben al regenerar.
  */
 import { readFileSync, writeFileSync } from "node:fs";
@@ -36,25 +36,19 @@ function chipModalidad(c) {
       : "";
   return icono ? icono + " " + c.modalidad : c.modalidad;
 }
-const SIN_FLYER_SLUG = "haccp-implementacion-certificacion-digesa-senasca";
-
 function sinComillas(t) {
   return String(t).replace(/"/g, "");
 }
 
 /* Tarjeta de la página Cursos (8 cursos, con sesiones, número y certificación). */
 function tarjetaCursos(c, P) {
-  const tieneFlyer = c.slug !== SIN_FLYER_SLUG;
-  const imgBloque = tieneFlyer
-    ? '<div class="card-img"><img src="' +
-      P +
-      c.flyer +
-      '" alt="Flyer del curso ' +
-      sinComillas(c.titulo) +
-      '" loading="lazy"></div>'
-    : '<div class="card-img marca"><img src="' +
-      P +
-      'assets/img/logo-proinocuidad.png" alt="Logo Proinocuidad"><p>Flyer en preparación. Escríbenos para más información de este curso.</p></div>';
+  const imgBloque =
+    '<div class="card-img"><img src="' +
+    P +
+    c.flyer +
+    '" alt="Flyer del curso ' +
+    sinComillas(c.titulo) +
+    '" loading="lazy"></div>';
   return (
     '<article class="card card-curso">' +
     imgBloque +

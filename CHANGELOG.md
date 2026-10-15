@@ -3,6 +3,75 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-15 (CSS: revertido fix de Antigravity)
+
+### Removed
+
+- Revertida la regla `.ficha-main-col > .ficha-seccion:last-child { margin-bottom: 0; }` que Antigravity alcanzó a aplicar antes de agotar su cuota (no hubo bisección ni verificación). El CSS quedó byte-idéntico a su respaldo (`/tmp/opencode/respaldo-prefooter-antigravity/main.css`).
+
+## 2026-10-15 (Fichas: formulario de inscripción embebido)
+
+### Added
+
+- Cada ficha incluye debajo de "¿Cómo formalizar tu inscripción?" la tarjeta "Formulario de Inscripción" (`#form-inscripcion`): curso precargado, datos, voucher (archivo), checkbox "Deseo comprobante de pago" → Boleta/Factura (factura exige RUC de 11 dígitos y razón social, con bloqueo de envío), conformidad y envío vía FormSubmit a `administracion@proinocuidad.com`. "Matricularme Ahora" hace scroll interno; Google Form queda como respaldo. Generado vía `tools/generar-fichas.mjs` en las 8 fichas. Verificado en 1280 y 390 sin desborde.
+
+## 2026-10-15 (CSS: restaurado bloque moderno de fichas)
+
+### Fixed
+
+- `assets/css/main.css` había quedado revertido a la versión del commit (sin el bloque moderno de fichas: layout 2 columnas, stats, pagos, sidebar ni fixes de desborde). Restaurado byte por byte desde el respaldo `/tmp/opencode/respaldo-ficha-intermedio/main.css` (1479 líneas, llaves balanceadas). JS y fichas no fueron afectados. Verificado: ficha del diplomado en 1280 píxel-idéntica a la referencia (RMSE 0).
+- El respaldo era previo al fix intermedio, por lo que tras restaurar se re-aplicó el bloque 681–1040px (`min-width: 0`, wrap en pagos/QR, grids a 1 columna) y se verificó en 900px sin desplazamiento horizontal. Respaldo actualizado al estado bueno.
+
+## 2026-10-15 (Fichas: estilo moderno del diplomado en los 8 cursos)
+
+### Changed
+
+- Las 8 fichas de cursos usan el layout moderno de 2 columnas con sidebar sticky (stats, beneficios, objetivo/público, temario por módulos, metodología por pasos, tarjetas de pago con QR, inscripción y matrícula con flyer propio, precios, CTAs e incluidos). Cada ficha conserva su contenido y datos propios (horas, sesiones, temario, precios, flyer y fondo hero); "Competencias del Egresado" solo en el diplomado.
+- El layout vive ahora en `tools/generar-fichas.mjs` (plantilla + bloques compartidos con parámetros por curso): el diplomado vuelve a generarse con el generador y termina la excepción manual. Verificado: diplomado regenerado píxel-idéntico al manual en 1280, fichas cortas revisadas en 1280 y 390 sin desborde.
+
+## 2026-10-15 (Ficha: sin desplazamiento horizontal en rango intermedio)
+
+### Fixed
+
+- La ficha del diplomado ya no tiene desplazamiento horizontal en desktop redimensionado (768/900px): `min-width: 0` extendido a los grids, filas de pago envueltas, bloque QR con wrap y grids de pagos/metodología apilados en el rango 681–1040px. Solo CSS (`assets/css/main.css`); desktop ancho (2 columnas + sticky) y móvil 360/390 sin cambios. Verificado con capturas en 768, 900, 1280 y 360.
+
+## 2026-10-15 (Ficha: sin desplazamiento horizontal en móvil)
+
+### Fixed
+
+- La ficha del diplomado ya no tiene desplazamiento horizontal en 360/390px: la fila del CCI y el botón "Copiar CCI" se envuelven, el badge "Internacional" baja dentro de su tarjeta, se redujo el padding del temario en móvil y los hijos de los grids llevan `min-width: 0`. Solo CSS (`assets/css/main.css`, media ≤680px); sin cambios de contenido ni de desktop (sticky del sidebar intacto). Verificado con capturas en 360, 390 y 1280.
+
+## 2026-10-14 (Cursos: rediseño moderno de ficha del Diplomado SGCIA)
+
+### Added
+
+- **Layout de 2 columnas con Sidebar Sticky:** Estructura moderna (`.ficha-layout`) con área principal de contenidos (70%) y columna lateral fija al hacer scroll (30%) con flyer oficial, precios destacados (`S/ 120` y `US$ 37`), botones directos de inscripción/WhatsApp y checklist de beneficios incluidos.
+- **Barra de Métricas Clave (Stats Grid):** 4 tarjetas destacadas con iconos SVG para horas (384 h), módulos (6), modalidad (100% asíncrono) y certificación oficial con QR.
+- **Grid de Beneficios:** Tarjetas visuales con micro-interacciones hover para aula virtual 24/7, material editable/descargable, ritmo flexible y respaldo de certificación.
+- **Grid de Competencias del Egresado:** Formato a 2 columnas con checkmarks SVG y acentos normativos (HACCP, ISO 9001, ISO 22000, BRCGS, ISO 19011).
+- **Tarjetas Interactivas de Métodos de Pago:** Secciones diferenciadas para billeteras digitales (Yape / Plin), transferencia bancaria BBVA con número y CCI, abonos internacionales (PayPal / Western Union), pago online Culqi y bloque integrado con código QR.
+- **Logos de pago optimizados y nítidos:** Se sustituyeron las imágenes antiguas por versiones vectoriales oficiales en alta resolución con fondo transparente (BBVA 2019 oficial, Yape logotipo oficial, Western Union vector y logotipo oficial de Culqi SVG importado directo), eliminando espacios vacíos y ajustando el alto visual homogéneo al nivel de PayPal.
+- **Función de copiado al portapapeles:** En `assets/js/main.js`, funcionalidad para botones `.btn-copiar` con feedback visual temporal ("¡Copiado!").
+- **Acordeón animado y exclusivo en Temario Modular:** En `assets/js/main.js`, animación suave de apertura/cierre (`cubic-bezier`) para `.temario-modulo` y cierre automático del módulo previo al abrir uno nuevo.
+- **Icono de Asesoría Tipo Call Center:** Icono SVG personalizado de atención al cliente / asesoría con auriculares en la tarjeta de contacto/facturas del sidebar.
+
+### Changed
+
+- Reemplazo de bloques de texto plano seriados con numeración romana por secciones visuales estructuradas (`.ficha-seccion`) con cabeceras uniformes (`.seccion-tag` con iconos SVG institucionales).
+- Eliminación de emojis en toda la ficha a favor de iconografía vectorial SVG oficial.
+- Optimización responsiva: en tablets y pantallas móviles (≤ 1040px y ≤ 680px), el layout se adapta limpiamente apilando el sidebar y las tarjetas en una columna.
+- Actualización de datos de pago oficiales: número de Yape/Plin establecido en `971 625 142` (con botón de copiado directo) y titular de la cuenta BBVA corregido a `Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.`.
+- Tarjeta de Pago QR optimizada: encuadre cuadrado y centrado geométrico perfecto del código QR (`qr-pago-bbva-zoom.webp`), y nuevo contenedor destacado (`.pago-titular-pill`) resaltando explícitamente a nombre de quién está la cuenta: `Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.`.
+
+## 2026-10-14 (Cursos: flyer DIGESA/SENASA visible)
+
+### Changed
+
+- La tarjeta del curso HACCP DIGESA/SENASA en `cursos/index.html` muestra su flyer (`assets/img/flyer-curso-04-haccp-digesa-senasca.webp`, imagen del documento "pagina web.pdf") en lugar del aviso "Flyer en preparación".
+- Se retiró la excepción `SIN_FLYER_SLUG` en `tools/generar-listados.mjs` y se regeneraron los listados (8 en cursos, 4 en inicio sin cambios).
+- Nota: el flyer indica edición en vivo de mayo (32 horas); la ficha actual es asíncrona de 40 horas. Se muestra por decisión de Juan.
+- La tarjeta de la noticia DIGESA en `index.html` (sección Noticias y eventos) no tenía imagen: se añadió la misma foto de portada (`assets/img/noticia-digesa-haccp.jpg`) con las píldoras Noticia/DIGESA, igual que en `noticias/index.html`.
+
 ## 2026-10-14 (Noticias: foto de portada arriba)
 
 ### Added

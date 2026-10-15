@@ -1,15 +1,21 @@
 /**
- * Generador de fichas estáticas de cursos de Proinocuidad (tasks 4.4).
+ * Generador de fichas estáticas de cursos de Proinocuidad.
  * Ejecutar:  node tools/generar-fichas.mjs
  * Emite:     cursos/<slug>/index.html  (HTML estático, sin build al navegar)
+ *
+ * Layout moderno de 2 columnas (main + sidebar sticky), igual al de la ficha
+ * del diplomado: hero, stats, secciones estructuradas, temario por módulos,
+ * metodología por pasos, tarjetas de pago modernas con QR, inscripción y
+ * sidebar de matrícula con flyer propio, precios, CTAs e incluidos.
+ * Cada curso conserva su propio contenido y datos; solo el layout es compartido.
  *
  * Contenido fuente: documento oficial "_archivo/pagina web.pdf" (fuente única de verdad).
  * - Decimal del objetivo del curso 5 (BPM Codex 2022): se publica tal como está en el PDF
  *   (decisión del dueño: coincide con el objetivo del curso DIGESA/SENASA en el documento).
  * - El curso 2 (Legislación) y el curso 3 (BPM/POES/POE/HACCP) comparten el mismo objetivo
  *   exacto en el PDF; se publica igual (fiel al documento).
- * - Bloque de pagos con la decisión del dueño: botón Culqi (placeholder #) + logos
- *   informativos con titular "Claudia Rubio Jiménez" y número placeholder.
+ * - Bloque de pagos con la decisión del dueño: botón Culqi (placeholder #) + tarjetas
+ *   con titular "Claudia Rubio Jiménez" (Yape/Plin) y cuenta BBVA del documento base.
  */
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -17,114 +23,437 @@ import { fileURLToPath } from "node:url";
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..");
 const img_og = "https://proinocuidad.com/assets/img/proinocuidad-og-1200x630.png";
+/* Respaldo documentado: Google Form externo (antes destino de "Matricularme Ahora";
+   ahora los CTA hacen scroll al formulario embebido #form-inscripcion). */
+const FORM_INSCRIPCION = "https://docs.google.com/forms/d/1OoggGqBor_FDBcKoo807nPf0atujRvqqXrIqDhBiRpI/viewform";
+const WA_NUM = "51981365982";
 
-/* ---------- piezas reutilizables ---------- */
+/* ---------- iconos SVG reutilizables ---------- */
 
-function bloque(indice, titulo, htmlInterno) {
-  return `<article class="bloque">\n<h2><span class="indice">${indice}</span> ${titulo}</h2>\n${htmlInterno}\n</article>`;
+const SVG_RELOJ = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+const SVG_LIBRO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+const SVG_MONITOR = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`;
+const SVG_LIBRO_TAG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+const SVG_ESCUDO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>`;
+const SVG_ESTRELLA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+const SVG_DIANA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`;
+const SVG_BIRRETE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`;
+const SVG_INFO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+const SVG_TARJETA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`;
+const SVG_PORTAPAPEL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`;
+const SVG_CUBO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`;
+const SVG_DOC = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
+const SVG_CALENDARIO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+const SVG_CHECK = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+const SVG_CHECK_GRANDE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+const SVG_FLECHA_ABAJO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg>`;
+const SVG_AVISO = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: -2px; margin-right: 4px; color: var(--rojo);"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+const SVG_WA = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>`;
+const SVG_ASESOR = `<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M14 14a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-1"/><path d="M21 16v2a3 3 0 0 1-3 3h-2"/><circle cx="15" cy="21" r="1"/></svg>`;
+
+/* ---------- piezas del layout moderno ---------- */
+
+function statCard(svg, etiqueta, valor) {
+  return `<div class="ficha-stat-card">
+<div class="stat-icono">${svg}</div>
+<div class="stat-info"><span>${etiqueta}</span><strong>${valor}</strong></div>
+</div>`;
 }
 
-function detalle(titulo, abierta, htmlInterno) {
-  return `<details class="modulo"${abierta ? " open" : ""}>\n<summary>${titulo}</summary>\n<div class="modulo-contenido">\n${htmlInterno}\n</div>\n</details>`;
+function statsGrid(curso) {
+  return `<div class="ficha-stats-grid">
+${statCard(SVG_RELOJ, "Duración", `${curso.horas} Horas Académicas`)}
+${statCard(SVG_LIBRO, "Estructura", curso.estructura)}
+${statCard(SVG_MONITOR, "Modalidad", "100% Asíncrono (Grabado)")}
+${statCard(SVG_ESCUDO, "Certificación", "Con Código QR Oficial")}
+</div>`;
 }
 
-function bloquePagos() {
-  return bloque(
-    "IX",
-    "Medios de pago",
-    `<div class="pagos-info">
-<div class="ficha-cta">
-<!-- TODO(responsable): pegar aquí el enlace de pago Culqi de este curso (assets/js/cursos-data.js, campo urlCulqi) -->
-<a class="btn btn-culqi" href="#" aria-disabled="true">Pagar online con Culqi</a>
-<!-- Enlace público del formulario (mismo ID del documento base, sufijo /viewform) -->
-<a class="btn btn-rojo" href="https://docs.google.com/forms/d/1OoggGqBor_FDBcKoo807nPf0atujRvqqXrIqDhBiRpI/viewform" target="_blank" rel="noopener">Solicitar más información / Inscribirme</a>
-<a class="btn btn-whatsapp" href="https://wa.me/51981365982" target="_blank" rel="noopener">WhatsApp</a>
+function seccion(svgTag, titulo, inner) {
+  return `<article class="ficha-seccion">
+<div class="ficha-seccion-header">
+<span class="seccion-tag" aria-hidden="true">${svgTag}</span>
+<h2>${titulo}</h2>
 </div>
-<div class="pagos-logos" aria-label="Medios de pago disponibles">
-<figure><img src="../../assets/img/pagos/yape-logo.webp" alt="Logo Yape"><figcaption>Yape</figcaption></figure>
-<figure><img src="../../assets/img/pagos/plin-logo.webp" alt="Logo Plin"><figcaption>Plin</figcaption></figure>
-<figure><img src="../../assets/img/pagos/bbva-logo.webp" alt="Logo BBVA"><figcaption>Transferencia BBVA</figcaption></figure>
-<figure><img src="../../assets/img/pagos/western-union-logo.webp" alt="Logo Western Union"><figcaption>Western Union</figcaption></figure>
-<figure><img src="../../assets/img/pagos/paypal-logo.webp" alt="Logo PayPal"><figcaption>PayPal</figcaption></figure>
+${inner}
+</article>`;
+}
+
+function beneficioItem(svg, titulo, texto) {
+  return `<div class="beneficio-item">
+<div class="beneficio-icon">${svg}</div>
+<div class="beneficio-texto"><strong>${titulo}</strong><p>${texto}</p></div>
+</div>`;
+}
+
+function beneficiosBloque(curso) {
+  return seccion(
+    SVG_ESTRELLA,
+    "¿Por qué especializarte con nosotros?",
+    `<div class="beneficios-grid">
+${beneficioItem(SVG_CUBO, "Aula Virtual Permanente", "Accede las 24 horas del día, los 7 días de la semana, sin límites ni caducidad de acceso.")}
+${beneficioItem(SVG_DOC, "Material y Recursos de Aplicación", "Libros, plantillas editables de registros, manuales y casos prácticos reales para tu trabajo.")}
+${beneficioItem(SVG_RELOJ, "A Tu Propio Ritmo", "Avanza según tu disponibilidad de tiempo y compatibiliza tus estudios con tus labores profesionales.")}
+${beneficioItem(SVG_CALENDARIO, "Certificado Verificable con QR", `Respaldo institucional de ${curso.horas} horas académicas para postular a mejores oportunidades laborales.`)}
+</div>`
+  );
+}
+
+function objetivoBloque(curso) {
+  return seccion(
+    SVG_DIANA,
+    "Objetivo y Público",
+    `<p style="font-size: 1.02rem; line-height: 1.6; color: var(--azul-oscuro); margin-bottom: 16px;">
+<strong>${curso.objetivoTitulo}</strong> ${curso.objetivo}
+</p>
+<div style="background: var(--fondo); border-left: 4px solid var(--azul); padding: 14px 18px; border-radius: 0 var(--radio-sm) var(--radio-sm) 0;">
+<strong style="color: var(--azul); display: block; margin-bottom: 4px;">¿A quién está dirigido?</strong>
+<p style="margin: 0; font-size: 0.92rem; color: var(--gris);">
+${curso.publico}
+</p>
+</div>`
+  );
+}
+
+function egresadoBloque(curso) {
+  if (!curso.egresado) return "";
+  const items = curso.egresado.items
+    .map((t) => `<div class="competencia-item">
+<span class="competencia-check" aria-hidden="true">${SVG_CHECK}</span>
+<span>${t}</span>
+</div>`)
+    .join("\n");
+  return seccion(
+    SVG_BIRRETE,
+    "Competencias del Egresado",
+    `<p style="margin-bottom: 18px; color: var(--gris); font-size: 0.95rem;">
+${curso.egresado.intro}
+</p>
+<div class="competencias-grid">
+${items}
+</div>`
+  );
+}
+
+function temarioModulo(modulo) {
+  return `<details class="temario-modulo"${modulo.abierto ? " open" : ""}>
+<summary>
+<div class="temario-header-left">
+<span class="badge-modulo-num">${modulo.badge}</span>
+<span class="modulo-titulo">${modulo.titulo}</span>
 </div>
-<!-- TODO(responsable): reemplazar '+51 99999999' por el número real de Yape/Plin -->
-<div class="pagos-datos">
-<ul>
-<li><strong>Yape / Plin:</strong> Número <span class="num-pagos">+51 99999999</span> — Titular: Claudia Rubio Jiménez</li>
-<li><strong>Western Union / PayPal:</strong> datos de cobro con el titular Claudia Rubio Jiménez (solicítalos al WhatsApp corporativo).</li>
-<li><strong>BBVA (solo transferencia móvil):</strong> Cuenta de ahorros soles <strong>0011-0900-0200684705</strong> · CCI <strong>011-900-000200684705-83</strong></li>
+<span class="modulo-arrow">${SVG_FLECHA_ABAJO}</span>
+</summary>
+<ul class="modulo-lista">
+${modulo.html}
 </ul>
-</div>
-<div class="pagos-qr">
-<div>
-<img src="../../assets/img/qr-pago-bbva.webp" alt="QR de pago BBVA de Proinocuidad: escanea el QR y paga con cualquier billetera digital">
-</div>
-<p>
-<strong>Pago con QR:</strong> escanea el QR con Yape, Plin u otra billetera digital.
-Nota del documento oficial: la cuenta BBVA es solo para transferencias desde aplicativo móvil; si realiza
-depósito por ventanilla o agente, adicionar S/ 7.50 (comisión interplaza).
+</details>`;
+}
+
+function temarioBloque(curso) {
+  return seccion(
+    SVG_LIBRO_TAG,
+    "Plan de Estudios Modular",
+    `<p style="margin-bottom: 20px; color: var(--gris); font-size: 0.94rem;">
+${curso.temarioIntro}
 </p>
+${curso.modulos.map(temarioModulo).join("\n\n")}`
+  );
+}
+
+function metodologiaBloque(curso) {
+  return seccion(
+    SVG_INFO,
+    "Metodología de Aprendizaje",
+    `<p style="color: var(--gris); font-size: 0.95rem; line-height: 1.6;">
+${curso.metodologiaIntro}
+</p>
+<div class="metodologia-steps">
+<div class="step-card">
+<div class="step-numero">1</div>
+<h4>Estudia a tu ritmo</h4>
+<p>Mira las sesiones grabadas de alta definición y descarga las diapositivas y manuales.</p>
 </div>
+<div class="step-card">
+<div class="step-numero">2</div>
+<h4>Aplica lo aprendido</h4>
+<p>Revisa casos de estudio reales de plantas alimentarias y plantillas de trabajo.</p>
+</div>
+<div class="step-card">
+<div class="step-numero">3</div>
+<h4>Certifícate</h4>
+<p>Rinde tu evaluación final en la plataforma virtual y recibe tu certificado digital oficial con QR.</p>
+</div>
+</div>
+<div style="margin-top: 20px; padding: 14px 18px; background: var(--fondo); border-radius: var(--radio-sm); font-size: 0.88rem; color: var(--gris); display: flex; align-items: flex-start; gap: 10px;">
+<span style="color: var(--azul); flex-shrink: 0; margin-top: 2px;">
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+</span>
+<span><strong>Requisitos de Aprobación:</strong> Para obtener el <em>Certificado de Aprobación</em> se requiere una calificación mínima de <strong>14 puntos</strong> en la evaluación final. En caso contrario, se expedirá el <em>Certificado de Participación</em> por las horas académicas correspondientes.</span>
 </div>`
   );
 }
 
-const PUBLICO_A = `Dirigido a profesionales, técnicos y estudiantes de últimos ciclos vinculados a la industria alimentaria:
-responsables de calidad e inocuidad, supervisores de producción, personal de control de calidad, consultores,
-auditores internos, docentes y emprendedores del sector alimentos y bebidas.`;
-
-const PUBLICO_B = `Profesionales del sector alimentos, inspectores, analistas, supervisores, jefes;
-empresarios y emprendedores del sector alimentario (industria alimentaria,
-restaurantes y afines); estudiantes y público en general.`;
-
-const BENEFICIOS = `<ul class="lista-check">
-<li>Acceso a Aula virtual de manera permanente</li>
-<li>Material actualizado (libros, plantillas, manuales, etc)</li>
-<li>Aprende a tu propio ritmo y disponibilidad de tiempo</li>
-<li>Certificado digital con QR</li>
-</ul>`;
-
-const METODOLOGIA = bloque(
-  "VI",
-  "Metodología",
-  `<p>
-En la modalidad asíncrona los participantes desarrollan los contenidos didácticos, a su propio ritmo, a través
-del aula virtual y sus escenarios virtuales de aprendizaje implementados, que ha sido diseñado de forma modular.
-En cada módulo se exponen distintos contenidos de aprendizaje tales como grabaciones de clases, diapositivas,
-lecturas, videos, bibliografía complementaria actualizada.
+function pagosBloque(curso) {
+  const waExtranjero = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hola, deseo matricularme al ${curso.waCorto} desde el extranjero`)}`;
+  return `<article class="ficha-seccion" id="medios-pago">
+<div class="ficha-seccion-header">
+<span class="seccion-tag" aria-hidden="true">${SVG_TARJETA}</span>
+<h2>Medios de Pago y Matrícula</h2>
+</div>
+<p style="color: var(--gris); font-size: 0.93rem; margin-bottom: 20px;">
+Elige la opción que más te acomode para realizar tu inversión:
 </p>
-<p>
-La plataforma del curso estará disponible en:
-<a href="https://proinocuidad.com/login/" target="_blank" rel="noopener">https://proinocuidad.com/login/</a>.
-A cada participante se le asignará un usuario y contraseña.
-</p>
-<p>
-Para obtener el certificado de aprobación se requiere aprobar un examen con una nota mínima de <strong>14 puntos</strong>;
-caso contrario, se emitirá certificado de participación.
-</p>`
-);
-
-function bloqueInversion(montoNacional, montoExtranjero) {
-  return bloque(
-    "VII",
-    "Inversión",
-    `<div class="inversion-box">
-<div class="inversion-item"><span class="monto">${montoNacional}</span><span>Perú (no incluye IGV)</span></div>
-<div class="inversion-item"><span class="monto">${montoExtranjero}</span><span>Extranjero</span></div>
-</div>`
-  );
+<div class="pagos-grid-moderno">
+<div class="pago-card">
+<div class="pago-card-top">
+<div class="pago-card-logos">
+<img src="../../assets/img/pagos/yape-logo.webp" alt="Yape" class="pago-logo-yape">
+<img src="../../assets/img/pagos/plin-logo.webp" alt="Plin" class="pago-logo-plin">
+</div>
+<span class="pago-badge">Sin comisión</span>
+</div>
+<h4>Yape / Plin</h4>
+<p>Transfiere de forma inmediata desde tu app móvil. Titular: <strong>Claudia Rubio Jiménez</strong></p>
+<div class="pago-copiable">
+<span>+51 971 625 142</span>
+<button type="button" class="btn-copiar" data-copiar="971625142">Copiar</button>
+</div>
+</div>
+<div class="pago-card">
+<div class="pago-card-top">
+<div class="pago-card-logos">
+<img src="../../assets/img/pagos/bbva-logo.webp" alt="BBVA" class="pago-logo-bbva">
+</div>
+<span class="pago-badge">Banca Móvil</span>
+</div>
+<h4>Transferencia BBVA</h4>
+<p>Cuenta Ahorros Soles (vía app móvil). Titular: <strong>Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.</strong></p>
+<div class="pago-copiable" style="margin-bottom: 6px;">
+<span style="font-size: 0.82rem;">0011-0900-0200684705</span>
+<button type="button" class="btn-copiar" data-copiar="0011-0900-0200684705">Copiar</button>
+</div>
+<div class="pago-copiable">
+<span style="font-size: 0.78rem;">CCI: 011-900-000200684705-83</span>
+<button type="button" class="btn-copiar" data-copiar="011-900-000200684705-83">Copiar CCI</button>
+</div>
+</div>
+<div class="pago-card">
+<div class="pago-card-top">
+<div class="pago-card-logos">
+<img src="../../assets/img/pagos/paypal-logo.webp" alt="PayPal">
+<img src="../../assets/img/pagos/western-union-logo.webp" alt="Western Union" class="pago-logo-wu">
+</div>
+<span class="pago-badge">Internacional</span>
+</div>
+<h4>Extranjero (US$ ${curso.usd})</h4>
+<p>Paga fácilmente desde cualquier país mediante PayPal o giro Western Union.</p>
+<div style="margin-top: auto;">
+<a href="${waExtranjero}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm" style="width: 100%; justify-content: center;">
+Solicitar link de PayPal / WU
+</a>
+</div>
+</div>
+<div class="pago-card">
+<div class="pago-card-top">
+<div class="pago-card-logos">
+<img src="../../assets/img/pagos/culqi-logo.webp" alt="Culqi" class="pago-logo-culqi">
+</div>
+<span class="pago-badge">Tarjetas de Débito/Crédito</span>
+</div>
+<h4>Pago Online con Tarjeta</h4>
+<p>Acepta Visa, Mastercard, Diners y Amex con procesamiento seguro e instantáneo.</p>
+<div style="margin-top: auto;">
+<a class="btn btn-culqi btn-sm" href="#" aria-disabled="true" style="width: 100%; justify-content: center;">
+Pagar Online con Culqi
+</a>
+</div>
+</div>
+</div>
+<div class="pago-qr-destacado">
+<div class="pago-qr-img-wrap">
+<a href="../../assets/img/qr-pago-bbva.webp" target="_blank" rel="noopener" title="Clic para ver afiche completo">
+<img src="../../assets/img/qr-pago-bbva-zoom.webp" alt="QR oficial de pago BBVA Proinocuidad">
+</a>
+</div>
+<div class="pago-qr-info">
+<h4>¿Prefieres escanear el QR?</h4>
+<p>Abre tu aplicación bancaria o billetera digital favorita (<strong>Yape, Plin o BBVA</strong>) y escanea directamente este código para realizar tu abono en segundos.</p>
+<div class="pago-titular-pill">
+<span class="titular-label">Titular de la cuenta:</span>
+<strong>Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.</strong>
+</div>
+<div class="nota-banco">
+${SVG_AVISO}
+<strong>Aviso bancario:</strong> La cuenta BBVA aplica sin comisión únicamente para transferencias móviles. En caso de realizar abono en ventanilla bancaria o agente físico fuera de Trujillo, considerar adicionar S/ 7.50 por comisión interplaza.
+</div>
+</div>
+</div>
+</article>`;
 }
 
-function bloqueInscripcion() {
-  return bloque(
-    "VIII",
-    "Inscripción online",
-    `<ol>
-<li>Realizar el pago a nuestras cuentas (revisa los medios de pago en el bloque <em>Medios de pago</em> de esta misma ficha).</li>
-<li>Completar el formulario con sus datos, adjuntar el voucher o comprobante de pago en el formulario y hacer clic en el botón «Enviar».</li>
-<li>Enviar mensaje al WhatsApp <a href="https://wa.me/51981365982" target="_blank" rel="noopener">+51 981 365 982</a> confirmando su inscripción.</li>
+function inscripcionBloque(curso) {
+  const waInscripcion = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hola, acabo de enviar mi inscripción al ${curso.waCorto}`)}`;
+  return seccion(
+    SVG_PORTAPAPEL,
+    "¿Cómo formalizar tu inscripción?",
+    `<ol style="padding-left: 20px; color: var(--grafito); font-size: 0.95rem; line-height: 1.8;">
+<li>Efectúa tu pago correspondiente mediante cualquiera de los medios oficiales de Proinocuidad señalados arriba.</li>
+<li>Completa el formulario de inscripción adjuntando tu comprobante o voucher de pago.</li>
+<li>Envíanos un mensaje a nuestro WhatsApp <a href="${waInscripcion}" target="_blank" rel="noopener"><strong>+51 981 365 982</strong></a> para la confirmación y habilitación inmediata de tu usuario en el Aula Virtual.</li>
 </ol>`
   );
+}
+
+function formInscripcionBloque(curso) {
+  return `<article class="ficha-seccion" id="form-inscripcion">
+<div class="ficha-seccion-header">
+<span class="seccion-tag" aria-hidden="true">${SVG_DOC}</span>
+<h2>Formulario de Inscripción</h2>
+</div>
+<form class="form-inscripcion" action="https://formsubmit.co/administracion@proinocuidad.com" method="POST" enctype="multipart/form-data">
+<input type="hidden" name="_subject" value="Inscripción web — ${curso.miga}">
+<input type="hidden" name="_template" value="table">
+<input type="hidden" name="_captcha" value="false">
+<input type="text" name="_honey" class="campo-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+<div class="form-fila">
+<label>Curso
+<input type="text" name="curso" value="${curso.h1}" readonly>
+</label>
+</div>
+<div class="form-grid">
+<label>Nombre y apellidos
+<input type="text" name="nombre" required autocomplete="name">
+</label>
+<label>DNI
+<input type="text" name="dni" required inputmode="numeric" autocomplete="off">
+</label>
+<label>Empresa/Institución
+<input type="text" name="empresa" autocomplete="organization">
+</label>
+<label>Cargo/Ocupación
+<input type="text" name="cargo">
+</label>
+<label>Celular
+<input type="tel" name="celular" required autocomplete="tel">
+</label>
+<label>Correo
+<input type="email" name="correo" required autocomplete="email">
+</label>
+<label>País
+<input type="text" name="pais" value="Perú" autocomplete="country-name">
+</label>
+<label>Enviar Comprobante De Pago
+<input type="file" name="voucher" accept="image/*,.pdf" required>
+</label>
+</div>
+<label class="form-check">
+<input type="checkbox" name="desea_comprobante" value="si">
+Deseo comprobante de pago
+</label>
+<fieldset class="form-tipo-comp" hidden>
+<legend>Tipo de comprobante</legend>
+<label class="form-check"><input type="radio" name="tipo_comprobante" value="boleta" checked> Boleta</label>
+<label class="form-check"><input type="radio" name="tipo_comprobante" value="factura"> Factura</label>
+<div class="form-grid form-factura" hidden>
+<label>RUC (11 dígitos)
+<input type="text" name="ruc" inputmode="numeric" maxlength="11">
+</label>
+<label>Razón social
+<input type="text" name="razon_social">
+</label>
+</div>
+<p class="campo-error" hidden></p>
+</fieldset>
+<label class="form-check">
+<input type="checkbox" name="conformidad" required>
+El envío de este formulario representa la conformidad con los datos registrados, así como la aceptación de la modalidad de pago, las reglas y políticas de Proinocuidad.
+</label>
+<button class="btn btn-rojo" type="submit">Enviar inscripción</button>
+</form>
+</article>`;
+}
+
+function sidebar(curso) {
+  const esDiplomado = curso.tipo === "diplomado";
+  const etiqueta = esDiplomado ? "Diplomado Oficial" : "Curso Oficial";
+  const incluyeTitulo = esDiplomado ? "Este Diplomado incluye:" : "Este Curso incluye:";
+  const waInfo = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hola, deseo más información y matricularme en ${curso.waLargo}`)}`;
+  const waFactura = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hola, tengo consultas sobre la facturación del ${curso.waCorto}`)}`;
+  const incluyeItems = curso.incluye
+    .map((t) => `<li>
+${SVG_CHECK_GRANDE}
+<span>${t}</span>
+</li>`)
+    .join("\n");
+  return `<aside class="ficha-sidebar">
+<div class="card-matricula">
+<div class="card-matricula-flyer">
+<img src="../../assets/img/${curso.flyer}" alt="Flyer ${curso.waCorto} Proinocuidad">
+<span class="flyer-tag">${etiqueta}</span>
+</div>
+<div class="card-matricula-body">
+<div class="precios-wrapper">
+<div class="precio-fila">
+<div class="precio-etiqueta">
+Precio Perú
+<small>Pago único · No incluye IGV</small>
+</div>
+<div class="precio-numero">S/ ${curso.pen}</div>
+</div>
+<div class="precio-fila">
+<div class="precio-etiqueta">
+Internacional
+<small>PayPal / Western Union</small>
+</div>
+<div class="precio-numero" style="color: var(--azul);">US$ ${curso.usd}</div>
+</div>
+</div>
+<div class="matricula-cta-group">
+<a class="btn btn-rojo" href="#form-inscripcion">
+Matricularme Ahora
+</a>
+<a class="btn btn-whatsapp" href="${waInfo}" target="_blank" rel="noopener">
+${SVG_WA}
+Consultar por WhatsApp
+</a>
+</div>
+<div class="matricula-incluye">
+<h4>${incluyeTitulo}</h4>
+<ul>
+${incluyeItems}
+</ul>
+</div>
+</div>
+</div>
+<div class="card-asesoria-sidebar">
+<div style="width: 50px; height: 50px; border-radius: 50%; background: var(--azul-claro); color: var(--azul); display: grid; place-items: center; margin: 0 auto 12px;">
+${SVG_ASESOR}
+</div>
+<h4>¿Tienes dudas o requieres factura?</h4>
+<p>Nuestro equipo de asesoría académica está disponible para atender requerimientos corporativos o facturas con RUC.</p>
+<a href="${waFactura}" target="_blank" rel="noopener" class="btn btn-borde btn-sm" style="width: 100%; justify-content: center;">
+Contactar Asesor
+</a>
+</div>
+</aside>`;
+}
+
+function cuerpoModerno(curso) {
+  return `<div class="ficha-layout">
+<div class="ficha-main-col">
+${statsGrid(curso)}
+${beneficiosBloque(curso)}
+${objetivoBloque(curso)}
+${egresadoBloque(curso)}
+${temarioBloque(curso)}
+${metodologiaBloque(curso)}
+${pagosBloque(curso)}
+${inscripcionBloque(curso)}
+${formInscripcionBloque(curso)}
+</div>
+${sidebar(curso)}
+</div>`;
 }
 
 /* ---------- maqueta de la ficha ---------- */
@@ -151,7 +480,7 @@ function jsonLdCurso(curso) {
   return JSON.stringify(datos, null, 2);
 }
 
-function ficha(curso, contenido) {
+function ficha(curso) {
   const url = `https://proinocuidad.com/cursos/${curso.slug}/`;
   const tituloFicha = curso.seoTitle || (/Proinocuidad/.test(curso.title) ? curso.title : `${curso.title} | Proinocuidad`);
   return `<!DOCTYPE html>
@@ -182,7 +511,7 @@ Contacto:
 &nbsp;·&nbsp;
 <a href="mailto:administracion@proinocuidad.com">administracion@proinocuidad.com</a>
 &nbsp;·&nbsp;
-RUC 20615307603
+RUC: <strong>20615307603</strong>
 </span>
 <ul class="topbar-social">
 <li><a href="https://www.facebook.com/share/16XUyQ5JDR/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a></li>
@@ -220,11 +549,11 @@ RUC 20615307603
 <a href="../index.html" aria-haspopup="true" aria-expanded="false">Cursos</a>
 <div class="mega-panel mega-panel-compacto" role="menu">
 <div class="mega-panel-inner">
-              <a href="../diplomado-gestion-calidad-e-inocuidad/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 9 12 4 2 9l10 5 10-5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></svg></span><strong>Diplomado SGCIA</strong><span>Calidad e Inocuidad en la Industria Alimentaria · 384 h</span></a>
-              <a href="../legislacion-sanitaria-alimentos/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M6 21h12"/><path d="M4 7h16"/><path d="M4 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/><path d="M20 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/></svg></span><strong>Legislación Sanitaria de Alimentos</strong><span>Marco normativo nacional e internacional · 40 h</span></a>
-              <a href="../haccp-implementacion-certificacion-digesa-senasca/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><strong>HACCP: certificación en Perú</strong><span>DIGESA / SENASA · 40 h</span></a>
-              <a href="../formacion-auditor-interno-haccp/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M8 11l2 2 4-4"/></svg></span><strong>Auditor Interno HACCP</strong><span>Formación de auditores · 40 h</span></a>
-              <a class="mega-cta" href="../index.html"><strong>Ver todos los cursos</strong><span aria-hidden="true">→</span></a>
+<a href="../diplomado-gestion-calidad-e-inocuidad/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 9 12 4 2 9l10 5 10-5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></svg></span><strong>Diplomado SGCIA</strong><span>Calidad e Inocuidad en la Industria Alimentaria · 384 h</span></a>
+<a href="../legislacion-sanitaria-alimentos/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M6 21h12"/><path d="M4 7h16"/><path d="M4 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/><path d="M20 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/></svg></span><strong>Legislación Sanitaria de Alimentos</strong><span>Marco normativo nacional e internacional · 40 h</span></a>
+<a href="../haccp-implementacion-certificacion-digesa-senasca/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><strong>HACCP: certificación en Perú</strong><span>DIGESA / SENASA · 40 h</span></a>
+<a href="../formacion-auditor-interno-haccp/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M8 11l2 2 4-4"/></svg></span><strong>Auditor Interno HACCP</strong><span>Formación de auditores · 40 h</span></a>
+<a class="mega-cta" href="../index.html"><strong>Ver todos los cursos</strong><span aria-hidden="true">→</span></a>
 </div>
 </div>
 </li>
@@ -246,7 +575,7 @@ RUC 20615307603
 </section>
 
 <div class="container ficha-cuerpo">
-${contenido}
+${cuerpoModerno(curso)}
 </div>
 </main>
 
@@ -306,15 +635,18 @@ ${contenido}
 `;
 }
 
-/* ---------- fichas (contenido del documento oficial) ---------- */
-/* El diplomado ya existe como ficha escrita a mano; el generador lo reescribe a partir
-   de aquí también, para que la fuente única sea este archivo. */
+/* ---------- fichas (contenido propio por curso) ---------- */
 
 const DIPLOMADO = {
+  tipo: "diplomado",
   slug: "diplomado-gestion-calidad-e-inocuidad",
   horas: 384,
   pen: 120,
   usd: 37,
+  estructura: "6 Módulos Clave",
+  flyer: "flyer-curso-01-diplomado-sgcia.webp",
+  waCorto: "Diplomado de Calidad e Inocuidad",
+  waLargo: "el Diplomado de Gestión de la Calidad e Inocuidad",
   title: "Diplomado de Especialización: Gestión de la Calidad e Inocuidad en la Industria Alimentaria | Proinocuidad",
   seoTitle: "Diplomado en gestión de calidad e inocuidad | Proinocuidad",
   seoDesc: "Diplomado de 6 sesiones asíncronas en gestión de la calidad e inocuidad: HACCP, ISO 9001, ISO 22000 y BRCGS. Certificado digital con QR.",
@@ -323,157 +655,125 @@ const DIPLOMADO = {
   fondo: "ficha-diplomado.avif",
   miga: "Diplomado",
   descripcion:
-    "Desarrollar competencias para implementar y auditar sistemas de gestión de calidad e inocuidad alimentaria basados en HACCP, ISO 9001, ISO 22000 y BRCGS.",  h1: "Diplomado de Especialización: “Gestión de la Calidad e Inocuidad en la Industria Alimentaria”",
-  contenido: [
-    bloque("I", "Datos generales", `<ul class="lista-datos">
-<li><strong>Número de sesiones:</strong> 6 sesiones</li>
-<li><strong>Modalidad:</strong> Asíncrono (Grabado)</li>
-<li><strong>Certificación:</strong> 384 horas académicas</li>
-</ul>`),
-    bloque("II", "Beneficios", BENEFICIOS),
-    bloque("III", "Público objetivo", `<p>${PUBLICO_A}</p>`),
-    bloque(
-      "IV",
-      "Objetivo",
-      `<p>Desarrollar competencias para implementar y auditar sistemas de gestión de calidad e inocuidad alimentaria basados en HACCP, ISO 9001, ISO 22000 y BRCGS.</p>`
-    ),
-    bloque(
-      "✔",
-      "Perfil del egresado",
-      `<p>Al finalizar el diplomado, el participante estará capacitado para:</p>
-<ul class="lista-check">
-<li>Implementar y mantener sistemas de gestión de calidad e inocuidad alimentaria en organizaciones del sector.</li>
-<li>Aplicar programas prerrequisitos (BPM, POE y POES) como base del control sanitario.</li>
-<li>Desarrollar e implementar planes HACCP en procesos alimentarios.</li>
-<li>Interpretar y aplicar los requisitos de ISO 9001 e ISO 22000 en entornos productivos.</li>
-<li>Reconocer y aplicar los lineamientos de la norma BRCGS Food Safety.</li>
-<li>Participar en auditorías internas de sistemas integrados de gestión según ISO 19011.</li>
-<li>Identificar oportunidades de mejora para fortalecer la calidad e inocuidad en la cadena alimentaria.</li>
-</ul>`
-    ),
-    bloque(
-      "V",
-      "Temario",
-      detalle(
-        "MÓDULO I. Contexto Nacional e Internacional de la Calidad e Inocuidad Alimentaria",
-        true,
-        `<ul>
-<li>Contexto de la Inocuidad Global</li>
-<li>Enfermedades Transmitidas por Alimentos (ETAS)</li>
-<li>Organismos Reguladores en el Perú en materia de Inocuidad Alimentaria</li>
-<li>COMPIAL</li>
-<li>Regulación Nacional</li>
-<li>Codex Alimentarius</li>
-<li>FDA y Unión Europea</li>
-<li>Principios Generales de Higiene de los Alimentos CAC/RCP 1-1969, actualización 2022</li>
-</ul>`
-      ) +
-        detalle(
-          "MÓDULO II. Programas Prerrequisitos del Sistema HACCP (BPM, POES y POE)",
-          false,
-          `<ul>
-<li>Buenas Prácticas de Manufactura como base para la norma ISO 22000 y BRCGS</li>
-<li>Infraestructura y utensilios</li>
-<li>Personal</li>
-<li>Control de Plagas</li>
-<li>Mantenimiento</li>
-<li>Capacitación</li>
-<li>Contaminación Cruzada</li>
-<li>Calidad de Agua</li>
-<li>Otros</li>
-<li>Procedimientos Operativos Estandarizados (POE)</li>
-<li>Procedimientos Operativos Estandarizados de Saneamiento (POES)</li>
-</ul>`
-        ) +
-        detalle(
-          "MÓDULO III. Sistema HACCP: Análisis de Peligros y Puntos Críticos de Control",
-          false,
-          `<ul>
-<li>Introducción al Sistema HACCP</li>
-<li>Principios del Sistema HACCP</li>
-<li>Pasos del Sistema HACCP
-<ul>
-<li>Formación del equipo HACCP</li>
-<li>Descripción del producto</li>
-<li>Descripción del uso previsto del alimento</li>
-<li>Elaboración del Diagrama de Flujo</li>
-<li>Confirmación in situ del Diagrama de Flujo</li>
-<li>Análisis de peligros</li>
-<li>Identificación de los PCC</li>
-<li>Establecimiento de Límites Críticos</li>
-<li>Establecimiento de un Sistema de Vigilancia para cada PCC</li>
-<li>Establecimiento de Medidas Correctoras</li>
-<li>Establecimiento de Procedimientos de Verificación</li>
-<li>Establecimiento del Sistema de Documentación y Registro</li>
+    "Desarrollar competencias para implementar y auditar sistemas de gestión de calidad e inocuidad alimentaria basados en HACCP, ISO 9001, ISO 22000 y BRCGS.",
+  h1: "Diplomado de Especialización: “Gestión de la Calidad e Inocuidad en la Industria Alimentaria”",
+  objetivoTitulo: "Objetivo General:",
+  objetivo:
+    "Desarrollar competencias sólidas para diseñar, implementar, mantener y auditar sistemas integrados de gestión de calidad e inocuidad alimentaria bajo los estándares más exigentes: <strong>HACCP, ISO 9001, ISO 22000 y BRCGS Food Safety</strong>.",
+  publico:
+    "Profesionales, supervisores y técnicos de plantas de alimentos, jefes de control y aseguramiento de la calidad (QA/QC), auditores internos, consultores, docentes y estudiantes de últimos ciclos de Ingeniería de Industrias Alimentarias, Agroindustrial, Biología, Química, Nutrición y carreras afines.",
+  egresado: {
+    intro: "Al culminar con éxito este diplomado, estarás plenamente capacitado para:",
+    items: [
+      "Implementar y liderar sistemas de gestión de calidad e inocuidad en empresas del sector agroalimentario.",
+      "Diseñar y fiscalizar Programas Prerrequisitos (BPM, POE y POES) según normativa vigente.",
+      "Elaborar, validar y actualizar planes HACCP adaptados a diversos procesos industriales.",
+      "Interpretar y articular con solidez las cláusulas de las normas <strong>ISO 9001:2015</strong> e <strong>ISO 22000:2018</strong>.",
+      "Aplicar los requisitos fundamentales del estándar global <strong>BRCGS Food Safety V.9</strong>.",
+      "Planificar y ejecutar auditorías internas de sistemas integrados bajo la directriz <strong>ISO 19011</strong>.",
+    ],
+  },
+  temarioIntro: "Programa estructurado en 6 módulos exhaustivos con enfoque técnico y normativo de vanguardia:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "Contexto Nacional e Internacional de la Calidad e Inocuidad",
+      abierto: true,
+      html: `<li>Contexto de la Inocuidad Global y cadenas de suministro alimentarias.</li>
+<li>Enfermedades Transmitidas por Alimentos (ETAS) y su impacto en salud pública.</li>
+<li>Organismos reguladores en el Perú (DIGESA, SANIPES, SENASA) y rol de la COMPIAL.</li>
+<li>Regulación Nacional vs. Codex Alimentarius (Directrices internacionales).</li>
+<li>Exigencias para exportación: FDA (EE.UU.) y Unión Europea.</li>
+<li>Principios Generales de Higiene de los Alimentos CAC/RCP 1-1969 (Revisión y actualización 2022).</li>`,
+    },
+    {
+      badge: "MÓDULO II",
+      titulo: "Programas Prerrequisitos del Sistema HACCP (BPM, POE y POES)",
+      abierto: false,
+      html: `<li>Buenas Prácticas de Manufactura como cimiento indispensable para ISO 22000 y BRCGS.</li>
+<li>Infraestructura, diseño higiénico de instalaciones, líneas y utensilios.</li>
+<li>Higiene del personal, estado de salud y programas de capacitación continua.</li>
+<li>MIP: Manejo Integrado y Control de Plagas.</li>
+<li>Mantenimiento preventivo, calibración de equipos y calidad microbiológica/fisicoquímica del agua.</li>
+<li>Prevención rigurosa de la contaminación cruzada física, química y biológica.</li>
+<li>Elaboración, implementación y validación de POE y POES en planta.</li>`,
+    },
+    {
+      badge: "MÓDULO III",
+      titulo: "Sistema HACCP: Análisis de Peligros y Puntos Críticos de Control",
+      abierto: false,
+      html: `<li>Fundamentos y los 7 principios del Sistema HACCP.</li>
+<li>Los 5 pasos preliminares: Equipo multidisciplinario, descripción técnica del producto, uso previsto, diagramas de flujo y confirmación in situ.</li>
+<li>Metodología de Análisis de Peligros y determinación de significancia.</li>
+<li>Árbol de decisiones para identificación certera de PCC (Puntos Críticos de Control).</li>
+<li>Establecimiento de Límites Críticos y sistemas de vigilancia operativa continua.</li>
+<li>Diseño de acciones correctoras inmediatas y planes de contingencia.</li>
+<li>Procedimientos de verificación, validación técnica y sistema documental y de registros.</li>`,
+    },
+    {
+      badge: "MÓDULO IV",
+      titulo: "Sistemas de Gestión de Calidad e Inocuidad (ISO 9001 e ISO 22000)",
+      abierto: false,
+      html: `<li><strong>ISO 9001:2015 e ISO 22000:2018 (Estructura de Alto Nivel y Visión Integrada):</strong>
+<ul class="modulo-sublista">
+<li>Enfoque basado en procesos y pensamiento basado en riesgos integrales.</li>
+<li>Sinergia entre satisfacción del cliente e inocuidad alimentaria garantizada.</li>
 </ul>
 </li>
-</ul>`
-        ) +
-        detalle(
-          "MÓDULO IV. Sistema de Gestión de la Calidad e Inocuidad (ISO 9001 e ISO 22000)",
-          false,
-          `<ul>
-<li><strong>1. ISO 9001:2015 e ISO 22000:2018 (visión integrada)</strong>
-<ul>
-<li>Principios comunes de los sistemas de gestión.</li>
-<li>Enfoque basado en procesos.</li>
-<li>Gestión de riesgos y mejora continua.</li>
-<li>Relación entre calidad e inocuidad alimentaria.</li>
+<li><strong>Elementos clave de la norma ISO 22000:</strong>
+<ul class="modulo-sublista">
+<li>Programas Prerrequisito Operativos (PPRO) vs. PCC.</li>
+<li>Comunicación interactiva a lo largo de la cadena alimentaria.</li>
 </ul>
 </li>
-<li><strong>2. Elementos clave de ISO 22000</strong>
-<ul>
-<li>Programas prerrequisito (PPR).</li>
-<li>Control de peligros y enfoque HACCP integrado.</li>
-<li>Comunicación en la cadena alimentaria.</li>
-</ul>
-</li>
-<li><strong>3. Cambios y tendencias (ISO 9001 e ISO 22000 – versiones 2026)</strong></li>
-</ul>`
-        ) +
-        detalle(
-          "MÓDULO V. Norma BRCGS Estándar Global de Seguridad Alimentaria, V.9",
-          false,
-          `<ul>
-<li>Introducción a los estándares BRCGS.</li>
-<li>Alcance y beneficios para mercados nacionales e internacionales.</li>
-<li>Requisitos fundamentales de BRCGS Food Safety.</li>
-<li>Compromiso de la dirección y cultura de inocuidad.</li>
-<li>Sistema de gestión de calidad e inocuidad.</li>
-<li>Estándares de instalaciones y control de procesos.</li>
-<li>Gestión de proveedores y materias primas.</li>
-<li>Gestión de productos, personal y procesos.</li>
-</ul>`
-        ) +
-        detalle(
-          "MÓDULO VI. Auditoría de Sistemas Integrados de Gestión de Calidad e Inocuidad",
-          false,
-          `<ul>
-<li>Directrices para auditorías según ISO 19011.</li>
-<li>Principios y competencias del auditor.</li>
-<li>Auditorías internas y externas.</li>
-<li>Planificación y ejecución de auditorías.</li>
-<li>Elaboración de listas de verificación.</li>
-<li>Técnicas de entrevista y recopilación de evidencias.</li>
-<li>Identificación y clasificación de hallazgos.</li>
-<li>Elaboración de informes de auditoría.</li>
-<li>Gestión de acciones correctivas y seguimiento.</li>
-<li>Principales cambios y tendencias de ISO 19011:2026.</li>
-</ul>`
-        )
-    ),
-    METODOLOGIA,
-    bloqueInversion("S/ 120", "US$ 37"),
-    bloqueInscripcion(),
-    bloquePagos(),
-  ].join("\n\n"),
+<li><strong>Evolución y tendencias normativas:</strong> cambios proyectados en las normas internacionales hacia 2026.</li>`,
+    },
+    {
+      badge: "MÓDULO V",
+      titulo: "Norma BRCGS Estándar Global de Seguridad Alimentaria (Versión 9)",
+      abierto: false,
+      html: `<li>Introducción y alcance del esquema GFSI mediante BRCGS Food Safety V.9.</li>
+<li>Requisitos fundamentales y cláusulas de no conformidad crítica.</li>
+<li>Liderazgo, compromiso de la dirección y fortalecimiento de la <strong>Cultura de Inocuidad</strong>.</li>
+<li>Plan de seguridad alimentaria y gestión de proveedores de materias primas/empaques.</li>
+<li>Control de operaciones, estándares ambientales de las instalaciones e inspección de procesos.</li>
+<li>Gestión de alérgenos, defensa alimentaria (Food Defense) y prevención del fraude alimentario (Food Fraud).</li>`,
+    },
+    {
+      badge: "MÓDULO VI",
+      titulo: "Auditoría de Sistemas Integrados de Gestión (ISO 19011)",
+      abierto: false,
+      html: `<li>Principios de auditoría y directrices según la norma ISO 19011.</li>
+<li>Perfil, competencias, ética y habilidades de comunicación del auditor líder e interno.</li>
+<li>Planificación, programa de auditoría y elaboración de listas de verificación eficaces.</li>
+<li>Técnicas de muestreo, entrevista y recopilación de evidencias objetivas.</li>
+<li>Redacción de no conformidades, hallazgos de auditoría e informe final.</li>
+<li>Cierre de acciones correctivas, seguimiento de la eficacia y tendencias ISO 19011:2026.</li>`,
+    },
+  ],
+  metodologiaIntro:
+    "El diplomado se imparte en modalidad 100% asíncrona, brindándote flexibilidad total para avanzar sin presiones de horarios. Cuentas con un campus virtual moderno con acceso las 24 horas:",
+  incluye: [
+    "Acceso ilimitado y permanente 24/7",
+    "6 módulos temáticos especializados",
+    "Material descargable (libros y manuales)",
+    "Plantillas de registros y formatos de auditoría",
+    "Certificado digital con código QR (384 horas)",
+  ],
 };
 
+/* ---------- resto de cursos ---------- */
+
 const LEGISLACION = {
+  tipo: "curso",
   slug: "legislacion-sanitaria-alimentos",
   horas: 40,
   pen: 45,
   usd: 15,
+  estructura: "3 Sesiones Clave",
+  flyer: "flyer-curso-02-legislacion-sanitaria.webp",
+  waCorto: "Curso de Legislación Sanitaria",
+  waLargo: "el Curso de Legislación Sanitaria de Alimentos Nacional e Internacional",
   title: "Curso: Legislación Sanitaria de Alimentos Nacional e Internacional | Proinocuidad",
   seoTitle: "Legislación sanitaria de alimentos | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones sobre la normativa sanitaria de alimentos en el Perú y el marco internacional. Certificado digital con QR.",
@@ -482,28 +782,20 @@ const LEGISLACION = {
   fondo: "ficha-legislacion.avif",
   miga: "Legislación sanitaria",
   descripcion:
-    "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",  h1: "Curso: “Legislación Sanitaria de Alimentos Nacional e Internacional”",
-  contenido: [
-    bloque("I", "Datos generales", `<ul class="lista-datos">
-<li><strong>Número de sesiones:</strong> 3 sesiones</li>
-<li><strong>Modalidad:</strong> Asíncrono (Grabado)</li>
-<li><strong>Certificación:</strong> 40 horas académicas</li>
-</ul>`),
-    bloque("II", "Beneficios", BENEFICIOS),
-    bloque("III", "Público objetivo", `<p>${PUBLICO_A}</p>`),
-    bloque(
-      "IV",
-      "Objetivo",
-      `<p>Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.</p>`
-    ),
-    bloque(
-      "V",
-      "Temario",
-      detalle(
-        "1. Aspectos generales · 2. Marco nacional",
-        true,
-        `<ul>
-<li>1. Aspectos generales</li>
+    "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
+  h1: "Curso: “Legislación Sanitaria de Alimentos Nacional e Internacional”",
+  objetivoTitulo: "Objetivo:",
+  objetivo:
+    "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
+  publico:
+    "Dirigido a profesionales, técnicos y estudiantes de últimos ciclos vinculados a la industria alimentaria: responsables de calidad e inocuidad, supervisores de producción, personal de control de calidad, consultores, auditores internos, docentes y emprendedores del sector alimentos y bebidas.",
+  temarioIntro: "Contenidos del curso:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "1. Aspectos generales · 2. Marco nacional",
+      abierto: true,
+      html: `<li>1. Aspectos generales</li>
 <li><strong>2. Marco nacional</strong></li>
 <li>2.1. Ley de Inocuidad de los alimentos - DL 1062-2008.</li>
 <li>2.2. Reglamento de la Ley de Inocuidad de los alimentos DS N° 034-2008.</li>
@@ -515,33 +807,39 @@ const LEGISLACION = {
 <li>2.8. Guía técnica para el análisis microbiológico de superficies en contacto con alimentos y bebidas. Resolución Ministerial N° 461-2007 / MINSA</li>
 <li>2.9. Criterios Microbiológicos de calidad sanitaria e inocuidad para los alimentos y bebidas de consumo humano. Resolución Ministerial N° 591-2008 - MINSA.</li>
 <li>2.10. Reglamento de la calidad del agua para consumo humano. Decreto Supremo N° 031-2010 / MINSA.</li>
-<li>2.11. Resolución Ministerial 106-2023. DS: 147 MINSA/DIGESA-2023. Rastreabilidad para la inocuidad de los alimentos.</li>
-</ul>`
-      ) +
-        detalle(
-          "3. Normativa Sanitaria internacional · 4. Talleres prácticos",
-          false,
-          `<ul>
-<li><strong>3. Normativa Sanitaria internacional</strong></li>
+<li>2.11. Resolución Ministerial 106-2023. DS: 147 MINSA/DIGESA-2023. Rastreabilidad para la inocuidad de los alimentos.</li>`,
+    },
+    {
+      badge: "MÓDULO II",
+      titulo: "3. Normativa Sanitaria internacional · 4. Talleres prácticos",
+      abierto: false,
+      html: `<li><strong>3. Normativa Sanitaria internacional</strong></li>
 <li>3.1. Codex Alimentarius</li>
 <li>3.2. Regulación sanitaria en Estados Unidos</li>
 <li>3.3. Otras normativas voluntarias.</li>
-<li><strong>4. Talleres prácticos</strong></li>
-</ul>`
-        )
-    ),
-    METODOLOGIA,
-    bloqueInversion("S/ 45", "US$ 15"),
-    bloqueInscripcion(),
-    bloquePagos(),
-  ].join("\n\n"),
+<li><strong>4. Talleres prácticos</strong></li>`,
+    },
+  ],
+  metodologiaIntro:
+    "El curso se imparte en modalidad 100% asíncrona, brindándote flexibilidad total para avanzar sin presiones de horarios. Cuentas con un campus virtual moderno con acceso las 24 horas:",
+  incluye: [
+    "Acceso ilimitado y permanente 24/7",
+    "3 sesiones asíncronas especializadas",
+    "Material descargable (libros y manuales)",
+    "Certificado digital con código QR (40 horas)",
+  ],
 };
 
 const BPM_POES = {
+  tipo: "curso",
   slug: "implementacion-auditoria-bpm-poes-poe-plan-haccp",
   horas: 40,
   pen: 45,
   usd: 15,
+  estructura: "3 Sesiones Clave",
+  flyer: "flyer-curso-03-impl-auditoria-bpm-poes-poe-haccp.webp",
+  waCorto: "Curso de BPM, POES y HACCP",
+  waLargo: "el Curso de Implementación y Auditoría de BPM, POES, POE y Plan HACCP",
   title: "Curso: Implementación y Auditoría de las BPM, Higiene y Saneamiento, POES, POE, Plan HACCP | Proinocuidad",
   seoTitle: "Curso BPM, POES y plan HACCP en Perú | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones sobre implementación y auditoría de BPM, higiene y saneamiento, POES, POE y plan HACCP. Certificado digital con QR.",
@@ -550,28 +848,20 @@ const BPM_POES = {
   fondo: "ficha-bpm.avif",
   miga: "BPM, POES, POE y Plan HACCP",
   descripcion:
-    "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",  h1: "Curso: “Implementación y Auditoría de las BPM, Higiene y Saneamiento, POES, POE, Plan HACCP”",
-  contenido: [
-    bloque("I", "Datos generales", `<ul class="lista-datos">
-<li><strong>Número de sesiones:</strong> 3 sesiones</li>
-<li><strong>Modalidad:</strong> Asíncrono (Grabado)</li>
-<li><strong>Certificación:</strong> 40 horas académicas</li>
-</ul>`),
-    bloque("II", "Beneficios", BENEFICIOS),
-    bloque("III", "Público objetivo", `<p>${PUBLICO_A}</p>`),
-    bloque(
-      "IV",
-      "Objetivo",
-      `<p>Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.</p>`
-    ),
-    bloque(
-      "V",
-      "Temario",
-      detalle(
-        "Módulo 1: Introducción a la inocuidad alimentaria, peligros y BPM",
-        true,
-        `<ul>
-<li>Introducción a la inocuidad alimentaria</li>
+    "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
+  h1: "Curso: “Implementación y Auditoría de las BPM, Higiene y Saneamiento, POES, POE, Plan HACCP”",
+  objetivoTitulo: "Objetivo:",
+  objetivo:
+    "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
+  publico:
+    "Dirigido a profesionales, técnicos y estudiantes de últimos ciclos vinculados a la industria alimentaria: responsables de calidad e inocuidad, supervisores de producción, personal de control de calidad, consultores, auditores internos, docentes y emprendedores del sector alimentos y bebidas.",
+  temarioIntro: "Contenidos del curso:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "Introducción a la inocuidad alimentaria, peligros y BPM",
+      abierto: true,
+      html: `<li>Introducción a la inocuidad alimentaria</li>
 <li>Peligros en los alimentos</li>
 <li>Taller de búsqueda de normas en Codex Alimentarius</li>
 <li>Taller de identificación de peligros</li>
@@ -582,14 +872,13 @@ const BPM_POES = {
 <li>Higiene y salud del personal</li>
 <li>Taller de distribución esquemática de planta</li>
 </ul>
-</li>
-</ul>`
-      ) +
-        detalle(
-          "Módulo 2: Higiene y Saneamiento, POES y POE",
-          false,
-          `<ul>
-<li><strong>Procedimientos Operativos Estandarizados de Saneamiento (POES)</strong>
+</li>`,
+    },
+    {
+      badge: "MÓDULO II",
+      titulo: "Higiene y Saneamiento, POES y POE",
+      abierto: false,
+      html: `<li><strong>Procedimientos Operativos Estandarizados de Saneamiento (POES)</strong>
 <ul>
 <li>POES 1: Seguridad del agua potable</li>
 <li>POES 2: Superficies en contacto con alimentos</li>
@@ -599,9 +888,9 @@ const BPM_POES = {
 <li>POES 6: Etiquetado apropiado, almacenamiento y uso de compuestos tóxicos</li>
 <li>POES 7: Control de salud de los empleados</li>
 <li>POES 8: Exclusión de plagas</li>
-<li>Taller práctico de identificación de POES</li>
 </ul>
 </li>
+<li>Taller práctico de identificación de POES</li>
 <li><strong>Higiene y saneamiento</strong>
 <ul>
 <li>Definiciones</li>
@@ -626,14 +915,13 @@ const BPM_POES = {
 <li>POE 9: Control de documentos</li>
 <li>Etiquetado e información al consumidor</li>
 </ul>
-</li>
-</ul>`
-        ) +
-        detalle(
-          "Módulo 3: Sistema HACCP y auditoría",
-          false,
-          `<ul>
-<li>Generalidades del Sistema HACCP</li>
+</li>`,
+    },
+    {
+      badge: "MÓDULO III",
+      titulo: "Sistema HACCP y auditoría",
+      abierto: false,
+      html: `<li>Generalidades del Sistema HACCP</li>
 <li>7 principios y 12 pasos
 <ul>
 <li>Paso 01: Formación de un equipo encargado del HACCP.</li>
@@ -651,22 +939,29 @@ const BPM_POES = {
 </ul>
 </li>
 <li>Taller de identificación y evaluación de peligros</li>
-<li>Taller de identificación de PCC</li>
-</ul>`
-        )
-    ),
-    METODOLOGIA,
-    bloqueInversion("S/ 45", "US$ 15"),
-    bloqueInscripcion(),
-    bloquePagos(),
-  ].join("\n\n"),
+<li>Taller de identificación de PCC</li>`,
+    },
+  ],
+  metodologiaIntro:
+    "El curso se imparte en modalidad 100% asíncrona, brindándote flexibilidad total para avanzar sin presiones de horarios. Cuentas con un campus virtual moderno con acceso las 24 horas:",
+  incluye: [
+    "Acceso ilimitado y permanente 24/7",
+    "3 sesiones asíncronas especializadas",
+    "Material descargable (libros y manuales)",
+    "Certificado digital con código QR (40 horas)",
+  ],
 };
 
 const DIGESA = {
+  tipo: "curso",
   slug: "haccp-implementacion-certificacion-digesa-senasca",
   horas: 40,
   pen: 45,
   usd: 15,
+  estructura: "3 Sesiones Clave",
+  flyer: "flyer-curso-04-haccp-digesa-senasca.webp",
+  waCorto: "Curso HACCP DIGESA/SENASA",
+  waLargo: "el Curso de HACCP: Implementación y Certificación (DIGESA/SENASA)",
   title: "Curso de Especialización: HACCP Implementación y Certificación en Perú (DIGESA/SENASA) | Proinocuidad",
   seoTitle: "Curso HACCP DIGESA y SENASA en Perú | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones para implementar y certificar un sistema HACCP según DIGESA y SENASA en Perú. Certificado digital con QR.",
@@ -675,28 +970,20 @@ const DIGESA = {
   fondo: "ficha-haccp.avif",
   miga: "HACCP DIGESA / SENASA",
   descripcion:
-    "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",  h1: "Curso de Especialización: “HACCP: Implementación y Certificación en Perú (DIGESA / SENASA)”",
-  contenido: [
-    bloque("I", "Datos generales", `<ul class="lista-datos">
-<li><strong>Número de sesiones:</strong> 3 sesiones</li>
-<li><strong>Modalidad:</strong> Asíncrono (Grabado)</li>
-<li><strong>Certificación:</strong> 40 horas académicas</li>
-</ul>`),
-    bloque("II", "Beneficios", BENEFICIOS),
-    bloque("III", "Público objetivo", `<p>${PUBLICO_B}</p>`),
-    bloque(
-      "IV",
-      "Objetivo",
-      `<p>Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.</p>`
-    ),
-    bloque(
-      "V",
-      "Temario",
-      detalle(
-        "MÓDULO 1: Fundamentos de HACCP y Marco Normativo Peruano",
-        true,
-        `<ul>
-<li><strong>1. Introducción a la inocuidad alimentaria</strong>
+    "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",
+  h1: "Curso de Especialización: “HACCP: Implementación y Certificación en Perú (DIGESA / SENASA)”",
+  objetivoTitulo: "Objetivo:",
+  objetivo:
+    "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",
+  publico:
+    "Profesionales del sector alimentos, inspectores, analistas, supervisores, jefes; empresarios y emprendedores del sector alimentario (industria alimentaria, restaurantes y afines); estudiantes y público en general.",
+  temarioIntro: "Contenidos del curso:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "Fundamentos de HACCP y marco normativo peruano",
+      abierto: true,
+      html: `<li><strong>1. Introducción a la inocuidad alimentaria</strong>
 <ul>
 <li>Concepto de inocuidad vs. calidad</li>
 <li>Importancia del HACCP en la industria alimentaria</li>
@@ -725,14 +1012,13 @@ const DIGESA = {
 <li>Control de proveedores y trazabilidad</li>
 </ul>
 </li>
-<li><strong>5. Taller Práctico</strong></li>
-</ul>`
-      ) +
-        detalle(
-          "MÓDULO 2: Diseño e Implementación del Sistema HACCP",
-          false,
-          `<ul>
-<li><strong>1. Etapas preliminares</strong>
+<li><strong>5. Taller Práctico</strong></li>`,
+    },
+    {
+      badge: "MÓDULO II",
+      titulo: "Diseño e implementación del Sistema HACCP",
+      abierto: false,
+      html: `<li><strong>1. Etapas preliminares</strong>
 <ul>
 <li>Formación del equipo HACCP</li>
 <li>Descripción del producto</li>
@@ -762,14 +1048,13 @@ const DIGESA = {
 <li>Sistema de documentación y registros</li>
 </ul>
 </li>
-<li><strong>5. Taller Práctico</strong></li>
-</ul>`
-        ) +
-        detalle(
-          "MÓDULO 3: Validación, Certificación y Auditoría HACCP",
-          false,
-          `<ul>
-<li><strong>1. Validación y verificación</strong>
+<li><strong>5. Taller Práctico</strong></li>`,
+    },
+    {
+      badge: "MÓDULO III",
+      titulo: "Validación, certificación y auditoría HACCP",
+      abierto: false,
+      html: `<li><strong>1. Validación y verificación</strong>
 <ul>
 <li>Diferencias entre validación y verificación</li>
 <li>Métodos de validación</li>
@@ -798,22 +1083,29 @@ const DIGESA = {
 <li>Cultura de inocuidad alimentaria</li>
 </ul>
 </li>
-<li><strong>5. Taller práctico</strong></li>
-</ul>`
-        )
-    ),
-    METODOLOGIA,
-    bloqueInversion("S/ 45", "US$ 15"),
-    bloqueInscripcion(),
-    bloquePagos(),
-  ].join("\n\n"),
+<li><strong>5. Taller práctico</strong></li>`,
+    },
+  ],
+  metodologiaIntro:
+    "El curso se imparte en modalidad 100% asíncrona, brindándote flexibilidad total para avanzar sin presiones de horarios. Cuentas con un campus virtual moderno con acceso las 24 horas:",
+  incluye: [
+    "Acceso ilimitado y permanente 24/7",
+    "3 sesiones asíncronas especializadas",
+    "Material descargable (libros y manuales)",
+    "Certificado digital con código QR (40 horas)",
+  ],
 };
 
 const BPM_CODEX = {
+  tipo: "curso",
   slug: "bpm-prerrequisitos-codex-2022-iso-22002-1",
   horas: 40,
   pen: 45,
   usd: 15,
+  estructura: "3 Sesiones Clave",
+  flyer: "flyer-curso-05-bpm-pp-codex-2022.webp",
+  waCorto: "Curso de BPM según Codex 2022",
+  waLargo: "el Curso de BPM y Programas Prerrequisitos según Codex 2022",
   title: "Curso: Buenas Prácticas de Manufactura y Programas Prerrequisitos según Codex 2022 e ISO 22002-1:2009 | Proinocuidad",
   seoTitle: "Curso BPM según Codex 2022 e ISO 22002-1 | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones sobre BPM y programas prerrequisitos según Codex 2022 e ISO 22002-1. Certificado digital con QR.",
@@ -822,30 +1114,20 @@ const BPM_CODEX = {
   fondo: "ficha-codex.avif",
   miga: "BPM y prerrequisitos Codex 2022",
   descripcion:
-    "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",  h1: "Curso: “Buenas Prácticas de Manufactura y Programas Prerrequisitos según Codex 2022 e ISO 22002-1:2009”",
-  contenido: [
-    bloque("I", "Datos generales", `<ul class="lista-datos">
-<li><strong>Número de sesiones:</strong> 3 sesiones</li>
-<li><strong>Modalidad:</strong> Asíncrono (Grabado)</li>
-<li><strong>Certificación:</strong> 40 horas académicas</li>
-</ul>`),
-    bloque("II", "Beneficios", BENEFICIOS),
-    bloque("III", "Público objetivo", `<p>${PUBLICO_B}</p>`),
-    bloque(
-      "IV",
-      "Objetivo",
-      /* Objetivo publicado tal como está en el documento oficial (la fuente coincide con el
-         del curso de HACCP DIGESA/SENASA; decisión del dueño de mantener fidelidad al PDF). */
-      `<p>Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.</p>`
-    ),
-    bloque(
-      "V",
-      "Temario",
-      detalle(
-        "Módulo 1: Introducción a las BPM y Programas Prerrequisitos parte I",
-        true,
-        `<ul>
-<li><strong>Definiciones importantes</strong>
+    "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",
+  h1: "Curso: “Buenas Prácticas de Manufactura y Programas Prerrequisitos según Codex 2022 e ISO 22002-1:2009”",
+  objetivoTitulo: "Objetivo:",
+  objetivo:
+    "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",
+  publico:
+    "Profesionales del sector alimentos, inspectores, analistas, supervisores, jefes; empresarios y emprendedores del sector alimentario (industria alimentaria, restaurantes y afines); estudiantes y público en general.",
+  temarioIntro: "Contenidos del curso:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "Introducción a las BPM y programas prerrequisitos · Parte I",
+      abierto: true,
+      html: `<li><strong>Definiciones importantes</strong>
 <ul>
 <li>Contaminantes</li>
 <li>Relación de los alcances de un SGCIA</li>
@@ -865,14 +1147,13 @@ const BPM_CODEX = {
 <li>Instalaciones para el personal</li>
 <li>Servicios</li>
 </ul>
-</li>
-</ul>`
-      ) +
-        detalle(
-          "Módulo 2: Programas Prerrequisitos – parte II",
-          false,
-          `<ul>
-<li><strong>Programas Prerrequisitos – Equipos</strong>
+</li>`,
+    },
+    {
+      badge: "MÓDULO II",
+      titulo: "Programas prerrequisitos · Parte II",
+      abierto: false,
+      html: `<li><strong>Programas Prerrequisitos – Equipos</strong>
 <ul>
 <li>Equipos</li>
 <li>Mantenimiento</li>
@@ -893,14 +1174,13 @@ const BPM_CODEX = {
 <li>Gestión de incidentes, retirada y recuperación de productos</li>
 <li>Gestión de alérgenos</li>
 </ul>
-</li>
-</ul>`
-        ) +
-        detalle(
-          "Módulo 3: Programas Prerrequisitos – parte III",
-          false,
-          `<ul>
-<li><strong>Programas Prerrequisitos – Personal</strong>
+</li>`,
+    },
+    {
+      badge: "MÓDULO III",
+      titulo: "Programas prerrequisitos · Parte III",
+      abierto: false,
+      html: `<li><strong>Programas Prerrequisitos – Personal</strong>
 <ul>
 <li>Formación</li>
 <li>Normas de higiene</li>
@@ -910,22 +1190,29 @@ const BPM_CODEX = {
 </li>
 <li>Programas Prerrequisitos – Control de las Operaciones</li>
 <li>Limpieza y saneamiento</li>
-<li>Actualización de los Principios Generales de Higiene de los Alimentos (CXC 1-1969) – Codex Alimentarius 2022.</li>
-</ul>`
-        )
-    ),
-    METODOLOGIA,
-    bloqueInversion("S/ 45", "US$ 15"),
-    bloqueInscripcion(),
-    bloquePagos(),
-  ].join("\n\n"),
+<li>Actualización de los Principios Generales de Higiene de los Alimentos (CXC 1-1969) – Codex Alimentarius 2022.</li>`,
+    },
+  ],
+  metodologiaIntro:
+    "El curso se imparte en modalidad 100% asíncrona, brindándote flexibilidad total para avanzar sin presiones de horarios. Cuentas con un campus virtual moderno con acceso las 24 horas:",
+  incluye: [
+    "Acceso ilimitado y permanente 24/7",
+    "3 sesiones asíncronas especializadas",
+    "Material descargable (libros y manuales)",
+    "Certificado digital con código QR (40 horas)",
+  ],
 };
 
 const PHS = {
+  tipo: "curso",
   slug: "programas-higiene-saneamiento",
   horas: 40,
   pen: 45,
   usd: 15,
+  estructura: "3 Sesiones Clave",
+  flyer: "flyer-curso-06-programas-higiene-saneamiento.webp",
+  waCorto: "Curso de Higiene y Saneamiento",
+  waLargo: "el Curso de Programas de Higiene y Saneamiento",
   title: "Curso: Programas de Higiene y Saneamiento en la Industria Alimentaria | Proinocuidad",
   seoTitle: "Curso de programas de higiene y saneamiento | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones sobre higiene y saneamiento en alimentos: agua, limpieza, plagas y residuos. Certificado digital con QR.",
@@ -934,28 +1221,20 @@ const PHS = {
   fondo: "ficha-higiene.avif",
   miga: "Higiene y saneamiento",
   descripcion:
-    "Establecer los lineamientos técnicos para el diseño, ejecución y validación de los Programas de Higiene y Saneamiento (PHS), con el fin de garantizar que la infraestructura, equipos y utensilios se mantengan libres de agentes contaminantes, asegurando un entorno de trabajo seguro que cumpla con los estándares de inocuidad y la normativa legal vigente.",  h1: "Curso: “Programas de Higiene y Saneamiento en la Industria Alimentaria”",
-  contenido: [
-    bloque("I", "Datos generales", `<ul class="lista-datos">
-<li><strong>Número de sesiones:</strong> 3 sesiones</li>
-<li><strong>Modalidad:</strong> Asíncrono (Grabado)</li>
-<li><strong>Certificación:</strong> 40 horas académicas</li>
-</ul>`),
-    bloque("II", "Beneficios", BENEFICIOS),
-    bloque("III", "Público objetivo", `<p>${PUBLICO_B}</p>`),
-    bloque(
-      "IV",
-      "Objetivo",
-      `<p>Establecer los lineamientos técnicos para el diseño, ejecución y validación de los Programas de Higiene y Saneamiento (PHS), con el fin de garantizar que la infraestructura, equipos y utensilios se mantengan libres de agentes contaminantes, asegurando un entorno de trabajo seguro que cumpla con los estándares de inocuidad y la normativa legal vigente.</p>`
-    ),
-    bloque(
-      "V",
-      "Temario",
-      detalle(
-        "Temario completo",
-        true,
-        `<ul>
-<li><strong>Introducción:</strong> Terminología y conceptos básicos. Importancia de la Higiene y saneamiento en el procesamiento de alimentos.</li>
+    "Establecer los lineamientos técnicos para el diseño, ejecución y validación de los Programas de Higiene y Saneamiento (PHS), con el fin de garantizar que la infraestructura, equipos y utensilios se mantengan libres de agentes contaminantes, asegurando un entorno de trabajo seguro que cumpla con los estándares de inocuidad y la normativa legal vigente.",
+  h1: "Curso: “Programas de Higiene y Saneamiento en la Industria Alimentaria”",
+  objetivoTitulo: "Objetivo:",
+  objetivo:
+    "Establecer los lineamientos técnicos para el diseño, ejecución y validación de los Programas de Higiene y Saneamiento (PHS), con el fin de garantizar que la infraestructura, equipos y utensilios se mantengan libres de agentes contaminantes, asegurando un entorno de trabajo seguro que cumpla con los estándares de inocuidad y la normativa legal vigente.",
+  publico:
+    "Profesionales del sector alimentos, inspectores, analistas, supervisores, jefes; empresarios y emprendedores del sector alimentario (industria alimentaria, restaurantes y afines); estudiantes y público en general.",
+  temarioIntro: "Contenidos del curso:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "Temario completo",
+      abierto: true,
+      html: `<li><strong>Introducción:</strong> Terminología y conceptos básicos. Importancia de la Higiene y saneamiento en el procesamiento de alimentos.</li>
 <li><strong>Aspectos regulatorios.</strong></li>
 <li><strong>Control de abastecimiento y suministro de agua:</strong> Conceptos generales. Control de agua. Programa y monitoreo de agua.</li>
 <li><strong>Limpieza y desinfección:</strong> Conceptos generales. Consideraciones para el desarrollo de un programa limpieza y desinfección</li>
@@ -965,22 +1244,29 @@ const PHS = {
 <li><strong>Control de productos químicos:</strong> Conceptos generales. Tipos de productos químicos.</li>
 <li><strong>Validación, vigilancia y verificación de los programas de higiene y saneamiento:</strong> Conceptos generales. Mecanismos para la validación. Vigilancia y verificación.</li>
 <li><strong>Gestión documentaria de los programas de Higiene y Saneamiento:</strong> Importancia de la gestión documentaria de los programas de higiene y saneamiento. Principales entregables de los programas de higiene y saneamiento.</li>
-<li><strong>Talleres prácticos</strong></li>
-</ul>`
-      )
-    ),
-    METODOLOGIA,
-    bloqueInversion("S/ 45", "US$ 15"),
-    bloqueInscripcion(),
-    bloquePagos(),
-  ].join("\n\n"),
+<li><strong>Talleres prácticos</strong></li>`,
+    },
+  ],
+  metodologiaIntro:
+    "El curso se imparte en modalidad 100% asíncrona, brindándote flexibilidad total para avanzar sin presiones de horarios. Cuentas con un campus virtual moderno con acceso las 24 horas:",
+  incluye: [
+    "Acceso ilimitado y permanente 24/7",
+    "3 sesiones asíncronas especializadas",
+    "Material descargable (libros y manuales)",
+    "Certificado digital con código QR (40 horas)",
+  ],
 };
 
 const FSSC = {
+  tipo: "curso",
   slug: "sistema-haccp-fssc-22000-codex-2022",
   horas: 40,
   pen: 45,
   usd: 15,
+  estructura: "3 Sesiones Clave",
+  flyer: "flyer-curso-07-haccp-fssc-22000-codex-2022.webp",
+  waCorto: "Curso HACCP FSSC 22000",
+  waLargo: "el Curso de Sistema HACCP según FSSC 22000 y Codex 2022",
   title: "Curso: Sistema HACCP según FSSC 22000 y Codex Alimentarius Revisión 2022 | Proinocuidad",
   seoTitle: "Curso HACCP según FSSC 22000 y Codex 2022 | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones sobre el sistema HACCP según FSSC 22000 y el Codex Alimentarius revisión 2022. Certificado digital con QR.",
@@ -989,28 +1275,20 @@ const FSSC = {
   fondo: "ficha-fssc.avif",
   miga: "HACCP FSSC 22000 y Codex 2022",
   descripcion:
-    "Desarrollar la competencia para diseñar, implementar y gestionar un sistema HACCP robusto, integrando los principios científicos de la revisión 2022 del Codex Alimentarius con los requisitos de certificación del esquema FSSC 22000, asegurando un control eficaz de los peligros significativos y garantizando el cumplimiento de los estándares internacionales de inocuidad más exigentes del mercado global.",  h1: "Curso: “Sistema HACCP según FSSC 22000 y Codex Alimentarius Revisión 2022”",
-  contenido: [
-    bloque("I", "Datos generales", `<ul class="lista-datos">
-<li><strong>Número de sesiones:</strong> 3 sesiones</li>
-<li><strong>Modalidad:</strong> Asíncrono (Grabado)</li>
-<li><strong>Certificación:</strong> 40 horas académicas</li>
-</ul>`),
-    bloque("II", "Beneficios", BENEFICIOS),
-    bloque("III", "Público objetivo", `<p>${PUBLICO_B}</p>`),
-    bloque(
-      "IV",
-      "Objetivo",
-      `<p>Desarrollar la competencia para diseñar, implementar y gestionar un sistema HACCP robusto, integrando los principios científicos de la revisión 2022 del Codex Alimentarius con los requisitos de certificación del esquema FSSC 22000, asegurando un control eficaz de los peligros significativos y garantizando el cumplimiento de los estándares internacionales de inocuidad más exigentes del mercado global.</p>`
-    ),
-    bloque(
-      "V",
-      "Temario",
-      detalle(
-        "Fundamentos, ISO 22000 y FSSC 22000",
-        true,
-        `<ul>
-<li>Generalidades del Sistema HACCP</li>
+    "Desarrollar la competencia para diseñar, implementar y gestionar un sistema HACCP robusto, integrando los principios científicos de la revisión 2022 del Codex Alimentarius con los requisitos de certificación del esquema FSSC 22000, asegurando un control eficaz de los peligros significativos y garantizando el cumplimiento de los estándares internacionales de inocuidad más exigentes del mercado global.",
+  h1: "Curso: “Sistema HACCP según FSSC 22000 y Codex Alimentarius Revisión 2022”",
+  objetivoTitulo: "Objetivo:",
+  objetivo:
+    "Desarrollar la competencia para diseñar, implementar y gestionar un sistema HACCP robusto, integrando los principios científicos de la revisión 2022 del Codex Alimentarius con los requisitos de certificación del esquema FSSC 22000, asegurando un control eficaz de los peligros significativos y garantizando el cumplimiento de los estándares internacionales de inocuidad más exigentes del mercado global.",
+  publico:
+    "Profesionales del sector alimentos, inspectores, analistas, supervisores, jefes; empresarios y emprendedores del sector alimentario (industria alimentaria, restaurantes y afines); estudiantes y público en general.",
+  temarioIntro: "Contenidos del curso:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "Fundamentos, ISO 22000 y FSSC 22000",
+      abierto: true,
+      html: `<li>Generalidades del Sistema HACCP</li>
 <li>Definiciones básicas</li>
 <li>Generalidades ISO 22000:2018</li>
 <li>Pensamiento basado en riesgos</li>
@@ -1039,14 +1317,13 @@ const FSSC = {
 <li>Información del producto y concientización del consumidor</li>
 <li>Defensa de los alimentos</li>
 </ul>
-</li>
-</ul>`
-      ) +
-        detalle(
-          "HACCP según ISO 22000 y Codex Alimentarius",
-          false,
-          `<ul>
-<li>Definiciones ISO 22000</li>
+</li>`,
+    },
+    {
+      badge: "MÓDULO II",
+      titulo: "HACCP según ISO 22000 y Codex Alimentarius",
+      abierto: false,
+      html: `<li>Definiciones ISO 22000</li>
 <li><strong>7 pasos y 12 principios:</strong>
 <ul>
 <li>Paso 01: Formación de un equipo encargado del HACCP.</li>
@@ -1063,24 +1340,31 @@ const FSSC = {
 <li>Paso 12: Establecimiento de un sistema de documentación y registro</li>
 </ul>
 </li>
-<li class="bloque-interno">Taller de identificación y evaluación de peligros y riesgos para los alimentos – caso práctico.</li>
-<li class="bloque-interno">Taller de identificación de PCC y PPRO</li>
-<li class="bloque-interno">Taller de elaboración de Sistema de Vigilancia de PCC y PPRO</li>
-</ul>`
-        )
-    ),
-    METODOLOGIA,
-    bloqueInversion("S/ 45", "US$ 15"),
-    bloqueInscripcion(),
-    bloquePagos(),
-  ].join("\n\n"),
+<li>Taller de identificación y evaluación de peligros y riesgos para los alimentos – caso práctico.</li>
+<li>Taller de identificación de PCC y PPRO</li>
+<li>Taller de elaboración de Sistema de Vigilancia de PCC y PPRO</li>`,
+    },
+  ],
+  metodologiaIntro:
+    "El curso se imparte en modalidad 100% asíncrona, brindándote flexibilidad total para avanzar sin presiones de horarios. Cuentas con un campus virtual moderno con acceso las 24 horas:",
+  incluye: [
+    "Acceso ilimitado y permanente 24/7",
+    "3 sesiones asíncronas especializadas",
+    "Material descargable (libros y manuales)",
+    "Certificado digital con código QR (40 horas)",
+  ],
 };
 
 const AUDITOR = {
+  tipo: "curso",
   slug: "formacion-auditor-interno-haccp",
   horas: 40,
   pen: 45,
   usd: 15,
+  estructura: "3 Sesiones Clave",
+  flyer: "flyer-curso-08-auditor-interno-haccp.webp",
+  waCorto: "Curso de Auditor Interno HACCP",
+  waLargo: "el Curso de Formación de Auditor Interno HACCP",
   title: "Curso: Formación de Auditor Interno del Sistema HACCP | Proinocuidad",
   seoTitle: "Curso de auditor interno HACCP | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones para planificar, ejecutar y cerrar auditorías internas del sistema HACCP según ISO 19011. Certificado digital con QR.",
@@ -1089,28 +1373,20 @@ const AUDITOR = {
   fondo: "ficha-auditor.avif",
   miga: "Auditor interno HACCP",
   descripcion:
-    "Especializar al participante en la planificación, ejecución y cierre de auditorías internas del sistema HACCP, desarrollando el juicio crítico necesario para verificar no solo el cumplimiento documental, sino también la eficacia operativa y la validación científica de los controles, bajo los lineamientos de la norma ISO 19011 y los estándares internacionales de inocuidad alimentaria.",  h1: "Curso: “Formación de Auditor Interno del Sistema HACCP”",
-  contenido: [
-    bloque("I", "Datos generales", `<ul class="lista-datos">
-<li><strong>Número de sesiones:</strong> 3 sesiones</li>
-<li><strong>Modalidad:</strong> Asíncrono (Grabado)</li>
-<li><strong>Certificación:</strong> 40 horas académicas</li>
-</ul>`),
-    bloque("II", "Beneficios", BENEFICIOS),
-    bloque("III", "Público objetivo", `<p>${PUBLICO_B}</p>`),
-    bloque(
-      "IV",
-      "Objetivo",
-      `<p>Especializar al participante en la planificación, ejecución y cierre de auditorías internas del sistema HACCP, desarrollando el juicio crítico necesario para verificar no solo el cumplimiento documental, sino también la eficacia operativa y la validación científica de los controles, bajo los lineamientos de la norma ISO 19011 y los estándares internacionales de inocuidad alimentaria.</p>`
-    ),
-    bloque(
-      "V",
-      "Temario",
-      detalle(
-        "Módulo 1: Generalidades del Sistema HACCP e introducción a la auditoría",
-        true,
-        `<ul>
-<li>¿Qué es HACCP?</li>
+    "Especializar al participante en la planificación, ejecución y cierre de auditorías internas del sistema HACCP, desarrollando el juicio crítico necesario para verificar no solo el cumplimiento documental, sino también la eficacia operativa y la validación científica de los controles, bajo los lineamientos de la norma ISO 19011 y los estándares internacionales de inocuidad alimentaria.",
+  h1: "Curso: “Formación de Auditor Interno del Sistema HACCP”",
+  objetivoTitulo: "Objetivo:",
+  objetivo:
+    "Especializar al participante en la planificación, ejecución y cierre de auditorías internas del sistema HACCP, desarrollando el juicio crítico necesario para verificar no solo el cumplimiento documental, sino también la eficacia operativa y la validación científica de los controles, bajo los lineamientos de la norma ISO 19011 y los estándares internacionales de inocuidad alimentaria.",
+  publico:
+    "Profesionales del sector alimentos, inspectores, analistas, supervisores, jefes; empresarios y emprendedores del sector alimentario (industria alimentaria, restaurantes y afines); estudiantes y público en general.",
+  temarioIntro: "Contenidos del curso:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "Generalidades del Sistema HACCP e introducción a la auditoría",
+      abierto: true,
+      html: `<li>¿Qué es HACCP?</li>
 <li>Características</li>
 <li>Programas Prerrequisitos</li>
 <li>Revisión rápida 7 principios y 12 pasos</li>
@@ -1121,7 +1397,7 @@ const AUDITOR = {
 <li>Características de una auditoría</li>
 <li>Principios de la auditoría</li>
 <li>Competencias de los auditores</li>
-<li class="bloque-interno">Taller práctico</li>
+<li>Taller práctico</li>
 </ul>
 </li>
 <li><strong>Etapas de la auditoría</strong>
@@ -1131,14 +1407,13 @@ const AUDITOR = {
 <li>Finalidad de las auditorías</li>
 <li>Etapas de la auditoría (PHVA)</li>
 </ul>
-</li>
-</ul>`
-      ) +
-        detalle(
-          "Módulo 2: Planeación y ejecución de la auditoría",
-          false,
-          `<ul>
-<li><strong>Planeación de la auditoría</strong>
+</li>`,
+    },
+    {
+      badge: "MÓDULO II",
+      titulo: "Planeación y ejecución de la auditoría",
+      abierto: false,
+      html: `<li><strong>Planeación de la auditoría</strong>
 <ul>
 <li>Gestión del programa de auditoría</li>
 <li>Objetivos del programa de auditoría</li>
@@ -1172,14 +1447,13 @@ const AUDITOR = {
 </ul>
 </li>
 </ul>
-</li>
-</ul>`
-        ) +
-        detalle(
-          "Módulo 3: Ejecución y hallazgos de auditoría, informe de auditoría, seguimiento y acciones correctivas",
-          false,
-          `<ul>
-<li><strong>Recopilación de información</strong>
+</li>`,
+    },
+    {
+      badge: "MÓDULO III",
+      titulo: "Ejecución y hallazgos de auditoría, informe, seguimiento y acciones correctivas",
+      abierto: false,
+      html: `<li><strong>Recopilación de información</strong>
 <ul>
 <li>Verificación preliminar, in situ, del establecimiento</li>
 <li>Auditoría de los Prerrequisitos (BPM, POES, POE)</li>
@@ -1213,15 +1487,17 @@ const AUDITOR = {
 <li>Cuadro de control para el seguimiento de acciones correctivas</li>
 <li>Evaluación del auditor</li>
 </ul>
-</li>
-</ul>`
-        )
-    ),
-    METODOLOGIA,
-    bloqueInversion("S/ 45", "US$ 15"),
-    bloqueInscripcion(),
-    bloquePagos(),
-  ].join("\n\n"),
+</li>`,
+    },
+  ],
+  metodologiaIntro:
+    "El curso se imparte en modalidad 100% asíncrona, brindándote flexibilidad total para avanzar sin presiones de horarios. Cuentas con un campus virtual moderno con acceso las 24 horas:",
+  incluye: [
+    "Acceso ilimitado y permanente 24/7",
+    "3 sesiones asíncronas especializadas",
+    "Material descargable (libros y manuales)",
+    "Certificado digital con código QR (40 horas)",
+  ],
 };
 
 const FICHAS = [DIPLOMADO, LEGISLACION, BPM_POES, DIGESA, BPM_CODEX, PHS, FSSC, AUDITOR];
@@ -1230,7 +1506,7 @@ for (const f of FICHAS) {
   const dir = join(RAIZ, "cursos", f.slug);
   mkdirSync(dir, { recursive: true });
   const destino = join(dir, "index.html");
-  const contenidoFinal = ficha(f, f.contenido);
+  const contenidoFinal = ficha(f);
   writeFileSync(destino, contenidoFinal, "utf8");
   if (!existsSync(destino)) throw new Error("no se generó " + destino);
   console.log("Ficha generada:", destino);

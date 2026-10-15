@@ -144,6 +144,7 @@ input[type="submit"] { border-radius: 4px; }
   gap: 12px; padding: 7px 0;
 }
 .topbar a { color: #ffffff; font-weight: 600; }
+.topbar strong { color: #ffffff; font-weight: 600; }
 .topbar .topbar-social { display: flex; gap: 14px; list-style: none; align-items: center; }
 .topbar-social li { display: flex; }
 
@@ -774,4 +775,774 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 .cta-badge { display: inline-block; padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.3); color: #d7d9f2; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
 @media (max-width: 860px) {
   .cta-grid { grid-template-columns: 1fr; }
+}
+
+/* =========================================================
+   Ficha de Curso Moderna: 2 Columnas + Sidebar Sticky
+   ========================================================= */
+
+.ficha-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 36px;
+  align-items: start;
+}
+
+/* Barra de Datos Clave (Stats Grid) */
+.ficha-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.ficha-stat-card {
+  background: var(--blanco);
+  border: 1px solid var(--gris-linea);
+  border-radius: var(--radio);
+  padding: 18px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--sombra-suave);
+  transition: transform var(--transicion), box-shadow var(--transicion);
+}
+.ficha-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra);
+}
+.stat-icono {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--azul-claro);
+  color: var(--azul);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.stat-icono svg {
+  width: 22px;
+  height: 22px;
+}
+.stat-info span {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--gris);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.stat-info strong {
+  display: block;
+  color: var(--azul-oscuro);
+  font-size: 0.96rem;
+  line-height: 1.25;
+  margin-top: 2px;
+}
+
+/* Tarjeta Principal y Secciones */
+.ficha-seccion {
+  background: var(--blanco);
+  border: 1px solid var(--gris-linea);
+  border-radius: var(--radio);
+  padding: 30px 32px;
+  margin-bottom: 26px;
+  box-shadow: var(--sombra-suave);
+}
+.ficha-seccion-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--azul-claro);
+}
+.ficha-seccion-header h2 {
+  color: var(--azul);
+  font-size: 1.28rem;
+  font-weight: 800;
+  margin: 0;
+}
+.seccion-tag {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--azul), var(--azul-oscuro));
+  color: var(--blanco);
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.seccion-tag svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 2.2;
+}
+
+/* Beneficios Grid */
+.beneficios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.beneficio-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: var(--fondo);
+  border: 1px solid var(--gris-linea);
+  border-radius: var(--radio-sm);
+  transition: transform var(--transicion);
+}
+.beneficio-item:hover {
+  transform: translateY(-2px);
+  background: #f0f3fa;
+}
+.beneficio-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(173, 52, 59, 0.12);
+  color: var(--rojo);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-weight: 800;
+}
+.beneficio-icon svg {
+  width: 18px;
+  height: 18px;
+}
+.beneficio-texto strong {
+  display: block;
+  color: var(--azul-oscuro);
+  font-size: 0.95rem;
+  margin-bottom: 3px;
+}
+.beneficio-texto p {
+  color: var(--gris);
+  font-size: 0.86rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Perfil del egresado: grid 2 cols */
+.competencias-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.competencia-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.92rem;
+  color: var(--grafito);
+  line-height: 1.45;
+}
+.competencia-check {
+  color: #10b981;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* Temario Moderno */
+.temario-modulo {
+  border: 1px solid var(--gris-linea);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: var(--blanco);
+  transition: border-color var(--transicion), box-shadow var(--transicion);
+}
+.temario-modulo:hover {
+  border-color: #cbd2ea;
+}
+.temario-modulo[open] {
+  box-shadow: 0 4px 18px rgba(16, 20, 119, 0.08);
+  border-color: #a8b3db;
+}
+.temario-modulo > summary {
+  cursor: pointer;
+  padding: 16px 20px;
+  background: var(--blanco);
+  color: var(--azul-oscuro);
+  font-weight: 700;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  user-select: none;
+  transition: background var(--transicion);
+}
+.temario-modulo > summary:hover {
+  background: var(--azul-claro);
+}
+.temario-modulo[open] > summary {
+  background: #edf1fa;
+  border-bottom: 1px solid var(--gris-linea);
+}
+.temario-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+.badge-modulo-num {
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.modulo-titulo {
+  font-size: 0.98rem;
+  line-height: 1.35;
+  color: var(--azul-oscuro);
+}
+.modulo-arrow {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--azul-claro);
+  color: var(--azul);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: transform var(--transicion), background var(--transicion);
+}
+.modulo-arrow svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+}
+.temario-modulo[open] .modulo-arrow {
+  transform: rotate(180deg);
+  background: var(--rojo);
+  color: #fff;
+}
+.modulo-lista {
+  padding: 18px 24px 18px 46px;
+  margin: 0;
+  font-size: 0.92rem;
+  color: #3b3e4a;
+}
+.modulo-lista li {
+  margin-bottom: 8px;
+  line-height: 1.45;
+}
+.modulo-lista li:last-child {
+  margin-bottom: 0;
+}
+.modulo-sublista {
+  margin-top: 6px;
+  padding-left: 20px;
+  list-style-type: circle;
+  color: var(--gris);
+}
+
+/* Metodología Steps */
+.metodologia-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 14px;
+}
+.step-card {
+  background: var(--fondo);
+  border: 1px solid var(--gris-linea);
+  border-radius: var(--radio-sm);
+  padding: 20px 18px;
+  text-align: center;
+  position: relative;
+}
+.step-numero {
+  width: 32px;
+  height: 32px;
+  background: var(--azul);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 10px;
+}
+.step-card h4 {
+  color: var(--azul-oscuro);
+  font-size: 0.98rem;
+  margin-bottom: 6px;
+}
+.step-card p {
+  color: var(--gris);
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ----------------------------------------------------
+   SIDEBAR STICKY DE MATRÍCULA E INVERSIÓN
+   ---------------------------------------------------- */
+.ficha-sidebar {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.card-matricula {
+  background: var(--blanco);
+  border: 2px solid #e1e4f3;
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(16, 20, 119, 0.12);
+}
+.card-matricula-flyer {
+  position: relative;
+  background: #0b0e56;
+  overflow: hidden;
+}
+.card-matricula-flyer img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.card-matricula-flyer:hover img {
+  transform: scale(1.03);
+}
+.flyer-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--rojo);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.card-matricula-body {
+  padding: 24px;
+}
+.precios-wrapper {
+  background: linear-gradient(135deg, #f7f9ff, #edf2fc);
+  border: 1px solid #d9e1f5;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.precio-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed #cfd7eb;
+}
+.precio-fila:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+.precio-etiqueta {
+  font-size: 0.88rem;
+  color: var(--azul-oscuro);
+  font-weight: 700;
+}
+.precio-etiqueta small {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--gris);
+  font-weight: 400;
+}
+.precio-numero {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--rojo);
+}
+.precio-numero small {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gris);
+}
+
+.matricula-cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.matricula-cta-group .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 13px 20px;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.matricula-incluye {
+  border-top: 1px solid var(--gris-linea);
+  padding-top: 18px;
+}
+.matricula-incluye h4 {
+  font-size: 0.84rem;
+  color: var(--azul-oscuro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+.matricula-incluye ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 0.88rem;
+  color: var(--grafito);
+}
+.matricula-incluye li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.matricula-incluye li svg {
+  width: 16px;
+  height: 16px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+/* Card de Asesoría en Sidebar */
+.card-asesoria-sidebar {
+  background: var(--blanco);
+  border: 1px solid var(--gris-linea);
+  border-radius: var(--radio);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--sombra-suave);
+}
+.card-asesoria-sidebar h4 {
+  color: var(--azul-oscuro);
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+.card-asesoria-sidebar p {
+  font-size: 0.86rem;
+  color: var(--gris);
+  margin-bottom: 14px;
+}
+
+/* ----------------------------------------------------
+   MÉTODOS DE PAGO MODERNOS (Cards limpias con copy)
+   ---------------------------------------------------- */
+.pagos-grid-moderno {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.pago-card {
+  background: var(--fondo);
+  border: 1.5px solid var(--gris-linea);
+  border-radius: 12px;
+  padding: 18px 20px;
+  transition: transform var(--transicion), border-color var(--transicion);
+  display: flex;
+  flex-direction: column;
+}
+.pago-card:hover {
+  border-color: #cbd2ea;
+  background: #fbfcfe;
+}
+.pago-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.pago-card-logos {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 38px;
+}
+.pago-card-logos img {
+  height: 32px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  display: block;
+}
+.pago-logo-bbva {
+  height: 26px !important;
+}
+.pago-logo-culqi {
+  height: 28px !important;
+}
+.pago-logo-plin {
+  height: 30px !important;
+}
+.pago-logo-wu {
+  height: 24px !important;
+}
+.pago-logo-yape {
+  height: 32px !important;
+}
+.pago-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--azul-claro);
+  color: var(--azul);
+}
+.pago-card h4 {
+  font-size: 0.98rem;
+  color: var(--azul-oscuro);
+  margin-bottom: 8px;
+}
+.pago-card p {
+  font-size: 0.86rem;
+  color: var(--gris);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.pago-copiable {
+  background: var(--blanco);
+  border: 1px solid #d7dbe9;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  font-family: monospace;
+  font-size: 0.92rem;
+  color: var(--azul-oscuro);
+  font-weight: 700;
+}
+.btn-copiar {
+  background: none;
+  border: none;
+  color: var(--rojo);
+  font-weight: 700;
+  font-size: 0.76rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background var(--transicion);
+  font-family: var(--font-base, sans-serif);
+}
+.btn-copiar:hover {
+  background: rgba(173, 52, 59, 0.1);
+}
+
+.pago-qr-destacado {
+  background: #f8faff;
+  border: 1.5px solid #d5dcf5;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+.pago-qr-img-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+.pago-qr-destacado img {
+  width: 210px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px;
+  border: 1.5px solid #d0d7ee;
+  box-shadow: 0 6px 18px rgba(16, 20, 119, 0.08);
+  display: block;
+}
+.pago-qr-info h4 {
+  font-size: 1.05rem;
+  color: var(--azul-oscuro);
+  margin-bottom: 6px;
+}
+.pago-qr-info p {
+  font-size: 0.88rem;
+  color: var(--gris);
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+.pago-titular-pill {
+  background: #ffffff;
+  border: 1.5px solid #c2cff1;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 2px 8px rgba(16, 20, 119, 0.04);
+}
+.titular-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--rojo);
+}
+.pago-titular-pill strong {
+  color: var(--azul-oscuro);
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+.pago-qr-info .nota-banco {
+  font-size: 0.8rem;
+  color: #727685;
+  background: #eef2fa;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--azul);
+}
+
+/* Responsive ficha */
+@media (max-width: 1040px) {
+  .ficha-layout {
+    grid-template-columns: 1fr;
+  }
+  .ficha-sidebar {
+    position: static;
+    order: -1; /* Permite mostrar el resumen de precios al inicio en tablets si se quiere */
+  }
+  .ficha-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ficha-layout > *,
+  .ficha-main-col > *,
+  .pagos-grid-moderno > *,
+  .pago-qr-destacado > * {
+    min-width: 0;
+  }
+  .pagos-grid-moderno,
+  .metodologia-steps {
+    grid-template-columns: 1fr;
+  }
+  .pago-copiable {
+    flex-wrap: wrap;
+    gap: 8px;
+    word-break: break-all;
+  }
+  .pago-card-top {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pago-qr-destacado {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 680px) {
+  .ficha-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .beneficios-grid,
+  .competencias-grid,
+  .metodologia-steps,
+  .pagos-grid-moderno {
+    grid-template-columns: 1fr;
+  }
+  .ficha-layout > *,
+  .ficha-main-col > *,
+  .pagos-grid-moderno > *,
+  .pago-qr-destacado > * {
+    min-width: 0;
+  }
+  .pago-copiable {
+    flex-wrap: wrap;
+    gap: 8px;
+    word-break: break-all;
+  }
+  .pago-card-top {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .modulo-lista {
+    padding: 14px 16px 14px 26px;
+  }
+  .pago-qr-destacado {
+    flex-direction: column;
+    text-align: center;
+  }
+  .ficha-seccion {
+    padding: 22px 18px;
+  }
+}
+
+/* ---------- Formulario de inscripción en ficha ---------- */
+.form-inscripcion { display: grid; gap: 14px; }
+.form-inscripcion [hidden] { display: none !important; }
+.form-inscripcion .form-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+}
+.form-inscripcion label {
+  display: grid; gap: 6px;
+  font-size: 0.88rem; font-weight: 600; color: var(--azul-oscuro);
+}
+.form-inscripcion input[type="text"],
+.form-inscripcion input[type="tel"],
+.form-inscripcion input[type="email"],
+.form-inscripcion input[type="file"] {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--gris-linea); border-radius: var(--radio-sm);
+  font-size: 0.95rem; color: var(--grafito); background: var(--blanco);
+  font-family: inherit;
+}
+.form-inscripcion input:focus {
+  outline: none; border-color: var(--azul);
+  box-shadow: 0 0 0 3px rgba(16, 20, 119, 0.12);
+}
+.form-inscripcion input[readonly] { background: var(--fondo); color: var(--gris); }
+.form-inscripcion .form-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-weight: 400; color: var(--grafito); cursor: pointer;
+}
+.form-inscripcion .form-check input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--rojo); flex: none; }
+.form-inscripcion .form-tipo-comp {
+  border: 1.5px solid var(--gris-linea); border-radius: var(--radio-sm);
+  padding: 14px 16px; display: grid; gap: 10px;
+}
+.form-inscripcion .form-tipo-comp legend {
+  font-size: 0.88rem; font-weight: 700; color: var(--azul-oscuro); padding: 0 8px;
+}
+.form-inscripcion .campo-error {
+  margin: 0; font-size: 0.85rem; font-weight: 600; color: var(--rojo);
+}
+.form-inscripcion .campo-honey {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0;
+}
+.form-inscripcion .btn { justify-self: start; }
+@media (max-width: 680px) {
+  .form-inscripcion .form-grid { grid-template-columns: 1fr; }
 }

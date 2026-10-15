@@ -78,35 +78,115 @@
 
   // --- Desplegable "Ver más" con transición suave ---
   var reducirMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)");
-  document.querySelectorAll(".ampliar").forEach(function (det) {
-    var resumen = det.querySelector("summary");
-    var anim = null;
-    var alturaCerrada = function () {
-      return resumen.getBoundingClientRect().bottom - det.getBoundingClientRect().top;
-    };
-    var terminar = function () {
-      det.style.overflow = "";
-      anim = null;
-    };
-    resumen.addEventListener("click", function (e) {
-      if (reducirMovimiento.matches) return;
-      e.preventDefault();
-      if (anim) { anim.cancel(); terminar(); }
-      var abriendo = !det.open;
-      if (abriendo) {
-        document.querySelectorAll(".ampliar[open]").forEach(function (otro) {
-          if (otro !== det) otro.querySelector("summary").click();
-        });
-      }
-      var desde = abriendo ? alturaCerrada() : det.getBoundingClientRect().height;
-      if (abriendo) det.open = true;
-      var hasta = abriendo ? det.getBoundingClientRect().height : alturaCerrada();
-      det.style.overflow = "hidden";
-      anim = det.animate({ height: [desde + "px", hasta + "px"] }, { duration: 400, easing: "cubic-bezier(0.4, 0, 0.2, 1)" });
-      anim.onfinish = function () {
-        if (!abriendo) det.open = false;
-        terminar();
+
+  function activarAcordeonSuave(selector) {
+    document.querySelectorAll(selector).forEach(function (det) {
+      var resumen = det.querySelector("summary");
+      if (!resumen) return;
+      var anim = null;
+      var alturaCerrada = function () {
+        return resumen.getBoundingClientRect().bottom - det.getBoundingClientRect().top;
       };
+      var terminar = function () {
+        det.style.overflow = "";
+        anim = null;
+      };
+      resumen.addEventListener("click", function (e) {
+        if (reducirMovimiento.matches) return;
+        e.preventDefault();
+        if (anim) { anim.cancel(); terminar(); }
+        var abriendo = !det.open;
+        if (abriendo) {
+          document.querySelectorAll(selector + "[open]").forEach(function (otro) {
+            if (otro !== det) {
+              var otroResumen = otro.querySelector("summary");
+              if (otroResumen) otroResumen.click();
+            }
+          });
+        }
+        var desde = abriendo ? alturaCerrada() : det.getBoundingClientRect().height;
+        if (abriendo) det.open = true;
+        var hasta = abriendo ? det.getBoundingClientRect().height : alturaCerrada();
+        det.style.overflow = "hidden";
+        anim = det.animate({ height: [desde + "px", hasta + "px"] }, { duration: 320, easing: "cubic-bezier(0.4, 0, 0.2, 1)" });
+        anim.onfinish = function () {
+          if (!abriendo) det.open = false;
+          terminar();
+        };
+      });
+    });
+  }
+
+  activarAcordeonSuave(".ampliar");
+  activarAcordeonSuave(".temario-modulo");
+
+  // --- Formulario de inscripción: comprobante boleta/factura condicional ---
+  document.querySelectorAll(".form-inscripcion").forEach(function (form) {
+    var check = form.querySelector('input[name="desea_comprobante"]');
+    var bloqueTipo = form.querySelector(".form-tipo-comp");
+    var bloqueFactura = form.querySelector(".form-factura");
+    var inputRuc = form.querySelector('input[name="ruc"]');
+    var inputRazon = form.querySelector('input[name="razon_social"]');
+    var error = form.querySelector(".campo-error");
+    if (!check || !bloqueTipo) return;
+    function tipoElegido() {
+      var r = form.querySelector('input[name="tipo_comprobante"]:checked');
+      return r ? r.value : "boleta";
+    }
+    function actualizar() {
+      var conComprobante = check.checked;
+      bloqueTipo.hidden = !conComprobante;
+      var esFactura = conComprobante && tipoElegido() === "factura";
+      bloqueFactura.hidden = !esFactura;
+      inputRuc.required = esFactura;
+      inputRazon.required = esFactura;
+      if (!esFactura && error) error.hidden = true;
+    }
+    check.addEventListener("change", actualizar);
+    form.querySelectorAll('input[name="tipo_comprobante"]').forEach(function (r) {
+      r.addEventListener("change", actualizar);
+    });
+    actualizar();
+    form.addEventListener("submit", function (ev) {
+      if (check.checked && tipoElegido() === "factura") {
+        var rucOk = /^\d{11}$/.test(inputRuc.value.trim());
+        var razonOk = inputRazon.value.trim().length > 1;
+        if (!rucOk || !razonOk) {
+          ev.preventDefault();
+          error.textContent = !rucOk
+            ? "Para factura ingresa un RUC válido de 11 dígitos."
+            : "Para factura ingresa la razón social.";
+          error.hidden = false;
+          (!rucOk ? inputRuc : inputRazon).focus();
+          return;
+        }
+      }
+      if (error) error.hidden = true;
+    });
+  });
+
+  // --- Botón de copiado para números de pago / cuentas ---
+  document.querySelectorAll(".btn-copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var texto = btn.getAttribute("data-copiar");
+      if (!texto) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(function () {
+          var orig = btn.innerText;
+          btn.innerText = "¡Copiado!";
+          setTimeout(function () { btn.innerText = orig; }, 2000);
+        });
+      } else {
+        var input = document.createElement("input");
+        input.value = texto;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        var orig = btn.innerText;
+        btn.innerText = "¡Copiado!";
+        setTimeout(function () { btn.innerText = orig; }, 2000);
+      }
     });
   });
 })();
