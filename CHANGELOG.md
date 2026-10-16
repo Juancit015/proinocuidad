@@ -3,6 +3,12 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-15 (Foto institutional dentro de assets)
+
+### Changed
+
+- La foto de "¿Quiénes somos?" (grupo de participantes frente a la casona amarilla) deja de estar suelta en la raíz del repositorio y pasa a `assets/img/nosotros.webp`, junto al resto de imágenes y con su convención de nombre. Se actualizan las dos referencias, en `index.html` y `nosotros/index.html`. La foto que se ve es la misma: no hay cambio de contenido ni de aspecto.
+
 ## 2026-10-15 (Mensajes prellenados en los enlaces de WhatsApp)
 
 ### Changed

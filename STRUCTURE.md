@@ -38,6 +38,7 @@ Proniciudad/
 | Tarjetas de cursos destacados del Home | `assets/js/cursos-data.js` (campo `enHome`) |
 | Listado de cursos y pestañas | `cursos/index.html` (render desde `cursos-data.js`) |
 | Ficha de cada curso (temario, objetivo, inversión…) | `cursos/<slug>/index.html`; para regenerar: `tools/generar-fichas.mjs` |
+| Foto de "¿Quiénes somos?" (grupo frente a la casona amarilla) | `assets/img/nosotros.webp`, referenciada en `index.html` y `nosotros/index.html` |
 | Datos de contacto del sitio (email, WhatsApp, horario, comunidad) | constante `PROINO_SITIO` en `assets/js/cursos-data.js` **y** el footer repetido en cada página |
 | Footer y navegación | bloque repetido en cada `index.html` (copiar de una página existente al editar) |
 | Textos de Nosotros / Servicios / Noticias | `nosotros/index.html`, `servicios/index.html`, `noticias/index.html` |
