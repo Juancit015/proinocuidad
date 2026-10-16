@@ -3,6 +3,20 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-15 (Mensajes prellenados en los enlaces de WhatsApp)
+
+### Changed
+
+- Los 113 enlaces a WhatsApp del sitio abren ahora la conversación con un mensaje ya escrito: los 81 que la abrían vacía llevan un texto según dónde se presionó. Al tocar el botón, el usuario encuentra el mensaje en la caja de escritura de WhatsApp y solo tiene que enviarlo.
+  - Contacto directo (barra superior y pie, 36 enlaces): presentación neutra, sin pedir nada en concreto.
+  - Botón flotante "Envíanos un mensaje!" (18 páginas): el mismo texto en todo el sitio, por decisión del dueño.
+  - Botones de asesoría (13): cada uno nombra su servicio (Certificación HACCP, Implementación FSSC 22000, BRCGS Food Safety, Registro Sanitario DIGESA), su programa (Inocuidad Alimentaria) o la empresa (Nosotros).
+  - Tarjetas de curso (12): ahora llevan el mismo mensaje que la ficha de su curso, así que el listado, el home y la ficha dicen lo mismo.
+- Los 32 mensajes que ya existían en las fichas (facturación, matriculación desde el extranjero e inscripción confirmada) quedan intactos.
+- El mensaje viaja en el propio enlace, codificado, sin JavaScript: el sitio sigue funcionando igual sin él y "abrir en pestaña nueva" sigue funcionando.
+- Sin cambios en el número, el texto de los botones, sus iconos, colores ni tamaños. Verificado: los 113 mensajes empiezan por "Hola", ninguno supera 117 caracteres y el más largo sigue entrando completo en el móvil.
+- El catálogo de mensajes queda documentado en `STRUCTURE.md` como referencia para cuando se añada un botón nuevo: la regla de la spec `contacto-whatsapp` es que ningún enlace puede abrir el chat vacío.
+
 ## 2026-10-15 (Iconografía en todos los botones)
 
 ### Added
