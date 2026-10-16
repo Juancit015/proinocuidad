@@ -3,12 +3,63 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-16 (Velo de atenuación y bloqueo de scroll en el menú móvil)
+
+### Added
+
+- Al abrir el menú hamburguesa, el contenido de la página que queda detrás se atenúa con un velo tenue en el azul marino del sitio, `rgba(16, 20, 119, 0.22)`, por debajo del nivel de los botones flotantes (`0.3` y `0.45`) para que se lea como un fondo y no como un oscurecimiento fuerte. El velo empieza en `76px`, la altura de la cabecera, así que la barra y el panel quedan nítidos y solo se atenúa lo que hay detrás.
+- **Tocar el velo cierra el menú.** Antes no había ninguna forma de cerrarlo tocando fuera.
+- Con el menú abierto, **el fondo deja de desplazarse**. Es lo que pidió el dueño. Se hace con una clase en `body` cuya regla vive dentro de `@media (max-width: 860px)`, de modo que en escritorio no existe la regla. El panel conserva su `overflow-y: auto`, así que si el menú no cabe en la pantalla se sigue desplazando por dentro.
+
+### Changed
+
+- **Eliminado el botón ✕ del panel del menú móvil.** El panel llevaba su propio botón de cerrar y, además, el botón hamburguesa de la cabecera ya se transforma en una ✕ al pulsarse: dos controles idénticos para la misma acción. Ahora el menú se cierra de tres formas, todas accesibles con teclado: la hamburguesa (que además cambia de icono, de `aria-label` y de `aria-expanded`), la tecla Escape y el fondo atenuado. El rótulo "Menú" de la fila del panel se conserva; solo se quita el botón de la derecha.
+
+### Notes
+
+- El bloqueo del scroll **respeta la regla del proyecto de no usar `overflow` global en `body` o `html`**, que rompía el `position: sticky`. Aquí la regla solo existe mientras el menú está abierto —momento en que el `sticky` es irrelevante porque la página no se desplaza— y se retira al cerrar, dejando el documento igual que antes. Hay tres elementos `sticky` en el sitio (cabecera, imagen de Quiénes somos y el sidebar de matrícula de las fichas) y los tres siguen funcionando con el menú cerrado.
+- **Limitación conocida:** `overflow: hidden` no es fiable en iOS Safari, donde la página puede seguir desplazándose con el dedo aunque la regla aplique. En Android y escritorio funciona. Si en un iPhone resulta molesto, la alternativa es `position: fixed` en `body`, que obliga a guardar y restaurar la posición de scroll a mano en cada apertura y cierre.
+- El velo reutiliza el valor de `76px` que el panel ya usa en su `max-height`. Si algún día cambia la altura de la cabecera, hay que revisar los dos sitios juntos.
+- Con `prefers-reduced-motion: reduce` el velo aparece y desaparece sin transición, igual que el resto del menú.
+- El `pointer-events: auto` del velo tapa el contenido de detrás, así que al cerrar tocando el fondo nunca se activa por error un enlace que estaba oculto.
+
 ## 2026-10-15 (Subtítulo de la página de Servicios)
 
 ### Changed
 
 - El subtítulo bajo el H1 de `servicios/index.html` decía "En cada servicio, la imagen es genérica y temática — así deben mostrarse los servicios, según el documento oficial.", que era una nota interna de producción leída por el visitante y además no contenía ninguna palabra clave. Ahora dice "Consultoría, capacitación y certificación para que tu empresa cumpla la normativa sanitaria y acceda a nuevos mercados.", en línea con el subtítulo de las demás páginas del sitio.
 - Sin tocar el SEO: el `<title>`, la meta description, el canonical y el `<h1>` ("Consultoría y capacitación en inocuidad alimentaria") quedan exactamente como estaban. El subtítulo nuevo suma las palabras clave que la página ya usa (consultoría, capacitación, certificación, normativa sanitaria) y aporta "acceda a nuevos mercados", que antes no estaban.
+
+## 2026-10-16 (Cabecera fija también en móvil)
+
+### Changed
+
+- La cabecera del sitio pasa a ser fija (`position: sticky`) en todas las pantallas, también en móvil. Antes solo lo era en escritorio, así que al bajar en un teléfono el logo y el botón de menú se perdían y había que subir hasta arriba para volver a abrirlos. Se elimina la única regla que lo desactivaba (`.site-header { position: relative; }` dentro de `@media (max-width: 860px)`); la regla base ya decía `sticky`, así que el cambio es borrar una línea.
+- El motivo por el que se puso `relative` en su día —conservar el contexto de anclaje del panel del menú móvil— ya no aplicaba: `position: sticky` también es un valor posicionado y mantiene ese contexto. Verificado a 390px: al abrir el menú, el panel queda anclado con 0px de diferencia respecto al borde inferior de la cabecera.
+- Sin cambios en el diseño de la cabecera, en el menú móvil ni en su JavaScript. En escritorio no cambia nada.
+
+### Fixed
+
+- Los destinos de las anclas internas quedaban exactamente bajo la cabecera al navegar a ellos. No es un efecto colateral raro: es la consecuencia directa de una cabecera fija, medido en 76px, que es justamente su altura. Afectaba también a escritorio, donde la cabecera ya era fija desde antes.
+- Añado `[id] { scroll-margin-top: 84px; }`. La cabecera fija mide 76px, así que 84px dejan 8px de aire. Afecta a 32 enlaces con ancla real: los 8 "Matricularme Ahora" de las fichas (`#form-inscripcion`) y los enlaces del menú a las cuatro secciones de Servicios.
+- Esto también arregla un defecto preexistente en escritorio, donde la cabecera sticky ya tapaba el destino de esas anclas.
+
+### Notes
+
+- La cabecera fija ocupa 76px permanentes, un 19% de una pantalla de 390px. Es un coste consciente: la alternativa de ocultarla al bajar quedó descartada por decisión del dueño. Si resulta incómoda, la mejora posible es una variante compacta al hacer scroll, que requiere JavaScript y otro diseño de cabecera.
+- En la spec `navegacion-global`, el escenario "móvil sin cabecera flotante" conserva su nombre aunque su contenido ya describe la cabecera fija. Se debe a que el validador de specs no permite eliminar escenarios dentro de un requisito modificado. Si se edita esa spec a mano, conviene renombrar el escenario a "cabecera fija en móvil".
+
+## 2026-10-15 (Se retira la cifra de años de experiencia)
+
+### Removed
+
+- La franja de cifras del Home pasa de cuatro a tres: se retira "3 años de experiencia". Era un número fijo que no sube solo, así que en unos meses sería falso sin que nadie se acordara de cambiarlo, y era la única cifra del sitio que no se sostenía con un dato comprobable. No se sustituye por otra métrica: el proyecto ya tiene el criterio de no publicar cifras sin fuente verificada, y la fecha de fundación que aparece en la página Nosotros ("29 de octubre del 2023") permite deducirla y, a diferencia del número, nunca queda vieja.
+- Se retira también la misma afirmación del párrafo "Quiénes somos" de la página Nosotros, que decía "Con 3 años de experiencia y más de 1000 personas capacitadas, ayudamos a…" y ahora dice "Con más de 1000 personas capacitadas, ayudamos a…". El resto del párrafo queda intacto.
+- Se conservan sin cambios las otras tres cifras del Home ("+1000 personas capacitadas", "8 cursos y un diplomado asíncrono" y "100% compromiso con la salud pública") y la cifra de 1000 personas capacitadas del párrafo, por ser un dato de actividad y no una antigüedad.
+
+### Changed
+
+- El grid de la franja pasa de 4 a 3 columnas (`repeat(3, 1fr)`), para que no quede una columna vacía a la derecha. En tableta (≤1020px) se mantiene el grid de 2 columnas, con la tercera cifra sola en la segunda fila. Sin cambios de SEO: title, meta description, canonical y `<h1>` quedan idénticos en las dos páginas.
 
 ## 2026-10-15 (RUC en negrita en el topbar del Home)
 

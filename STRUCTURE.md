@@ -16,7 +16,7 @@ Proniciudad/
 │   └── <slug>/index.html          # Ficha de detalle de cada curso (8 fichas)
 ├── assets/
 │   ├── css/main.css               # Único stylesheet del sitio (variables de la paleta institucional)
-│   ├── js/main.js                 # Menú móvil + mega-menú (acordeón, Escape)
+│   ├── js/main.js                 # Menú móvil (acordeón, Escape, cierre al tocar el velo) + mega-menú
 │   ├── js/cursos-data.js          # Datos de los 8 cursos + constantes de contacto del sitio
 │   ├── fonts/                     # Outfit (woff2 variable, subconjunto latin)
 │   └── img/                       # Imágenes optimizadas (logo, favicon, flyers, fotos, QR)

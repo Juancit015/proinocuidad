@@ -4,54 +4,115 @@
 
   var header = document.querySelector(".site-header");
   var toggle = document.querySelector(".nav-toggle");
+  var menu = document.querySelector(".nav-menu");
+  var mobileQuery = window.matchMedia("(max-width: 860px)");
+
+  function actualizarMenu(abierto) {
+    if (!header || !toggle) return;
+    header.classList.toggle("menu-abierto", abierto);
+    // Bloquea el desplazamiento del fondo SOLO en móvil: la regla que lee esta
+    // clase vive dentro de @media (max-width: 860px), así que en escritorio la
+    // clase es inocua y no afecta a ningún position: sticky.
+    if (mobileQuery.matches) {
+      document.body.classList.toggle("menu-abierto-scroll", abierto);
+    } else {
+      document.body.classList.remove("menu-abierto-scroll");
+    }
+    toggle.setAttribute("aria-expanded", abierto ? "true" : "false");
+    toggle.setAttribute("aria-label", abierto ? "Cerrar menú" : "Abrir menú");
+  }
+
+  function cerrarAcordeones() {
+    document.querySelectorAll(".nav-accordion-toggle").forEach(function (boton) {
+      boton.setAttribute("aria-expanded", "false");
+      var nombre = boton.getAttribute("data-label");
+      if (nombre) boton.setAttribute("aria-label", "Mostrar opciones de " + nombre);
+      var indicador = boton.querySelector("span[aria-hidden='true']");
+      if (indicador) indicador.textContent = "+";
+      var grupo = boton.closest(".nav-drop");
+      if (grupo) grupo.classList.remove("abierto");
+      var enlace = grupo && grupo.querySelector("a");
+      if (enlace) enlace.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function cerrarMenu(devolverFoco) {
+    actualizarMenu(false);
+    cerrarAcordeones();
+    if (devolverFoco && toggle) toggle.focus();
+  }
 
   // --- Menú móvil (botón hamburguesa) ---
   if (toggle && header) {
     toggle.addEventListener("click", function () {
-      var abierto = header.classList.toggle("menu-abierto");
-      toggle.setAttribute("aria-expanded", abierto ? "true" : "false");
-      toggle.setAttribute("aria-label", abierto ? "Cerrar menú" : "Abrir menú");
+      var abierto = !header.classList.contains("menu-abierto");
+      if (abierto) actualizarMenu(true);
+      else cerrarMenu(false);
     });
   }
 
   // --- Acordeón de submenús en móvil ---
-  document.querySelectorAll(".nav-drop > a").forEach(function (enlace) {
-    enlace.addEventListener("click", function (e) {
-      var soloMovil = window.matchMedia("(max-width: 860px)").matches;
-      if (!soloMovil) return;
-      var li = enlace.parentElement;
-      if (!li.classList.contains("abierto")) {
-        e.preventDefault();
-        document.querySelectorAll(".nav-drop.abierto").forEach(function (otro) {
-          otro.classList.remove("abierto");
-          otro.querySelector("a").setAttribute("aria-expanded", "false");
-        });
-        li.classList.add("abierto");
-        enlace.setAttribute("aria-expanded", "true");
-      }
-      // Si ya está abierto, el segundo toque navega al enlace padre.
+  document.querySelectorAll(".nav-accordion-toggle").forEach(function (boton) {
+    var nombre = boton.getAttribute("aria-label").replace("Mostrar opciones de ", "");
+    boton.setAttribute("data-label", nombre);
+    boton.addEventListener("click", function () {
+      if (!mobileQuery.matches) return;
+      var grupo = boton.closest(".nav-drop");
+      var abrir = boton.getAttribute("aria-expanded") !== "true";
+      document.querySelectorAll(".nav-accordion-toggle").forEach(function (otro) {
+        if (otro !== boton) {
+          otro.setAttribute("aria-expanded", "false");
+          otro.setAttribute("aria-label", "Mostrar opciones de " + otro.getAttribute("data-label"));
+          var otroIndicador = otro.querySelector("span[aria-hidden='true']");
+          if (otroIndicador) otroIndicador.textContent = "+";
+          var otroGrupo = otro.closest(".nav-drop");
+          if (otroGrupo) {
+            otroGrupo.classList.remove("abierto");
+            var otroEnlace = otroGrupo.querySelector("a");
+            if (otroEnlace) otroEnlace.setAttribute("aria-expanded", "false");
+          }
+        }
+      });
+      boton.setAttribute("aria-expanded", abrir ? "true" : "false");
+      boton.setAttribute("aria-label", (abrir ? "Ocultar opciones de " : "Mostrar opciones de ") + nombre);
+      var indicador = boton.querySelector("span[aria-hidden='true']");
+      if (indicador) indicador.textContent = abrir ? "−" : "+";
+      if (grupo) grupo.classList.toggle("abierto", abrir);
+      var enlace = grupo && grupo.querySelector("a");
+      if (enlace) enlace.setAttribute("aria-expanded", abrir ? "true" : "false");
     });
+  });
+
+  mobileQuery.addEventListener("change", function (e) {
+    if (!e.matches) cerrarMenu(false);
   });
 
   // --- Cerrar con Escape (accesibilidad) ---
   document.addEventListener("keydown", function (e) {
-    if (e.key !== "Escape") return;
-    if (header) header.classList.remove("menu-abierto");
-    if (toggle) toggle.setAttribute("aria-expanded", "false");
-    document.querySelectorAll(".nav-drop.abierto").forEach(function (li) {
-      li.classList.remove("abierto");
-      var a = li.querySelector("a");
-      if (a) a.setAttribute("aria-expanded", "false");
-    });
+    if (e.key !== "Escape" || !header || !header.classList.contains("menu-abierto")) return;
+    cerrarMenu(true);
     document.querySelectorAll(".mega-panel a").forEach(function (a) { a.blur(); });
+  });
+
+  // --- Cerrar al tocar el velo (fuera del panel) ---
+  // El velo es un pseudo-elemento: no existe como elemento ni puede escucharse,
+  // y el clic sobre él tiene como destino .site-header, no el velo. Por eso no
+  // se pregunta "¿he tocado dentro de la cabecera?" sino "¿he tocado el panel
+  // o el botón?", que es lo que de verdad no debe cerrar el menú. El velo tiene
+  // pointer-events para tapar el contenido de detrás: un toque fuera nunca
+  // debería activar un enlace que está oculto.
+  document.addEventListener("click", function (e) {
+    if (!header || !header.classList.contains("menu-abierto")) return;
+    if (!mobileQuery.matches) return;
+    if (menu && menu.contains(e.target)) return;
+    if (toggle && toggle.contains(e.target)) return;
+    cerrarMenu(false);
   });
 
   // --- Cerrar menú móvil al navegar ---
   document.querySelectorAll(".nav-menu a").forEach(function (a) {
     a.addEventListener("click", function () {
-      if (a.getAttribute("target") || window.matchMedia("(max-width: 860px)").matches) {
-        if (header) header.classList.remove("menu-abierto");
-      }
+      if (a.getAttribute("target") || mobileQuery.matches) cerrarMenu(false);
     });
   });
   // --- Entrada animada de bloques de dos columnas (sin JS = contenido visible) ---
