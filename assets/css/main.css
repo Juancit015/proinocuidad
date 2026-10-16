@@ -127,6 +127,9 @@ section { padding: 64px 0; }
 .btn-whatsapp:hover { background: var(--whatsapp-oscuro); }
 .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
 .btn svg { width: 18px; height: 18px; flex: none; }
+/* Iconos de botón (spec `iconografia`): el SVG no lleva tamaño fijo para que
+   CSS lo controle por variante. 18px normal, 16px en botón pequeño. */
+.btn-sm svg { width: 16px; height: 16px; }
 
 /* ---------- Radio global de botones: 4px (redes del footer excluidas) ---------- */
 .btn:not(.redes-sociales a),
@@ -1343,6 +1346,9 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
   font-weight: 700;
 }
 .btn-copiar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: none;
   border: none;
   color: var(--rojo);
@@ -1357,6 +1363,7 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 .btn-copiar:hover {
   background: rgba(173, 52, 59, 0.1);
 }
+.btn-copiar svg { width: 14px; height: 14px; flex: none; }
 
 .pago-qr-destacado {
   background: #f8faff;

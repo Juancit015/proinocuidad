@@ -3,6 +3,19 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-15 (Iconografía en todos los botones)
+
+### Added
+
+- Todos los botones del sitio llevan ahora un icono SVG: los **83 que estaban sin icono** quedan cubiertos, de modo que ya no hay ningún botón sin icono fuera de los 36 `.mega-cta` del panel de navegación (que ya dibujan su flecha con máscara CSS y no se tocaron). 72 de ellos están en las 8 fichas de curso y se aplicaron editando `tools/generar-fichas.mjs` y regenerando, nunca a mano; los otros 11 en `index.html` y `servicios/`.
+- Nuevo bloque `SVG_BTN_*` en `tools/generar-fichas.mjs` con el catálogo cerrado, un icono por acción: portapapeles para copiar un valor, birrete para Aula Virtual, tarjeta de crédito para el pago con Culqi, envío para enviar inscripción y solicitar link de pago, edición para matricularse, soporte para contactar asesor, usuarios para Conócenos y flecha para ver/listar. Los paths se copiaron de los iconos que el sitio ya usaba, de modo que las fichas y las páginas escritas a mano son indistinguibles.
+- El SVG se pinta con `currentColor`, así que cada icono hereda el color de su variante de botón sin CSS por icono, y va con `aria-hidden="true"` por decorativo. Se añadió también ese atributo al icono de WhatsApp de las fichas, que era el único icono de botón del sitio sin marcar.
+
+### Changed
+
+- `assets/css/main.css`: los iconos miden 18px en botones normales, 16px en `.btn-sm` y 14px en `.btn-copiar`; `.btn-copiar` pasa a ser `inline-flex` para que el icono y el texto queden en la misma línea. Sin cambios de color, radio, padding ni transiciones, y sin animaciones nuevas.
+- Sin dependencias nuevas: SVG en línea, sin librería, sin fuente de iconos, sin CDN y sin peticiones de red adicionales.
+
 ## 2026-10-15 (Formulario: País como desplegable Perú/Extranjero)
 
 ### Changed
