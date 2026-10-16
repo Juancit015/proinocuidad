@@ -3,7 +3,13 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
-## 2026-10-15 (Foto institutional dentro de assets)
+## 2026-10-15 (RUC en negrita en el topbar del Home)
+
+### Fixed
+
+- El número de RUC del topbar del Home aparecía como texto plano, sin negrita y sin los dos puntos, mientras que las otras 17 páginas lo muestran con el número en negrita blanca. Ahora el Home usa el mismo formato que el resto del sitio. La regla `.topbar strong` que da el color y el peso ya existía, así que no hizo falta tocar la hoja de estilos.
+
+## 2026-10-15 (Foto institucional dentro de assets)
 
 ### Changed
 
