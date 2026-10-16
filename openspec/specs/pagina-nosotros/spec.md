@@ -7,7 +7,7 @@ Definir la página Nosotros: presentación institucional de Proinocuidad (histor
 ## Requirements
 
 ### Requirement: Quiénes somos
-La página Nosotros SHALL mostrar la descripción institucional del PDF: razón social "Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.", RUC 20615307603, fundada el 29 de octubre de 2023, empresa de La Libertad, Perú especializada en gestión de la calidad e inocuidad alimentaria, con más de 1000 personas capacitadas, y las dos líneas de trabajo (Capacitación y Consultoría) con sus textos prohibidos literales. Debajo de esos párrafos SHALL incluir un bloque ampliable con la descripción complementaria aportada por el dueño, colapsado por defecto con el control "Ver más" y que al desplegarse muestra el texto completo sin alterar los párrafos anteriores.
+La página Nosotros SHALL mostrar la descripción institucional del PDF: razón social "Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.", RUC 20615307603, fundada el 29 de octubre de 2023, empresa de La Libertad, Perú especializada en gestión de la calidad e inocuidad alimentaria, con más de 1000 personas capacitadas, y las dos líneas de trabajo (Capacitación y Consultoría) con sus textos prohibidos literales. La página SHALL NOT afirmar años de experiencia ni antigüedad de la empresa en ningún punto de su texto visible. Debajo de esos párrafos SHALL incluir un bloque ampliable con la descripción complementaria aportada por el dueño, colapsado por defecto con el control "Ver más" y que al desplegarse muestra el texto completo sin alterar los párrafos anteriores.
 
 #### Scenario: Datos institucionales visibles
 - **WHEN** el usuario abre la página Nosotros
@@ -22,6 +22,10 @@ La página Nosotros SHALL mostrar la descripción institucional del PDF: razón 
 #### Scenario: Texto presente en el HTML
 - **WHEN** un buscador o un lector sin JavaScript carga la página
 - **THEN** el texto complementario está en el HTML, dentro del elemento plegable, y no se pierde
+
+#### Scenario: Sin antigüedad declarada
+- **WHEN** el usuario lee el texto visible de la página Nosotros
+- **THEN** no encuentra ninguna afirmación de años de experiencia; la fecha de fundación sigue visible y es la única referencia al tiempo transcurrido
 
 ### Requirement: Misión, visión y valores
 La página SHALL incluir las secciones Misión, Visión y Valores con los textos del documento base (los valores son: compromiso con la salud pública, rigor técnico, ética profesional, mejora continua y cercanía con el cliente), presentadas como tres tarjetas en una fila con cabecera de color, ícono circular sobre el borde superior y el texto centrado en el encabezado; en móvil se apilan en una columna.
