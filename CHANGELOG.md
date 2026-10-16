@@ -3,6 +3,13 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-15 (Subtítulo de la página de Servicios)
+
+### Changed
+
+- El subtítulo bajo el H1 de `servicios/index.html` decía "En cada servicio, la imagen es genérica y temática — así deben mostrarse los servicios, según el documento oficial.", que era una nota interna de producción leída por el visitante y además no contenía ninguna palabra clave. Ahora dice "Consultoría, capacitación y certificación para que tu empresa cumpla la normativa sanitaria y acceda a nuevos mercados.", en línea con el subtítulo de las demás páginas del sitio.
+- Sin tocar el SEO: el `<title>`, la meta description, el canonical y el `<h1>` ("Consultoría y capacitación en inocuidad alimentaria") quedan exactamente como estaban. El subtítulo nuevo suma las palabras clave que la página ya usa (consultoría, capacitación, certificación, normativa sanitaria) y aporta "acceda a nuevos mercados", que antes no estaban.
+
 ## 2026-10-15 (RUC en negrita en el topbar del Home)
 
 ### Fixed
