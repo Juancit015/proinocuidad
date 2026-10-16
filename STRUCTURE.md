@@ -44,6 +44,40 @@ Proniciudad/
 | Colores institucionales (azul #101477, rojo #AD343B, gris #252525) | variables `:root` en `assets/css/main.css` |
 | Estilos de tarjetas, fichas, pestañas y pagos | `assets/css/main.css` |
 
+## Mensajes prellenados de WhatsApp
+
+Los 113 enlaces a WhatsApp llevan el mensaje en el propio `href`
+(`https://wa.me/51981365982?text=...`), sin JavaScript. Catálogo por contexto:
+
+| Contexto | Mensaje |
+|---|---|
+| Contacto directo (barra superior y pie) | Hola, escribo desde la web de Proinocuidad. Deseo comunicarme con ustedes. |
+| Botón flotante "Envíanos un mensaje!" | Hola, escribo desde la web de Proinocuidad. Quiero información sobre sus cursos y servicios de inocuidad. |
+| Contacto del bloque final del home | Hola, escribo desde la web de Proinocuidad. Quiero información sobre sus cursos y servicios. |
+| "Consultar por WhatsApp" (hero del home) | Hola, encontré la web de Proinocuidad y quiero información sobre sus cursos y servicios. |
+| "Solicitar asesoría por WhatsApp" (CTA del home) | Hola, solicito asesoría sobre sus cursos y servicios. |
+| "Solicitar asesoría" / CTA de un servicio | Hola, solicito asesoría sobre el servicio de {SERVICIO}. |
+| CTA de inocuidad-alimentaria | Hola, solicito asesoría sobre el programa de Inocuidad Alimentaria. |
+| CTA de nosotros | Hola, quiero conocer más sobre Proinocuidad y sus servicios. |
+| CTA final de servicios | Hola, solicito asesoría sobre sus servicios de inocuidad. |
+| Tarjeta de curso y botón de la ficha | Hola, deseo más información y matricularme en {CURSO}. |
+
+`{SERVICIO}`: Certificación HACCP · Implementación FSSC 22000 · BRCGS Food Safety ·
+Registro Sanitario DIGESA.
+
+**Dónde se edita cada uno.** El contacto directo y el flotante están como constantes
+`waContacto` y `waFlotante` en `tools/generar-fichas.mjs` (afectan a las 8 fichas) y
+además repetidos en los 10 HTML escritos a mano, porque `cursos/index.html` conserva su
+propia cabecera y pie. Si cambias uno, cambia los dos sitios. La tarjeta de curso usa
+`waCurso(c)` en `tools/generar-listados.mjs` y el nombre viene del campo `waLargo` de
+`assets/js/cursos-data.js`, que debe coincidir con el `waLargo` de `tools/generar-fichas.mjs`
+para que la tarjeta y su ficha envíen el mismo mensaje. Los mensajes de factura,
+matriculación desde el extranjero e inscripción ya confirmada también viven en el generador
+de fichas y no deben tocarse sin pedirlo.
+
+**Antes de añadir un botón nuevo**, asígnale un mensaje del catálogo. La regla de la spec
+`contacto-whatsapp` es que ningún enlace puede abrir el chat vacío.
+
 ## Nombres de los slugs de curso
 
 `diplomado-gestion-calidad-e-inocuidad` · `legislacion-sanitaria-alimentos` ·
