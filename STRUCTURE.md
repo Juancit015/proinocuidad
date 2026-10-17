@@ -24,7 +24,6 @@ Proniciudad/
 ├── tools/
 │   └── generar-fichas.mjs         # Generador de las 8 fichas estáticas de cursos
 ├── openspec/                      # Especificaciones y cambios del proyecto (ver sección OpenSpec)
-├── _archivo/                      # Material fuente no publicado (no forma parte del sitio)
 │   ├── pagina web.pdf             # Documento oficial: fuente única de verdad del contenido
 │   └── FOTOS-(1)/FOTOS/           # Material fuente (logo, flyers originales, fotos)
 └── logos-metodos-de-pago/         # Logos de medios de pago tal como los entregó el dueño
@@ -149,12 +148,8 @@ Los cambios de la sesión 2026-10-15 pendientes de publicar son 3 (ver `CHANGELO
 
 ### Qué NO subir
 
-- `openspec/`, `tools/`, `_archivo/`, `.opencode/`, `logos-metodos-de-pago/`,
-  `ai-chat-toolkit-rag-store-memory-v1.0.0/`, `openapitools.json`
+- `openspec/`, `tools/`, `.opencode/`, `logos-metodos-de-pago/`
   (trabajo local, generadores y especificaciones; no forman parte del sitio).
-- Nota: `.opencode/*` y `openapitools.json` tienen modificaciones/presencia
-  previas a esta sesión, ajenas a estos cambios; revisarlas aparte antes de
-  cualquier commit.
 
 ### Verificación post-deploy (Ctrl+F5 para evitar caché)
 

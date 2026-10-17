@@ -6,8 +6,6 @@ Sitio corporativo estático de Proinocuidad Consultoría y Capacitación Aliment
 - Juan, en español. Solo cambios visuales salvo que pida otra cosa.
 - Paleta de marca en variables de `:root` (`assets/css/main.css`): `--azul #101477`, `--rojo #ad343b`, `--gris #5c5f6a`, `--gris-linea #e3e5ee`. No se tocan.
 
-> **Aviso**: la carpeta `ai-chat-toolkit-rag-store-memory-v1.0.0/` es **otro proyecto**, con sus 154 ficheros versionados dentro de este repo (tiene su propio `package.json`, `LICENSE` y workflows de CI). No tiene nada que ver con el sitio. No contarlo como parte de él ni tomar decisiones de arquitectura a partir de lo que haya ahí.
-
 ---
 
 ## Entorno

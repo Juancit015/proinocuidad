@@ -1,4 +1,0 @@
-packages:
-  - "packages/*"
-  # Examples are intentionally excluded — they install from the published npm
-  # registry and run standalone (npm install / npm run dev) to mirror real usage.

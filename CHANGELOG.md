@@ -3,6 +3,21 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-16 (Fuera el proyecto ajeno que estaba dentro del repo)
+
+### Removed
+
+- **`ai-chat-toolkit-rag-store-memory-v1.0.0/` sale del repositorio.** Eran 154 ficheros, 17 MB, de un proyecto open-source sin relación con el sitio: un toolkit para embeber un widget de chat con IA, con su propio `package.json`, su `LICENSE` y sus workflows de CI. No lo usaba ninguna página, ni el CSS, ni el JavaScript, ni los generadores.
+
+Estaba en la raíz del repo y versionado, así que un `git clone` del sitio web descargaba también el toolkit completo. `STRUCTURE.md` ya lo listaba dentro de "Qué NO subir", o sea que hacía tiempo que estaba identificado como trabajo local ajeno al sitio.
+
+Borrado con `git rm -r`, que lo quita del índice y del disco. Sigue siendo recuperable desde el commit anterior con `git checkout HEAD~1 -- ai-chat-toolkit-rag-store-memory-v1.0.0/`, por si algún día hace falta.
+
+### Fixed
+
+- **`STRUCTURE.md` ya no lista directorios que no existen.** En "Qué NO subir" seguían `_archivo/` y `openapitools.json`, y `_archivo/` seguía también en el árbol de la raíz del documento. Ninguno de los dos está en el repo. Se quitan, con lo que la lista refleja por fin lo que hay de verdad: `openspec/`, `tools/`, `.opencode/` y `logos-metodos-de-pago/`.
+
+
 ## 2026-10-16 (Menú móvil más compacto)
 
 ### Changed

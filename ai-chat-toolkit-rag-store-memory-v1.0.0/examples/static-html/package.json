@@ -1,9 +1,0 @@
-{
-  "name": "@ai-chat-toolkit/example-static-html",
-  "private": true,
-  "version": "0.1.0",
-  "description": "Static HTML CDN example for ai-chat-toolkit-widget",
-  "scripts": {
-    "dev": "npx --yes serve . -p 4173"
-  }
-}
