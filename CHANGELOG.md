@@ -3,6 +3,36 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-16 (Menú móvil más compacto)
+
+### Changed
+
+- **El panel del menú hamburguesa ya no se come la pantalla al desplegar un submenú.** Medido con Chromium sobre `nosotros/index.html` con "Servicios" desplegado, el panel pasaba de 681px en una ventana de 900px de alto, y en un móvil de 390×740 los 664px no cabían y había que desplazarse dentro del propio menú.
+
+| Ventana | Antes | Después |
+|---|---|---|
+| 860×900 (escritorio redimensionado) | 681px (76%) | **451px (50%)** |
+| 700×900 | 681px (76%) | **451px (50%)** |
+| 620×900 | 681px (76%) | 473px (53%) |
+| 390×740 (móvil) | 664px, se desplazaba | **567px, cabe entero** |
+| 390×844 | 681px | 567px (67%) |
+| 360×640 | 564px, se desplazaba | 564px, se desplaza (a propósito) |
+
+- El arreglo tiene dos partes. La primera es densidad, y aplica a todos los anchos: baja el alto mínimo de las filas de 46px a 40px, el relleno de los enlaces, del rótulo "Menú" y del submenú, y los huecos entre ítems. Con eso solo, el móvil deja de desbordar.
+- La segunda son dos columnas para los ítems de cada submenú, pero **solo entre 560px y 860px**, que es la franja del escritorio redimensionado. Por debajo de 560px siguen en una sola columna porque en un teléfono no caben dos: a 559px cada ítem mediría 172px, insuficiente para el ícono, el título y la descripción. El enlace "Ver todos los servicios" o "Ver todos los cursos" sigue ocupando el ancho completo del panel.
+- **El área activable de los enlaces del menú baja de 46px a 40px de alto.** Sigue por encima del mínimo de 24px de WCAG 2.2 AA, pero es un cambio real de Comfort en un teléfono. Se acepta porque la alternativa, ganar toda la altura solo con las dos columnas, no funciona por debajo de 560px y por tanto no arreglaría el móvil.
+- **Se elimina el rótulo "Menú" y la cajita que lo contenía.** Era un rótulo redundante: el botón hamburguesa de la cabecera ya está a la vista y se convierte en una ✕ al pulsarse, así que el rótulo repite lo que el icono ya dice. Se borra el elemento entero, no solo el texto, y se borra también del generador de fichas para que la próxima no lo traiga de vuelta. Ahorra 40px exactos en todos los anchos. Con ello, en 390×740 el panel pasa de 607px a 567px y en 860×900 de 491px a 451px.
+- El cuadro del ícono **no se toca**: sigue en 36px con el SVG de 20px en móvil, como ya estaba, y en 44px con SVG de 24px en el mega-menú de escritorio. Las descripciones de cada ítem tampoco se ocultan: se midió que no dan altura una vez ajustada la densidad, así que no hay que sacrificar contenido.
+
+### Notes
+
+- Los **360×640 siguen desplazándose por dentro, a propósito**, y en esa ventana quitar el rótulo no cambia nada: 564px antes y 564px después, porque ahí el alto lo manda el tope `max-height: calc(100dvh - 76px)` y no el contenido. Es un teléfono muy pequeño y el panel conserva su desplazamiento interno, que es el comportamiento que ya fija la spec. No es un pendiente. El motivo está anotado en `design.md` del change `menu-movil-mas-compacto`.
+- El mega-menú de escritorio no cambia: sigue con su panel de 460px, sus dos columnas, su ícono de 44px y su SVG de 24px. Todos los cambios están dentro del bloque `@media (max-width: 860px)` o en la media query nueva, que también topada a 860px.
+- El breakpoint de 860px, que decide entre el menú horizontal de escritorio y el botón hamburguesa, no se mueve.
+- Cambio de **CSS y HTML, pero ningún texto, enlace, color ni dato de contacto**, que es lo que exige el requisito "Contenido sin cambios" de la spec `diseno-responsive`. El HTML solo pierde el `<li>` del rótulo del menú, en las 18 páginas y en el generador. JavaScript, cero cambios.
+- Verificado con Chromium en las 18 páginas del sitio en los anchos 360, 390, 768, 860, 1024 y 1280px, más 559 y 560 para el umbral: 112 combinaciones, sin desbordes horizontales, sin contenido cortado y sin errores de JavaScript. El panel más alto de todo el recorrido es 578px en el Home a 360px de ancho.
+
+
 ## 2026-10-16 (Velo de atenuación y bloqueo de scroll en el menú móvil)
 
 ### Added

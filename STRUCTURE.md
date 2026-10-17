@@ -15,7 +15,7 @@ Proniciudad/
 │   ├── index.html                 # Listado con pestañas Asíncronos / En vivo
 │   └── <slug>/index.html          # Ficha de detalle de cada curso (8 fichas)
 ├── assets/
-│   ├── css/main.css               # Único stylesheet del sitio (variables de la paleta institucional)
+│   ├── css/main.css               # Único stylesheet del sitio (variables de la paleta institucional, media query propia para la franja 560–860px del menú móvil)
 │   ├── js/main.js                 # Menú móvil (acordeón, Escape, cierre al tocar el velo) + mega-menú
 │   ├── js/cursos-data.js          # Datos de los 8 cursos + constantes de contacto del sitio
 │   ├── fonts/                     # Outfit (woff2 variable, subconjunto latin)
