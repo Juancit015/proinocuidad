@@ -3,6 +3,24 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-16 (Texto institucional y efecto fijo en la sección Nosotros del Home)
+
+### Changed
+
+- **La sección "¿Quiénes somos?" del Home cuenta ahora la historia de la empresa en tres párrafos**: quién es Proinocuidad y dónde está, a qué contribuye con sus más de 1,000 personas capacitadas, y qué soluciones ofrece con qué enfoque. Sustituyen al párrafo anterior, que volvía a decir la razón social, el RUC y la ubicación.
+- **Los detalles técnicos se conservan** en un párrafo aparte debajo: BPM, POES, HACCP (Codex y FSSC 22000), programas de higiene y saneamiento, legislación sanitaria, trazabilidad, formación de auditores internos, y la elaboración e implementación de manuales y documentación técnica. También se mantiene la fecha de fundación, 29 de octubre de 2023, que el texto nuevo no traía.
+- El nombre de la empresa va en negrita al principio del primer párrafo, como estaba antes. La cita institucional y el botón "Conócenos" quedan igual.
+- **La imagen de la sección se queda fija en escritorio** mientras se lee el texto de al lado, con el mismo patrón que ya usa la imagen de la página Nosotros: `position: sticky`, `top: 110px` y `align-self: start`. La regla se limita al Home por su `aria-labelledby="nosotros-titulo"`, porque hay otras seis secciones del sitio con la misma estructura `.identidad-grid` que no deben verse afectadas. En móvil no se aplica, como el resto del sitio.
+
+### Notes
+
+- El texto no tocó el `title`, la meta description, el canonical ni el `h1`, que quedan exactamente como estaban. La sección pasó de 2 párrafos a 5 y sigue con un solo `h1`.
+- **El hero del Home dice casi lo mismo** que los dos primeros párrafos nuevos: "Somos Proinocuidad..., especializada en la gestión de la calidad e inocuidad alimentaria. Con más de 1000 personas capacitadas, ayudamos a profesionales, estudiantes y empresas del rubro alimentario...". Es una repetición que ya existía en el sentido inverso, pero ahora es literal. Pendiente de decidir si el hero se acorta.
+- Los 5 párrafos tienen `margin: 0`, o sea que se leen como un bloque corrido sin separación. Con 2 párrafos no se notaba; con 5 cuesta distinguir dónde acaba cada idea. Se arregla con una regla de margen, si el dueño lo quiere.
+- Ahora conviven tres formatos de la misma cifra en el sitio: "1000" en el hero y en la franja de cifras, "1,000" en el texto nuevo y en la página Nosotros. Conviene unificar.
+- Verificado con Chromium a 1280px y 390px: sin desbordes horizontales, la imagen se mantiene a 110px durante el recorrido y suelta al terminar la sección, y las otras seis secciones con `.identidad-grid` siguen sin sticky (la de la página Nosotros lo mantiene solo al abrir su bloque "Ver más", como antes).
+
+
 ## 2026-10-16 (Fuera el proyecto ajeno que estaba dentro del repo)
 
 ### Removed

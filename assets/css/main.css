@@ -391,6 +391,12 @@ section:has(> .identidad-grid) { overflow-x: clip; }
 .ampliar p { margin-top: 12px; }
 @media (min-width: 861px) {
   .identidad-grid:has(.ampliar[open]) > img { position: sticky; top: 110px; align-self: start; }
+  /* En el Home la imagen de "¿Quiénes somos?" se queda fija mientras se lee el
+     texto de al lado. Se localiza por su aria-labelledby para no aplicar el
+     efecto a las otras seis secciones del sitio que también usan .identidad-grid. */
+  section.identidad[aria-labelledby="nosotros-titulo"] .identidad-grid > img {
+    position: sticky; top: 110px; align-self: start;
+  }
 }
 
 /* ---------- Servicios: marco uniforme de imágenes y cierre a la guía ---------- */
