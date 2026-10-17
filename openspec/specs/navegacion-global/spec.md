@@ -38,7 +38,11 @@ Al colocar el puntero sobre un elemento que tiene submenús, la barra de navegac
 
 #### Scenario: Móvil
 - **WHEN** el usuario ve el menú en una pantalla de 860px o menos
-- **THEN** los ítems de cada submenú se muestran en una sola columna
+- **THEN** los ítems de cada submenú se muestran en una sola columna por debajo de 560px de ancho, y en dos columnas entre 560px y 860px
+
+#### Scenario: Escritorio redimensionado
+- **WHEN** el usuario reduce la ventana del navegador hasta una anchura de entre 560px y 860px y despliega un submenú del menú hamburguesa
+- **THEN** los ítems del submenú se reparten en dos columnas, el enlace de todos los servicios o cursos ocupa el ancho completo del panel, y el panel no llega al borde inferior de la ventana
 
 ### Requirement: Aula Virtual en pestaña nueva
 El enlace "Aula Virtual" SHALL dirigir a `https://proinocuidad.com/login/` abierto en una pestaña nueva.
@@ -106,6 +110,21 @@ En el panel del menú hamburguesa SHALL NOT existir un botón de cerrar propio, 
 #### Scenario: Los demás cierres siguen disponibles
 - **WHEN** el menú está abierto
 - **THEN** se sigue cerrando con la tecla Escape y tocando el fondo atenuado, además de con el propio botón hamburguesa
+
+### Requirement: El panel desplegado del menú móvil cabe en la pantalla
+Con un submenú desplegado, el panel del menú hamburguesa SHALL caber entero entre la cabecera y el borde inferior en pantallas de 360px de ancho o más y 700px de alto o más, sin desplazarse dentro. Si la ventana es más baja que el contenido, SHALL conservar su desplazamiento interno para que todos sus enlaces sigan siendo alcanzables. Cada enlace del menú SHALL medir al menos 40px de alto, y los ítems de submenú SHALL conservar su cuadro de icono y su SVG.
+
+#### Scenario: El panel cabe entero en un móvil habitual
+- **WHEN** el usuario abre el menú hamburguesa en una pantalla de 390×740 y despliega un submenú
+- **THEN** el panel completo queda visible entre la cabecera y el borde inferior, sin barra de desplazamiento dentro
+
+#### Scenario: El panel se desplaza solo cuando no cabe
+- **WHEN** el usuario despliega un submenú en una ventana más baja que el contenido, como 360×640
+- **THEN** el panel se desplaza por su propio contenido y todos sus enlaces siguen siendo alcanzables
+
+#### Scenario: Los enlaces siguen siendo activables
+- **WHEN** el usuario ve el panel desplegado en cualquier anchura de móvil
+- **THEN** cada enlace del menú tiene al menos 40px de alto y cada ítem de submenú mantiene su cuadro de icono con el SVG dentro, sin perder el icono ni el texto
 
 ### Requirement: Cabecera fija en todas las pantallas
 La cabecera (`.site-header`) SHALL usar `position: sticky` en todas las pantallas, sin excepciones por ancho de pantalla. `sticky` SHALL conservarse como valor también en móvil porque es un valor posicionado y mantiene el contexto de anclaje del panel del menú móvil desplegable, que depende de él. El menú hamburguesa SHALL seguir abriendo y cerrando el menú en móvil, y el panel SHALL seguir anclado a la cabecera.
