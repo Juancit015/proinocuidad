@@ -7,11 +7,11 @@ Definir la base técnica de SEO del sitio: mapa del sitio, reglas de rastreo, UR
 ## Requirements
 
 ### Requirement: Mapa del sitio
-El sitio SHALL publicar un archivo `sitemap.xml` en la raíz de `https://proinocuidad.com` que liste las 13 páginas públicas: Inicio, Nosotros, Servicios, Noticias, Cursos y las 8 fichas de curso. Cada URL SHALL ser absoluta, usar `https` y terminar en `/`. Las páginas `_archivo/` y los recursos no HTML SHALL NOT aparecer en el mapa.
+El sitio SHALL publicar un archivo `sitemap.xml` en la raíz de `https://proinocuidad.com` que liste las 18 páginas públicas: Inicio, Nosotros, Servicios, Noticias, Cursos y las 8 fichas de curso. Cada URL SHALL ser absoluta, usar `https` y terminar en `/`. Las páginas `_archivo/` y los recursos no HTML SHALL NOT aparecer en el mapa.
 
 #### Scenario: Sitemap accesible
 - **WHEN** un rastreador solicita `https://proinocuidad.com/sitemap.xml`
-- **THEN** recibe un XML válido con 13 entradas `<url><loc>` y ninguna URL fuera del dominio
+- **THEN** recibe un XML válido con 18 entradas `<url><loc>` y ninguna URL fuera del dominio
 
 #### Scenario: Ficha de curso en el mapa
 - **WHEN** se revisa el sitemap

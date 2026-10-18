@@ -144,6 +144,18 @@ Errores de medición que ya se han cometido:
   convención; Apache o nginx sin configuración, no. Si toca el segundo caso, hace falta
   un `.htaccess` con `ErrorDocument 404 /404.html`.
 
+## Archivos que se quedan viejos si nadie los actualiza
+
+- **`llms.txt` lista las 18 páginas a mano, igual que `sitemap.xml`.** Añadir o
+  retirar una página obliga a tocar los dos. La comprobación es comparar sus URLs
+  como conjuntos: si `sitemap.xml` tiene 19 y `llms.txt` tiene 18, alguien se ha
+  olvidado de una. `404.html` no entra en ninguno de los dos.
+- Un `.txt` escrito a mano con una URL muerta es **peor que no tenerlo**: el
+  asistente la sigue y recibe un 404. Es el fallo más probable de estos archivos.
+- **El número de páginas vive en dos sitios**: el `sitemap.xml` y lo que dicen los
+  requisitos de `seo-base` y `diseno-responsive`. Ya se corrigieron: ambas
+  declaraban 13 cuando eran 18. Si cambia el número, cambian los tres.
+
 ## Datos que se repiten por todo el sitio
 
 Aparecen en 93 líneas de los HTML, así que tocarlos a mano es propenso a dejar incoherencias: WhatsApp `+51 981 365 982`, `administracion@proinocuidad.com`, RUC `20615307603`, Yape/Plin `+51 971 625 142`, Lun-Vie 8AM-8PM.

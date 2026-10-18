@@ -45,6 +45,8 @@ Proniciudad/
 | Colores institucionales (azul #101477, rojo #AD343B, gris #252525) | variables `:root` en `assets/css/main.css` |
 | Estilos de tarjetas, fichas, pestañas y pagos | `assets/css/main.css` |
 | Decoración de fondo del hero (círculo rojo) | `assets/css/main.css`, regla `.hero > .container` |
+| Guía del sitio para asistentes de IA | `llms.txt` y `llms-full.txt`, ambos escritos a mano |
+| Número de páginas del sitemap | `seo-base` y `diseno-responsive` lo declaran en sus requisitos; hoy son 18 |
 | Reparto de los botones de acción del hero | `assets/css/main.css`, franjas `max-width: 559px` y `560–860px` |
 
 ## Mensajes prellenados de WhatsApp
@@ -126,6 +128,32 @@ quede por encima de la decoración a propósito, declara su propio `z-index`.
 Histórico: antes de esa regla, el Home se salvaba porque `.hero-grid` ya traía
 `z-index: 2` por su layout de dos columnas, y el 404 no, porque usa un `.container`
 normal. El defecto solo se nota por debajo de unos 600px.
+
+## Archivos para rastreadores en la raíz
+
+La raíz publica cuatro archivos de texto para robots y asistentes. Los tres
+primeros los mantienen una persona a mano; el último se comprueba por
+contraste, no a ojo.
+
+```
+  robots.txt      permite el rastreo y declara la ruta del sitemap
+  sitemap.xml     las 18 páginas públicas, con URL absoluta y barra final
+  llms.txt        índice de las mismas 18 páginas, para asistentes de IA
+  llms-full.txt   el contenido de las páginas clave, ya en Markdown
+```
+
+**El riesgo de los dos últimos es quedarse viejos.** `llms.txt` lista páginas a
+mano, así que **añadir o retirar una página obliga a actualizarlo**: su error más
+probable es quedarse con una URL que ya no existe, y eso es peor que no tener el
+archivo, porque el asistente la sigue y recibe un 404. `sitemap.xml` y `llms.txt`
+deben contener **exactamente las mismas 18 URLs**, así que la comprobación es una
+comparación de conjuntos entre los dos. `404.html` no entra en ninguno: no es una
+página indexable.
+
+El formato sigue la versión 2 del estándar llmstxt.org, que recomienda que los
+enlaces apunten a versiones `.md` de las páginas. Aquí no se generan: el contenido
+viaja dentro de `llms-full.txt`. Es una desviación consciente, con la alternativa
+descartada escrita en el change archivado.
 
 ## Assets: convenciones
 

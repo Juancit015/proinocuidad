@@ -37,7 +37,7 @@ En la sección de cursos (`cursos/index.html`), en las tarjetas de Servicios (`s
 - **THEN** la disposición de tarjetas mantiene el número de columnas actual (Inicio mantiene 4 columnas)
 
 ### Requirement: Auditoría responsive
-La auditoría SHALL revisar las 13 páginas del sitio en los anchos 360, 390, 768, 860, 1024 y 1280px. Por cada hallazgo, el informe SHALL indicar página, anchos afectados, selector o sección, descripción, captura de referencia y estado: corregido, pendiente o sin cambios.
+La auditoría SHALL revisar las 18 páginas del sitio en los anchos 360, 390, 768, 860, 1024 y 1280px. Por cada hallazgo, el informe SHALL indicar página, anchos afectados, selector o sección, descripción, captura de referencia y estado: corregido, pendiente o sin cambios.
 
 #### Scenario: Informe de auditoría
 - **WHEN** se completa la auditoría

@@ -3,6 +3,53 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-18 (Guía del sitio para asistentes de IA)
+
+### Added
+
+- **`llms.txt` en la raíz del sitio**, con el formato del estándar llmstxt.org
+  versión 2: un H1 con el nombre de la empresa, un blockquote con el resumen, un
+  párrafo de contexto y cuatro secciones de enlaces absolutos. Contiene las 18
+  páginas públicas, repartidas en Servicios (5), Cursos (9), Información (2) y
+  Optional (2).
+- **`llms-full.txt` en la raíz**, con el contenido de las páginas clave ya en
+  Markdown: la descripción de la empresa, los cuatro servicios de consultoría y los
+  ocho programas con su duración, modalidad, tipo de certificado e inversión. Cada
+  sección indica a qué página del sitio corresponde.
+
+### Changed
+
+- **`seo-base` y `diseno-responsive` dejan de decir "13 páginas"**: el sitio tiene
+  18. En `seo-base` era peor de lo que parecía, porque su propio escenario exigía
+  "13 entradas `<url><loc>`" mientras el archivo tenía 18, de modo que la spec se
+  contradecía con su propio `sitemap.xml`. Quien la leyera creería que sobran
+  cinco páginas.
+
+### Notes
+
+- **Añadir o retirar una página obliga a actualizar `llms.txt`.** Es un archivo
+  escrito a mano, y su error más probable es quedarse viejo: una URL muerta es
+  peor que no tener el archivo, porque el asistente la sigue y recibe un 404. La
+  verificación contrasta sus URLs contra `sitemap.xml` como conjuntos.
+- **Los dos archivos están verificados por URL, no a ojo**: las 18 URLs de
+  `llms.txt` coinciden exactamente con las 18 del sitemap, sin una de más ni una de
+  menos, todas absolutas y con barra final. Las 17 referencias de `llms-full.txt`
+  resuelven a archivos reales.
+- **El 404 no aparece en ninguno de los dos archivos**, ni el enlace de Aula
+  Virtual, que sigue apuntando al login del WordPress viejo.
+- **No se generó ninguna versión `.md` de las páginas**, que es lo que recomienda el
+  estándar v2. El contenido viaja dentro de `llms-full.txt` para evitar mantener 18
+  ficheros sincronizados con un generador que hoy produce las fichas. La
+  alternativa descartada está escrita en el design del change.
+- El reparto de secciones resuelve una contradicción del design, que colocaba
+  Noticias y la página pilar a la vez en Información y en Optional. Con cuatro
+  secciones obligatorias y 18 páginas, cada una va en exactamente una: Optional
+  guarda el contenido editorial, que es lo que el estándar define como secundario.
+- **Pendiente al publicar:** pedir `https://proinocuidad.com/llms.txt` a un
+  asistente y comprobar que responde preguntas sobre cursos y servicios sin abrir
+  las páginas HTML. No se puede probar antes, porque el dominio sigue sirviendo el
+  WordPress viejo.
+
 ## 2026-10-18 (Decoración del hero y orden de los botones)
 
 ### Fixed

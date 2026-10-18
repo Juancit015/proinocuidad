@@ -1,0 +1,153 @@
+# Proinocuidad — contenido completo
+
+> Versión en texto plano de las páginas de Proinocuidad, para que un asistente pueda responder sin abrir el sitio. El índice de páginas está en `llms.txt`.
+
+Cada sección indica a qué página del sitio corresponde su contenido. Los datos están copiados de las páginas reales.
+
+## La empresa
+
+*Contenido de: https://proinocuidad.com/ y https://proinocuidad.com/nosotros/*
+
+Somos Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L., con RUC 20615307603, empresa peruana con sede en Trujillo, La Libertad, especializada en la gestión de la calidad e inocuidad alimentaria.
+
+Con más de 1,000 personas capacitadas, contribuimos al fortalecimiento de las competencias de profesionales, estudiantes y empresas del sector alimentario, promoviendo la producción y manipulación de alimentos seguros, el cumplimiento de la normativa sanitaria vigente y la mejora continua de los procesos.
+
+Brindamos soluciones de capacitación y consultoría técnica adaptadas a las necesidades de nuestros clientes, con un enfoque práctico, actualizado y orientado a resultados. Nuestro compromiso es impulsar una cultura de inocuidad alimentaria que contribuya a proteger la salud de los consumidores y a fortalecer la competitividad de las empresas.
+
+Fundada el 29 de octubre de 2023, dictamos cursos y diplomados virtuales sobre BPM, POES, HACCP (Codex y FSSC 22000), programas de higiene y saneamiento, legislación sanitaria, trazabilidad y formación de auditores internos; y elaboramos e implementamos manuales y documentación técnica para establecimientos de alimentos.
+
+Valores declarados: "Compromiso con la salud pública, rigor técnico, ética profesional, mejora continua y cercanía con el cliente."
+
+## Servicios de consultoría
+
+*Contenido de: https://proinocuidad.com/servicios/*
+
+### Trámite de registro sanitario DIGESA
+
+*Contenido de: https://proinocuidad.com/servicios/registro-sanitario-digesa/*
+
+Trámite de registro sanitario de alimentos y bebidas en Perú. Incluye asesoría técnica y acompañamiento documental para el producto.
+
+### Certificación HACCP
+
+*Contenido de: https://proinocuidad.com/servicios/certificacion-haccp/*
+
+Asesoría en la certificación de Principios Generales de Higiene y en la Validación Técnica Oficial del Plan HACCP. Se elabora el expediente y se cubren los requisitos.
+
+### Implementación de FSSC 22000
+
+*Contenido de: https://proinocuidad.com/servicios/implementacion-fssc-22000/*
+
+Implementación de sistemas de gestión de inocuidad con FSSC 22000, ISO 22000 e ISO 9001. Incluye documentación, capacitación y acompañamiento en la auditoría.
+
+### Implementación BRCGS Food Safety
+
+*Contenido de: https://proinocuidad.com/servicios/brcgs-food-safety/*
+
+Implementación de sistemas de gestión con BRCGS Food Safety. Incluye documentación, capacitación y acompañamiento durante la auditoría de certificación.
+
+## Cursos
+
+*Contenido de: https://proinocuidad.com/cursos/*
+
+Los ocho cursos y el diplomado se imparten en modalidad asíncrona (grabada) y emiten certificado digital con código QR. La inversión se publica en soles (S/) y en dólares (US$).
+
+### Diplomado de Especialización: Gestión de la Calidad e Inocuidad en la Industria Alimentaria
+
+*Contenido de: https://proinocuidad.com/cursos/diplomado-gestion-calidad-e-inocuidad/*
+
+Diplomado de seis sesiones sobre gestión de la calidad e inocuidad en la industria alimentaria: HACCP, ISO 9001, ISO 22000 y BRCGS.
+
+- Duración: 384 horas académicas
+- Modalidad: asíncrona (grabada)
+- Certificado: digital con código QR
+- Inversión: S/ 120 · US$ 37
+
+### Legislación Sanitaria de Alimentos Nacional e Internacional
+
+*Contenido de: https://proinocuidad.com/cursos/legislacion-sanitaria-alimentos/*
+
+Curso de tres sesiones sobre la normativa sanitaria de alimentos en el Perú y el marco internacional.
+
+- Duración: 40 horas académicas
+- Modalidad: asíncrona (grabada)
+- Certificado: digital con código QR
+- Inversión: S/ 45 · US$ 15
+
+### Implementación y Auditoría de las BPM, Higiene y Saneamiento, POES, POE y Plan HACCP
+
+*Contenido de: https://proinocuidad.com/cursos/implementacion-auditoria-bpm-poes-poe-plan-haccp/*
+
+Curso de tres sesiones sobre implementación y auditoría de BPM, higiene y saneamiento, POES, POE y plan HACCP.
+
+- Duración: 40 horas académicas
+- Modalidad: asíncrona (grabada)
+- Certificado: digital con código QR
+- Inversión: S/ 45 · US$ 15
+
+### HACCP: Implementación y Certificación en Perú (DIGESA / SENASA)
+
+*Contenido de: https://proinocuidad.com/cursos/haccp-implementacion-certificacion-digesa-senasca/*
+
+Curso de tres sesiones para implementar y certificar un sistema HACCP según DIGESA y SENASA en Perú.
+
+- Duración: 40 horas académicas
+- Modalidad: asíncrona (grabada)
+- Certificado: digital con código QR
+- Inversión: S/ 45 · US$ 15
+
+### BPM y Programas Prerrequisitos según Codex 2022 e ISO 22002-1:2009
+
+*Contenido de: https://proinocuidad.com/cursos/bpm-prerrequisitos-codex-2022-iso-22002-1/*
+
+Curso de tres sesiones sobre buenas prácticas de manufactura y programas prerrequisitos según Codex 2022 e ISO 22002-1:2009.
+
+- Duración: 40 horas académicas
+- Modalidad: asíncrona (grabada)
+- Certificado: digital con código QR
+- Inversión: S/ 45 · US$ 15
+
+### Programas de Higiene y Saneamiento en la Industria Alimentaria
+
+*Contenido de: https://proinocuidad.com/cursos/programas-higiene-saneamiento/*
+
+Curso de tres sesiones sobre higiene y saneamiento en la industria alimentaria: agua, limpieza, plagas y residuos.
+
+- Duración: 40 horas académicas
+- Modalidad: asíncrona (grabada)
+- Certificado: digital con código QR
+- Inversión: S/ 45 · US$ 15
+
+### Sistema HACCP según FSSC 22000 y Codex Alimentarius Revisión 2022
+
+*Contenido de: https://proinocuidad.com/cursos/sistema-haccp-fssc-22000-codex-2022/*
+
+Curso de tres sesiones sobre el sistema HACCP según FSSC 22000 y el Codex Alimentarius revisión 2022.
+
+- Duración: 40 horas académicas
+- Modalidad: asíncrona (grabada)
+- Certificado: digital con código QR
+- Inversión: S/ 45 · US$ 15
+
+### Formación de Auditor Interno del Sistema HACCP
+
+*Contenido de: https://proinocuidad.com/cursos/formacion-auditor-interno-haccp/*
+
+Curso de tres sesiones para planificar, ejecutar y cerrar auditorías internas del sistema HACCP según ISO 19011.
+
+- Duración: 40 horas académicas
+- Modalidad: asíncrona (grabada)
+- Certificado: digital con código QR
+- Inversión: S/ 45 · US$ 15
+
+## Contacto
+
+*Contenido de: https://proinocuidad.com/*
+
+- WhatsApp: +51 981 365 982
+- Correo: administracion@proinocuidad.com
+- Horario de atención: lunes a viernes de 8 AM a 8 PM
+- Ubicación: Trujillo, La Libertad, Perú
+- Medios de pago: Yape, Plin, BBVA, Culqi, PayPal y Western Union
+
+El RUC 20615307603 aparece en la sección «La empresa», junto a la razón social.

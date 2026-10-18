@@ -1,0 +1,43 @@
+# Proinocuidad
+
+> Empresa de consultoría y capacitación en inocuidad alimentaria en Trujillo, Perú. Dicta cursos y diplomados sobre BPM, HACCP, FSSC 22000 y normativa sanitaria, y asesora en la certificación y el registro sanitario de alimentos.
+
+Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L. (RUC 20615307603) es una empresa de La Libertad, Perú, fundada el 29 de octubre de 2023. Trabaja en dos líneas: capacitación (cursos y diplomados) y consultoría (implementación de sistemas de gestión y trámites sanitarios). Todos sus cursos se imparten en modalidad asíncrona y emiten certificado digital con código QR.
+
+Contacto: WhatsApp +51 981 365 982, correo administracion@proinocuidad.com, de lunes a viernes de 8 AM a 8 PM, en Trujillo (La Libertad, Perú).
+
+## Servicios
+
+Consultoría para empresas del sector alimentario. Cada página describe el servicio, qué incluye y en qué casos aplica.
+
+- [Consultoría y capacitación en inocuidad alimentaria](https://proinocuidad.com/servicios/): Capacitación in house, implementación de normativa sanitaria, sistemas de gestión y trámite de registro sanitario. Entrada a los cuatro servicios de consultoría.
+- [Trámite de registro sanitario DIGESA](https://proinocuidad.com/servicios/registro-sanitario-digesa/): Asesoría técnica y acompañamiento documental para registrar alimentos y bebidas en Perú.
+- [Certificación HACCP](https://proinocuidad.com/servicios/certificacion-haccp/): Validación técnica oficial del plan HACCP y elaboración del expediente de certificación.
+- [Implementación FSSC 22000](https://proinocuidad.com/servicios/implementacion-fssc-22000/): Implementación de sistemas de gestión de inocuidad con FSSC 22000, ISO 22000 e ISO 9001, con acompañamiento en la auditoría.
+- [Implementación BRCGS Food Safety](https://proinocuidad.com/servicios/brcgs-food-safety/): Documentación, capacitación y acompañamiento durante la auditoría de certificación BRCGS.
+
+## Cursos
+
+Ocho cursos y un diplomado, todos asíncronos y con certificado digital. El listado muestra la modalidad y las horas de cada uno.
+
+- [Cursos y diplomados de inocuidad alimentaria](https://proinocuidad.com/cursos/): Listado de los ocho cursos y del diplomado, con horas, modalidad e inversión. Entrada al detalle de cada programa.
+- [Diplomado en Gestión de la Calidad e Inocuidad en la Industria Alimentaria](https://proinocuidad.com/cursos/diplomado-gestion-calidad-e-inocuidad/): Diplomado de seis sesiones sobre gestión de la calidad e inocuidad: HACCP, ISO 9001, ISO 22000 y BRCGS.
+- [Legislación Sanitaria de Alimentos Nacional e Internacional](https://proinocuidad.com/cursos/legislacion-sanitaria-alimentos/): Tres sesiones sobre la normativa sanitaria de alimentos en Perú y el marco internacional.
+- [Implementación y Auditoría de BPM, POES, POE y Plan HACCP](https://proinocuidad.com/cursos/implementacion-auditoria-bpm-poes-poe-plan-haccp/): Tres sesiones sobre BPM, higiene y saneamiento, POES, POE y plan HACCP.
+- [HACCP: Implementación y Certificación en Perú (DIGESA / SENASA)](https://proinocuidad.com/cursos/haccp-implementacion-certificacion-digesa-senasca/): Tres sesiones para implementar y certificar un sistema HACCP según DIGESA y SENASA.
+- [BPM y Programas Prerrequisitos según Codex 2022 e ISO 22002-1](https://proinocuidad.com/cursos/bpm-prerrequisitos-codex-2022-iso-22002-1/): Tres sesiones sobre BPM y programas prerrequisitos según Codex 2022 e ISO 22002-1.
+- [Programas de Higiene y Saneamiento en la Industria Alimentaria](https://proinocuidad.com/cursos/programas-higiene-saneamiento/): Tres sesiones sobre agua, limpieza, plagas y residuos en la industria alimentaria.
+- [Sistema HACCP según FSSC 22000 y Codex Alimentarius Revisión 2022](https://proinocuidad.com/cursos/sistema-haccp-fssc-22000-codex-2022/): Tres sesiones sobre el sistema HACCP según FSSC 22000 y el Codex Alimentarius revisión 2022.
+- [Formación de Auditor Interno del Sistema HACCP](https://proinocuidad.com/cursos/formacion-auditor-interno-haccp/): Tres sesiones para planificar, ejecutar y cerrar auditorías internas según ISO 19011.
+
+## Información
+
+- [Inicio](https://proinocuidad.com/): Presentación de la empresa, sus cifras y sus líneas de trabajo.
+- [Nosotros](https://proinocuidad.com/nosotros/): Razón social, RUC, fecha de fundación, misión, visión y valores.
+
+## Optional
+
+Contenido editorial. Un asistente con poco contexto puede saltárselo sin perder las respuestas sobre servicios y cursos.
+
+- [Actualidad en inocuidad alimentaria](https://proinocuidad.com/noticias/): Noticias y eventos del sector alimentario y de la regulación sanitaria vigente en Perú.
+- [Inocuidad alimentaria: qué es y cómo se gestiona](https://proinocuidad.com/inocuidad-alimentaria/): Guía básica sobre inocuidad alimentaria, sus programas (BPM, POES, HACCP) y la normativa peruana.
