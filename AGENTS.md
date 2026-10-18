@@ -81,9 +81,31 @@ Errores de medición que ya se han cometido:
 - **Las trampas de especificidad son reales.** `.nav-menu .nav-drop.abierto > .mega-panel.mega-panel-compacto` (5 clases) anula en silencio a un `.mega-panel-compacto` (1 clase). Una regla puede estar en el archivo y no hacer absolutamente nada: por eso se cambió una y no se notó hasta medir el `padding` computado. **Verificar siempre con `getComputedStyle`, nunca confiando en el CSS escrito.**
 - Los pseudo-elementos no son objetos de evento: al tocar uno, el clic tiene como destino el elemento que lo origina. Por eso "cerrar al tocar fuera" pregunta por el panel y el botón, no por "dentro de la cabecera".
 - Para medir un pseudo-elemento: `getComputedStyle(el, '::after')`.
+- **Un pseudo-elemento posicionado se pinta ENCIMA del contenido normal.** `.hero::after`
+  (el círculo rojo) no tiene `z-index`, así que sin protección tiñe el texto. Lo
+  resuelve `.hero > .container { position: relative; z-index: 2 }`. Un hero nuevo queda
+  cubierto por usar esa estructura: no hace falta una regla por página.
 - **Los botones apilados se copian de `.matricula-cta-group`**, no se inventan: columna con
-  los botones a `width: 100%` por debajo de 860px. Los grupos que ya funcionan son
-  `.matricula-cta-group`, `.card-acciones` y `.card-body`; **no tocarlos**.
+  los botones a `width: 100%`. Los grupos que ya funcionan son `.matricula-cta-group`,
+  `.card-acciones` y `.card-body`; **no tocarlos**.
+- **`.hero-acciones` va en tres franjas, no en dos**: columna hasta 559px, rejilla de dos
+  columnas de 560 a 860px, y nada por encima. El corte de 560px es aritmético: a 390px
+  una columna de dos sería de 172px y las etiquetas necesitan hasta 279px. Si se sube el
+  corte sin comprobar eso, aparecen botones con el texto partido.
+- **Los botones de un grupo ocupan toda su columna, nunca su ancho natural.** Si se
+  dimensionan por su texto (`width: auto`) vuelven las filas desparejas, que es
+  justamente el defecto que esto arregla.
+- **El icono de WhatsApp es relleno y vive en `SVG_WA`**, no en `SVG_BTN_*`: es una marca,
+  no una acción, y el relleno es lo que la hace reconocible. Los 21 botones de WhatsApp
+  del sitio lo usan así. No volver a crear un icono de WhatsApp en trazo.
+- **El orden de los botones del 404 está fijado en su especificación**
+  (`pagina-404`, "Orden de las rutas de salida"). Si hay que cambiarlo, se cambian la
+  spec y el generador, no solo el generador.
+- **Para medir si un texto llega a un decorativo, medir la tinta, no la caja.** La caja de
+  un bloque `h1` ocupa todo el ancho del contenedor mida lo que mida su texto: el del 404
+  mide 1229px aunque su texto termine en 651. Comparar cajas da falsos positivos. Y
+  cualquier comprobación de este fallo va **a 390px**: por encima de unos 600px el
+  defecto es invisible.
 
 ### Restricciones que no hay que violar
 

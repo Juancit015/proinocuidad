@@ -116,9 +116,6 @@ const SVG_BTN_CURSOS = svgBtn(
 const SVG_BTN_SERVICIOS = svgBtn(
   '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/>',
 );
-const SVG_BTN_WA_BTN = svgBtn(
-  '<path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.6 9.2c.2-.5.5-.5.8-.5h.6c.2 0 .5 0 .7.5l.8 1.9c.1.3 0 .5-.1.7l-.4.5c-.1.2-.2.4 0 .7a7 7 0 0 0 3 2.6c.3.1.5.1.7-.1l.5-.6c.2-.2.4-.2.7-.1l1.8.9c.3.1.4.3.4.5v.6c-.1.5-.5 1-1 1.1-1 .3-2.2.2-4.6-1.1a11 11 0 0 1-4.3-4.4c-.5-1-.6-1.9-.6-2.4 0-.5.3-1.1.8-1.8Z"/>',
-);
 const SVG_BTN_NOSOTROS = svgBtn(
   '<path d="M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20"/><circle cx="9" cy="7" r="3.2"/><path d="M22 20v-1.5a4 4 0 0 0-3-3.8"/><path d="M16.5 4.2a3.2 3.2 0 0 1 0 5.6"/>',
 );
@@ -773,9 +770,9 @@ ${cabecera(ruta, cursos)}
       </p>
       <div class="hero-acciones">
         <a class="btn btn-blanco" href="${ruta}index.html">${SVG_BTN_CASA}Volver al inicio</a>
+        <a class="btn btn-rojo" href="${waContacto}" target="_blank" rel="noopener">${SVG_WA}Escríbenos por WhatsApp</a>
         <a class="btn btn-blanco" href="${cursos}index.html">${SVG_BTN_CURSOS}Ver los cursos</a>
         <a class="btn btn-blanco" href="${ruta}servicios/index.html">${SVG_BTN_SERVICIOS}Ver los servicios</a>
-        <a class="btn btn-rojo" href="${waContacto}" target="_blank" rel="noopener">${SVG_BTN_WA_BTN}Escríbenos por WhatsApp</a>
       </div>
     </div>
   </section>

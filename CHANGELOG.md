@@ -3,6 +3,67 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-18 (Decoración del hero y orden de los botones)
+
+### Fixed
+
+- **El círculo rojo del hero ya no tapa el texto.** `.hero::after` es un elemento
+  posicionado sin `z-index`, así que el CSS lo pintaba encima del contenido de la
+  caja. El Home se salvaba de casualidad, porque su contenido usa `.hero-grid`, que
+  sí lleva `z-index: 2`; el 404 usa un `.container` normal y quedaba teñido. Ahora
+  `.hero > .container` sube el contenido por encima de la decoración, así que
+  cualquier hero queda protegido por usar esa estructura, sin importar qué
+  contenedor lleve dentro.
+- **Los botones de los heroes ya no dejan filas con huecos en móvil.** A 390px los
+  cuatro botones del 404 medían 173, 167, 183 y 253 px, y al envolver quedaban
+  filas con casi 190 px de vacío al lado. Ahora `.hero-acciones` se reparte en tres
+  franjas, sin huecos en ninguna:
+  - **por debajo de 560px**, una columna con los botones a ancho completo, que es el
+    patrón que ya usaba `.matricula-cta-group` en las fichas;
+  - **entre 560 y 860px**, dos columnas de igual anchura;
+  - **por encima de 860px**, la fila de siempre, sin cambios.
+- **El icono de WhatsApp del 404 pasa a relleno.** Al revisar el botón del Home se
+  pidió lo contrario, pero al medir resultó que los iconos relleno son la norma: 21
+  botones en 10 ficheros, y el único de trazo era el del 404. Se cambió el del 404
+  para que reutilice el mismo icono que las fichas y el Home, y se borró el de
+  trazo para que no queden dos. Los 21 no se tocan.
+
+### Changed
+
+- **El orden de las rutas de salida del 404**, que antes era accidental: ahora es
+  "Volver al inicio", "Escríbenos por WhatsApp", "Ver los cursos" y "Ver los
+  servicios". El botón rojo queda segundo, no primero, porque en una página de
+  error quien llega no está mirando para comprar. Los mismos cuatro botones, con
+  los mismos destinos y los mismos iconos: solo cambia el orden.
+- **El hero del Home en móvil**: sus dos botones pasan de una fila con hueco a una
+  columna a ancho completo por debajo de 560px, y a dos columnas parecidas a partir
+  de ahí.
+- **El corte en 560px lo decide la aritmética, no el gusto.** A 390px una columna de
+  dos sería de 172px, y las etiquetas del sitio necesitan entre 162 y 279px según la
+  fuente y el padding actuales: solo "Ver cursos" y "Nosotros" caben. Para que
+  "Escríbenos por WhatsApp" entrara habría que bajar la fuente a unos 10px, y acortar
+  las etiquetas está prohibido por el requisito "Contenido sin cambios" de la spec
+  `diseno-responsive`. Por eso dos columnas solo donde caben de verdad.
+- Entre 560 y 620px la etiqueta de WhatsApp se parte en dos líneas y esa fila sale
+  más alta. La rejilla iguala los altos de cada fila, así que no queda descuadrada.
+
+### Notes
+
+- El defecto de la decoración **solo se veía por debajo de unos 600px**. A partir de
+  ahí el título del hero es corto y queda a la izquierda, así que nunca alcanzaba el
+  círculo. Medido píxel a píxel: con el arreglo, cero píxeles rosados en los once
+  anchos entre 360 y 1280px; sin él, entre 544 y 1855 píxeles rosados de 360 a 600px.
+- Cualquier comprobación de este fallo tiene que hacerse a **390px**. A 1280px el
+  defecto es invisible y el escenario de la especificación se podría dar por bueno
+  sin haberlo arreglado. La regla por eso fija el ancho.
+- Comparar la caja del bloque `h1` con el área del círculo da un falso positivo: un
+  bloque ocupa todo el ancho del contenedor mida lo que mida su texto. El `h1` del 404
+  mide 1229px de ancho aunque su texto termine en 651.
+- Las páginas que no tienen hero no han cambiado: seis de ellas dan el mismo hash de
+  captura antes y después del cambio.
+- La nueva regla es del sistema de heroes, no de la página 404. La spec `pagina-404`
+  exige que no se añadan reglas "atribuibles a la página de error", y esta no lo es.
+
 ## 2026-10-18 (Página de error del sitio)
 
 ### Added

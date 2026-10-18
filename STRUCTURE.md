@@ -44,6 +44,8 @@ Proniciudad/
 | Textos de Nosotros / Servicios / Noticias | `nosotros/index.html`, `servicios/index.html`, `noticias/index.html` |
 | Colores institucionales (azul #101477, rojo #AD343B, gris #252525) | variables `:root` en `assets/css/main.css` |
 | Estilos de tarjetas, fichas, pestañas y pagos | `assets/css/main.css` |
+| Decoración de fondo del hero (círculo rojo) | `assets/css/main.css`, regla `.hero > .container` |
+| Reparto de los botones de acción del hero | `assets/css/main.css`, franjas `max-width: 559px` y `560–860px` |
 
 ## Mensajes prellenados de WhatsApp
 
@@ -108,6 +110,22 @@ y `../../cursos/index.html` apuntan al mismo sitio. Por eso la comprobación de 
 las fichas salen idénticas es `git status`, no una mirada.
 
 `404.html` **no** entra en `sitemap.xml` ni en el menú, y declara `noindex, follow`.
+
+## El hero y su decoración de fondo
+
+`.hero::after` dibuja un círculo rojo de 420px, con desenfoque, como detalle de
+fondo. Como es un elemento posicionado **sin `z-index`**, el CSS lo pinta encima del
+contenido normal de la caja: sin más, tiñe el texto.
+
+Por eso existe la regla `.hero > .container { position: relative; z-index: 2 }`. Con
+ella, cualquier hero queda protegido por usar esa estructura, sin importar qué
+contenedor lleve dentro. **Un hero nuevo no necesita su propia regla**: si su hijo
+directo es un `.container`, ya está cubierto. Si alguna vez hace falta que un hijo
+quede por encima de la decoración a propósito, declara su propio `z-index`.
+
+Histórico: antes de esa regla, el Home se salvaba porque `.hero-grid` ya traía
+`z-index: 2` por su layout de dos columnas, y el 404 no, porque usa un `.container`
+normal. El defecto solo se nota por debajo de unos 600px.
 
 ## Assets: convenciones
 
