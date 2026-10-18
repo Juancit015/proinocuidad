@@ -3,6 +3,48 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-18 (Página de error del sitio)
+
+### Added
+
+- **Se crea `404.html` en la raíz**, con la cabecera, el menú desplegable y el pie
+  idénticos al resto de páginas. Reutiliza `.hero`, `.cta-sub` y `.btn`, que ya
+  existían: **no se añadió ni una regla a `assets/css/main.css`**.
+- **`tools/generar-fichas.mjs` emite también el 404**, con las mismas funciones de
+  cabecera y pie que usan las fichas. El archivo **no se edita a mano**.
+- **`404.html` declara `noindex, follow` y canonical a sí misma.** El canonical es
+  inocuo y es lo que exige la especificación `seo-base` para cualquier página HTML
+  del sitio.
+- Siete botones de salida con icono SVG en línea (Inicio, Cursos, Servicios,
+  WhatsApp, Nosotros, Noticias, Inocuidad alimentaria) y cuatro iconos nuevos en el
+  catálogo de la especificación `iconografia`.
+
+### Changed
+
+- El generador recibe dos prefijos de ruta en lugar de uno, porque no significan lo
+  mismo: `ruta` es el camino hasta la raíz y `cursos` el camino hasta
+  `cursos/index.html`. Las fichas pasan `"../../"` y `"../"`; el 404 pasa `""` y
+  `"cursos/"`.
+
+### Notes
+
+- **El 404 no entra en `sitemap.xml`** ni en el menú. `sitemap.xml` sigue con las
+  mismas 18 URLs y `robots.txt` no cambia. Es lo correcto: un sitemap describe URLs
+  indexables.
+- **Las ocho fichas salen byte a byte idénticas.** Es la comprobación de que el
+  refactor del generador no rompió nada, y por eso se automatizó con `git status`.
+- En local, una ruta inexistente **no muestra el 404**: el servidor de desarrollo de
+  Python responde con su propia página "Error response". Para verlo hay que abrir
+  `/404.html` a mano. El 404 de verdad depende del hosting.
+- **Pendiente al publicar:** comprobar que el hosting sirve `404.html` con estado
+  404. El repositorio no tiene configuración de servidor, y sin ella la página puede
+  no mostrarse nunca. Si el hosting resulta ser Apache o nginx sin configurar,
+  hará falta un `.htaccess` con `ErrorDocument 404 /404.html`.
+- La primera versión del 404 dejaba una banda blanca de 26 px entre el hero y el pie:
+  `main { flex: 1 }` estira y el contenido era más corto que la ventana. Se resolvió
+  con una segunda sección `.cta-sub`, sin tocar el CSS. Medido a 0 px en las 18
+  páginas del sitio y en el 404.
+
 ## 2026-10-16 (Texto institucional y efecto fijo en la sección Nosotros del Home)
 
 ### Changed

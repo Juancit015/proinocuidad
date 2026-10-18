@@ -107,6 +107,27 @@ const SVG_BTN_EDITAR = svgBtn(
 const SVG_BTN_SOPORTE = svgBtn(
   '<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5Z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5Z"/>',
 );
+const SVG_BTN_CASA = svgBtn(
+  '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/>',
+);
+const SVG_BTN_CURSOS = svgBtn(
+  '<path d="M4 19V5"/><path d="M4 5h7a3 3 0 0 1 3 3v12a2.5 2.5 0 0 0-2.5-2.5H4"/><path d="M20 19V5h-6a3 3 0 0 0-3 3v12a2.5 2.5 0 0 1 2.5-2.5H20"/>',
+);
+const SVG_BTN_SERVICIOS = svgBtn(
+  '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/>',
+);
+const SVG_BTN_WA_BTN = svgBtn(
+  '<path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.6 9.2c.2-.5.5-.5.8-.5h.6c.2 0 .5 0 .7.5l.8 1.9c.1.3 0 .5-.1.7l-.4.5c-.1.2-.2.4 0 .7a7 7 0 0 0 3 2.6c.3.1.5.1.7-.1l.5-.6c.2-.2.4-.2.7-.1l1.8.9c.3.1.4.3.4.5v.6c-.1.5-.5 1-1 1.1-1 .3-2.2.2-4.6-1.1a11 11 0 0 1-4.3-4.4c-.5-1-.6-1.9-.6-2.4 0-.5.3-1.1.8-1.8Z"/>',
+);
+const SVG_BTN_NOSOTROS = svgBtn(
+  '<path d="M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20"/><circle cx="9" cy="7" r="3.2"/><path d="M22 20v-1.5a4 4 0 0 0-3-3.8"/><path d="M16.5 4.2a3.2 3.2 0 0 1 0 5.6"/>',
+);
+const SVG_BTN_NOTICIAS = svgBtn(
+  '<path d="M4 5h13v14a1 1 0 0 0 1 1H5a1 1 0 0 1-1-1V5Z"/><path d="M17 8h2a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2"/><path d="M7 8.5h7M7 12h7M7 15.5h4"/>',
+);
+const SVG_BTN_INOCUIDAD = svgBtn(
+  '<path d="M12 21s7.5-3.5 7.5-9.5V5.5L12 2.5 4.5 5.5V11.5C4.5 17.5 12 21 12 21Z"/><path d="M9 11.8l2.2 2.2L15.4 9.8"/>',
+);
 
 /* ---------- piezas del layout moderno ---------- */
 
@@ -251,7 +272,7 @@ ${curso.metodologiaIntro}
   );
 }
 
-function pagosBloque(curso) {
+function pagosBloque(curso, ruta) {
   const waExtranjero = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hola, deseo matricularme al ${curso.waCorto} desde el extranjero`)}`;
   return `<article class="ficha-seccion" id="medios-pago">
 <div class="ficha-seccion-header">
@@ -265,8 +286,8 @@ Elige la opción que más te acomode para realizar tu inversión:
 <div class="pago-card">
 <div class="pago-card-top">
 <div class="pago-card-logos">
-<img src="../../assets/img/pagos/yape-logo.webp" alt="Yape" class="pago-logo-yape">
-<img src="../../assets/img/pagos/plin-logo.webp" alt="Plin" class="pago-logo-plin">
+<img src="${ruta}assets/img/pagos/yape-logo.webp" alt="Yape" class="pago-logo-yape">
+<img src="${ruta}assets/img/pagos/plin-logo.webp" alt="Plin" class="pago-logo-plin">
 </div>
 <span class="pago-badge">Sin comisión</span>
 </div>
@@ -280,7 +301,7 @@ Elige la opción que más te acomode para realizar tu inversión:
 <div class="pago-card">
 <div class="pago-card-top">
 <div class="pago-card-logos">
-<img src="../../assets/img/pagos/bbva-logo.webp" alt="BBVA" class="pago-logo-bbva">
+<img src="${ruta}assets/img/pagos/bbva-logo.webp" alt="BBVA" class="pago-logo-bbva">
 </div>
 <span class="pago-badge">Banca Móvil</span>
 </div>
@@ -298,8 +319,8 @@ Elige la opción que más te acomode para realizar tu inversión:
 <div class="pago-card">
 <div class="pago-card-top">
 <div class="pago-card-logos">
-<img src="../../assets/img/pagos/paypal-logo.webp" alt="PayPal">
-<img src="../../assets/img/pagos/western-union-logo.webp" alt="Western Union" class="pago-logo-wu">
+<img src="${ruta}assets/img/pagos/paypal-logo.webp" alt="PayPal">
+<img src="${ruta}assets/img/pagos/western-union-logo.webp" alt="Western Union" class="pago-logo-wu">
 </div>
 <span class="pago-badge">Internacional</span>
 </div>
@@ -314,7 +335,7 @@ ${SVG_BTN_ENVIO}Solicitar link de PayPal / WU
 <div class="pago-card">
 <div class="pago-card-top">
 <div class="pago-card-logos">
-<img src="../../assets/img/pagos/culqi-logo.webp" alt="Culqi" class="pago-logo-culqi">
+<img src="${ruta}assets/img/pagos/culqi-logo.webp" alt="Culqi" class="pago-logo-culqi">
 </div>
 <span class="pago-badge">Tarjetas de Débito/Crédito</span>
 </div>
@@ -329,8 +350,8 @@ ${SVG_BTN_TARJETA}Pagar Online con Culqi
 </div>
 <div class="pago-qr-destacado">
 <div class="pago-qr-img-wrap">
-<a href="../../assets/img/qr-pago-bbva.webp" target="_blank" rel="noopener" title="Clic para ver afiche completo">
-<img src="../../assets/img/qr-pago-bbva-zoom.webp" alt="QR oficial de pago BBVA Proinocuidad">
+<a href="${ruta}assets/img/qr-pago-bbva.webp" target="_blank" rel="noopener" title="Clic para ver afiche completo">
+<img src="${ruta}assets/img/qr-pago-bbva-zoom.webp" alt="QR oficial de pago BBVA Proinocuidad">
 </a>
 </div>
 <div class="pago-qr-info">
@@ -434,7 +455,7 @@ El envío de este formulario representa la conformidad con los datos registrados
 </article>`;
 }
 
-function sidebar(curso) {
+function sidebar(curso, ruta) {
   const esDiplomado = curso.tipo === "diplomado";
   const etiqueta = esDiplomado ? "Diplomado Oficial" : "Curso Oficial";
   const incluyeTitulo = esDiplomado ? "Este Diplomado incluye:" : "Este Curso incluye:";
@@ -449,7 +470,7 @@ ${SVG_CHECK_GRANDE}
   return `<aside class="ficha-sidebar">
 <div class="card-matricula">
 <div class="card-matricula-flyer">
-<img src="../../assets/img/${curso.flyer}" alt="Flyer ${curso.waCorto} Proinocuidad">
+<img src="${ruta}assets/img/${curso.flyer}" alt="Flyer ${curso.waCorto} Proinocuidad">
 <span class="flyer-tag">${etiqueta}</span>
 </div>
 <div class="card-matricula-body">
@@ -499,7 +520,7 @@ ${SVG_BTN_SOPORTE}Contactar Asesor
 </aside>`;
 }
 
-function cuerpoModerno(curso) {
+function cuerpoModerno(curso, ruta) {
   return `<div class="ficha-layout">
 <div class="ficha-main-col">
 ${statsGrid(curso)}
@@ -508,11 +529,11 @@ ${objetivoBloque(curso)}
 ${egresadoBloque(curso)}
 ${temarioBloque(curso)}
 ${metodologiaBloque(curso)}
-${pagosBloque(curso)}
+${pagosBloque(curso, ruta)}
 ${inscripcionBloque(curso)}
 ${formInscripcionBloque(curso)}
 </div>
-${sidebar(curso)}
+${sidebar(curso, ruta)}
 </div>`;
 }
 
@@ -540,30 +561,13 @@ function jsonLdCurso(curso) {
   return JSON.stringify(datos, null, 2);
 }
 
-function ficha(curso) {
-  const url = `https://proinocuidad.com/cursos/${curso.slug}/`;
-  const tituloFicha = curso.seoTitle || (/Proinocuidad/.test(curso.title) ? curso.title : `${curso.title} | Proinocuidad`);
-  return `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${tituloFicha}</title>
-<meta property="og:title" content="${tituloFicha.replace(/"/g, "&quot;")}">
-<meta property="og:image" content="${img_og}">
-<meta property="og:url" content="${url}">
-<meta name="description" content="${curso.seoDesc || curso.desc}">
-<link rel="canonical" href="${url}">
-<script type="application/ld+json">
-${jsonLdCurso(curso)}
-</script>
-<link rel="icon" href="../../assets/img/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="../../assets/img/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/css/main.css">
-</head>
-<body>
-
-<div class="topbar">
+/* ---------- chrome compartido entre fichas y la pagina 404 ----------
+   Dos prefijos, porque significan cosas distintas:
+     ruta   = camino hasta la RAIZ del sitio  ("../../" en fichas, "" en 404)
+     cursos = camino hasta cursos/index.html  ("../" en fichas, "cursos/" en 404)
+   Un solo origen para la navegacion, para que un cambio de menu no se desincronice. */
+function cabecera(ruta, cursos) {
+  return `<div class="topbar">
 <div class="container">
 <span>
 Contacto:
@@ -584,67 +588,53 @@ RUC: <strong>20615307603</strong>
 
 <header class="site-header">
 <nav class="navbar container" aria-label="Navegación principal">
-<a class="brand" href="../../index.html" aria-label="Proinocuidad — inicio">
-<img src="../../assets/img/logo-proinocuidad.png" alt="Logo Proinocuidad">
+<a class="brand" href="${ruta}index.html" aria-label="Proinocuidad — inicio">
+<img src="${ruta}assets/img/logo-proinocuidad.png" alt="Logo Proinocuidad">
 </a>
 <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú" aria-controls="menu-principal">
 <span class="hamburger" aria-hidden="true"></span>
 </button>
 <ul class="nav-menu" id="menu-principal">
-<li><a href="../../index.html">Inicio</a></li>
-<li><a href="../../nosotros/index.html">Nosotros</a></li>
+<li><a href="${ruta}index.html">Inicio</a></li>
+<li><a href="${ruta}nosotros/index.html">Nosotros</a></li>
 <li class="nav-drop">
-<a href="../../servicios/index.html" aria-haspopup="true" aria-expanded="false">Servicios</a>
+<a href="${ruta}servicios/index.html" aria-haspopup="true" aria-expanded="false">Servicios</a>
 <button class="nav-accordion-toggle" type="button" aria-expanded="false" aria-controls="submenu-servicios" aria-label="Mostrar opciones de Servicios"><span aria-hidden="true">+</span></button>
 <div class="mega-panel mega-panel-compacto" id="submenu-servicios" role="menu">
 <div class="mega-panel-inner">
-<a href="../../servicios/index.html#capacitacion-empresarial"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.2c2.3.7 3.5 2.6 3.5 5.8"/></svg></span><strong>Capacitación Empresarial</strong><span>Programas in house, cursos y diplomados a medida.</span></a>
-<a href="../../servicios/index.html#normativa-sanitaria"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 14l2 2 4-4"/></svg></span><strong>Implementación de normativa sanitaria</strong><span>PPH y Validación Técnica Oficial del Plan HACCP.</span></a>
-<a href="../../servicios/index.html#sistemas-gestion"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14.2 7 21l5-2.6 5 2.6-1.5-6.8"/></svg></span><strong>Sistemas de gestión</strong><span>ISO 9001, ISO 22000, FSSC 22000 y BRCGS FOOD.</span></a>
-<a href="../../servicios/index.html#registro-sanitario"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2.5h8.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/><path d="M9 13.5l2 2 4-4"/></svg></span><strong>Registro sanitario</strong><span>Alimentos y bebidas en el menor tiempo posible.</span></a>
-<a class="mega-cta" href="../../servicios/index.html"><strong>Ver todos los servicios</strong><span aria-hidden="true">→</span></a>
+<a href="${ruta}servicios/index.html#capacitacion-empresarial"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.2c2.3.7 3.5 2.6 3.5 5.8"/></svg></span><strong>Capacitación Empresarial</strong><span>Programas in house, cursos y diplomados a medida.</span></a>
+<a href="${ruta}servicios/index.html#normativa-sanitaria"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 14l2 2 4-4"/></svg></span><strong>Implementación de normativa sanitaria</strong><span>PPH y Validación Técnica Oficial del Plan HACCP.</span></a>
+<a href="${ruta}servicios/index.html#sistemas-gestion"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14.2 7 21l5-2.6 5 2.6-1.5-6.8"/></svg></span><strong>Sistemas de gestión</strong><span>ISO 9001, ISO 22000, FSSC 22000 y BRCGS FOOD.</span></a>
+<a href="${ruta}servicios/index.html#registro-sanitario"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2.5h8.5A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/><path d="M9 13.5l2 2 4-4"/></svg></span><strong>Registro sanitario</strong><span>Alimentos y bebidas en el menor tiempo posible.</span></a>
+<a class="mega-cta" href="${ruta}servicios/index.html"><strong>Ver todos los servicios</strong><span aria-hidden="true">→</span></a>
 </div>
 </div>
 </li>
 <li class="nav-drop">
-<a href="../index.html" aria-haspopup="true" aria-expanded="false">Cursos</a>
+<a href="${cursos}index.html" aria-haspopup="true" aria-expanded="false">Cursos</a>
 <button class="nav-accordion-toggle" type="button" aria-expanded="false" aria-controls="submenu-cursos" aria-label="Mostrar opciones de Cursos"><span aria-hidden="true">+</span></button>
 <div class="mega-panel mega-panel-compacto" id="submenu-cursos" role="menu">
 <div class="mega-panel-inner">
-<a href="../diplomado-gestion-calidad-e-inocuidad/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 9 12 4 2 9l10 5 10-5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></svg></span><strong>Diplomado SGCIA</strong><span>Calidad e Inocuidad en la Industria Alimentaria · 384 h</span></a>
-<a href="../legislacion-sanitaria-alimentos/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M6 21h12"/><path d="M4 7h16"/><path d="M4 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/><path d="M20 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/></svg></span><strong>Legislación Sanitaria de Alimentos</strong><span>Marco normativo nacional e internacional · 40 h</span></a>
-<a href="../haccp-implementacion-certificacion-digesa-senasca/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><strong>HACCP: certificación en Perú</strong><span>DIGESA / SENASA · 40 h</span></a>
-<a href="../formacion-auditor-interno-haccp/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M8 11l2 2 4-4"/></svg></span><strong>Auditor Interno HACCP</strong><span>Formación de auditores · 40 h</span></a>
-<a class="mega-cta" href="../index.html"><strong>Ver todos los cursos</strong><span aria-hidden="true">→</span></a>
+<a href="${cursos}diplomado-gestion-calidad-e-inocuidad/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 9 12 4 2 9l10 5 10-5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></svg></span><strong>Diplomado SGCIA</strong><span>Calidad e Inocuidad en la Industria Alimentaria · 384 h</span></a>
+<a href="${cursos}legislacion-sanitaria-alimentos/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M6 21h12"/><path d="M4 7h16"/><path d="M4 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/><path d="M20 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/></svg></span><strong>Legislación Sanitaria de Alimentos</strong><span>Marco normativo nacional e internacional · 40 h</span></a>
+<a href="${cursos}haccp-implementacion-certificacion-digesa-senasca/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><strong>HACCP: certificación en Perú</strong><span>DIGESA / SENASA · 40 h</span></a>
+<a href="${cursos}formacion-auditor-interno-haccp/index.html"><span class="mega-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M8 11l2 2 4-4"/></svg></span><strong>Auditor Interno HACCP</strong><span>Formación de auditores · 40 h</span></a>
+<a class="mega-cta" href="${cursos}index.html"><strong>Ver todos los cursos</strong><span aria-hidden="true">→</span></a>
 </div>
 </div>
 </li>
-<li><a href="../../noticias/index.html">Noticias</a></li>
+<li><a href="${ruta}noticias/index.html">Noticias</a></li>
 <li><a class="btn-aula-nav" href="https://proinocuidad.com/login/" target="_blank" rel="noopener">${SVG_BTN_AULA}Aula Virtual</a></li>
 </ul>
 </nav>
-</header>
+</header>`;
+}
 
-<main>
-<section class="ficha-head" style="background-image: linear-gradient(rgba(11, 14, 86, 0.72), rgba(11, 14, 86, 0.55)), url('../../assets/img/${curso.fondo}')">
-<div class="container">
-<nav class="breadcrumbs" aria-label="Migajas de pan">
-<a href="../../index.html">Inicio</a> <span aria-hidden="true">/</span> <a href="../index.html">Cursos</a> <span aria-hidden="true">/</span> <span>${curso.miga}</span>
-</nav>
-<h1>${curso.h1}</h1>
-<p class="ficha-desc">${curso.descripcion}</p>
-</div>
-</section>
-
-<div class="container ficha-cuerpo">
-${cuerpoModerno(curso)}
-</div>
-</main>
-
-<footer class="site-footer">
+function pie(ruta, cursos) {
+  return `<footer class="site-footer">
 <div class="container footer-grid">
 <div class="footer-brand">
-<img src="../../assets/img/logo-proinocuidad.png" alt="Logo Proinocuidad">
+<img src="${ruta}assets/img/logo-proinocuidad.png" alt="Logo Proinocuidad">
 <p><strong>Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.</strong></p>
 <p>¡Formamos profesionales, construimos inocuidad!</p>
 <p>RUC 20615307603 · Trujillo, La Libertad, Perú</p>
@@ -661,11 +651,11 @@ ${cuerpoModerno(curso)}
 <div class="footer-links">
 <h4>Enlaces</h4>
 <ul>
-<li><a href="../../index.html">Inicio</a></li>
-<li><a href="../../nosotros/index.html">Nosotros</a></li>
-<li><a href="../../servicios/index.html">Servicios</a></li>
-<li><a href="../index.html">Cursos</a></li>
-<li><a href="../../noticias/index.html">Noticias y eventos</a></li>
+<li><a href="${ruta}index.html">Inicio</a></li>
+<li><a href="${ruta}nosotros/index.html">Nosotros</a></li>
+<li><a href="${ruta}servicios/index.html">Servicios</a></li>
+<li><a href="${cursos}index.html">Cursos</a></li>
+<li><a href="${ruta}noticias/index.html">Noticias y eventos</a></li>
 <li><a href="https://proinocuidad.com/login/" target="_blank" rel="noopener">Aula Virtual</a></li>
 </ul>
 </div>
@@ -686,12 +676,126 @@ ${cuerpoModerno(curso)}
 <span>Comprometidos con la salud pública y la inocuidad alimentaria.</span>
 </div>
 </div>
-</footer>
+</footer>`;
+}
 
-<a class="flotante-whatsapp" href="${waFlotante}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg><span class="flotante-texto">Envíanos un mensaje!</span></a>
+function cierre(ruta) {
+  return `<a class="flotante-whatsapp" href="${waFlotante}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg><span class="flotante-texto">Envíanos un mensaje!</span></a>
 <a class="to-top-proi" href="#" aria-label="Volver arriba"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></a>
 
-<script src="../../assets/js/main.js"></script>
+<script src="${ruta}assets/js/main.js"></script>`;
+}
+
+function ficha(curso) {
+  const ruta = "../../";    // hasta la raiz del sitio
+  const cursos = "../";      // hasta cursos/index.html
+  const url = `https://proinocuidad.com/cursos/${curso.slug}/`;
+  const tituloFicha = curso.seoTitle || (/Proinocuidad/.test(curso.title) ? curso.title : `${curso.title} | Proinocuidad`);
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${tituloFicha}</title>
+<meta property="og:title" content="${tituloFicha.replace(/"/g, "&quot;")}">
+<meta property="og:image" content="${img_og}">
+<meta property="og:url" content="${url}">
+<meta name="description" content="${curso.seoDesc || curso.desc}">
+<link rel="canonical" href="${url}">
+<script type="application/ld+json">
+${jsonLdCurso(curso)}
+</script>
+<link rel="icon" href="${ruta}assets/img/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="${ruta}assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="${ruta}assets/css/main.css">
+</head>
+<body>
+
+${cabecera(ruta, cursos)}
+
+<main>
+<section class="ficha-head" style="background-image: linear-gradient(rgba(11, 14, 86, 0.72), rgba(11, 14, 86, 0.55)), url('${ruta}assets/img/${curso.fondo}')">
+<div class="container">
+<nav class="breadcrumbs" aria-label="Migajas de pan">
+<a href="${ruta}index.html">Inicio</a> <span aria-hidden="true">/</span> <a href="${cursos}index.html">Cursos</a> <span aria-hidden="true">/</span> <span>${curso.miga}</span>
+</nav>
+<h1>${curso.h1}</h1>
+<p class="ficha-desc">${curso.descripcion}</p>
+</div>
+</section>
+
+<div class="container ficha-cuerpo">
+${cuerpoModerno(curso, ruta)}
+</div>
+</main>
+
+${pie(ruta, cursos)}
+
+${cierre(ruta)}
+</body>
+</html>
+`;
+}
+
+/* ---------- pagina de error (spec `pagina-404`) ----------
+   Vive en la raiz, asi que sus dos prefijos son distintos de los de las fichas.
+   No se declara en el menu: no es una pagina a la que se navegue. */
+function pagina404() {
+  const ruta = "";            // ya estamos en la raiz del sitio
+  const cursos = "cursos/";   // y el directorio de cursos cuelga de ella
+  const url = "https://proinocuidad.com/404.html";
+  const titulo = "Página no encontrada | Proinocuidad";
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${titulo}</title>
+<meta name="robots" content="noindex, follow">
+<meta property="og:title" content="${titulo}">
+<meta property="og:url" content="${url}">
+<meta name="description" content="La página solicitada no existe en Proinocuidad. Vuelve al inicio o escríbenos por WhatsApp.">
+<link rel="canonical" href="${url}">
+<link rel="icon" href="${ruta}assets/img/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="${ruta}assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="${ruta}assets/css/main.css">
+</head>
+<body>
+
+${cabecera(ruta, cursos)}
+<main>
+  <section class="hero" aria-labelledby="error404-titulo">
+    <div class="container">
+      <h1 id="error404-titulo">404 · Esta página no existe</h1>
+      <p>
+        La dirección que abriste no corresponde a ninguna página de Proinocuidad.
+        Puede que el enlace esté mal escrito o que la página haya cambiado de sitio.
+      </p>
+      <div class="hero-acciones">
+        <a class="btn btn-blanco" href="${ruta}index.html">${SVG_BTN_CASA}Volver al inicio</a>
+        <a class="btn btn-blanco" href="${cursos}index.html">${SVG_BTN_CURSOS}Ver los cursos</a>
+        <a class="btn btn-blanco" href="${ruta}servicios/index.html">${SVG_BTN_SERVICIOS}Ver los servicios</a>
+        <a class="btn btn-rojo" href="${waContacto}" target="_blank" rel="noopener">${SVG_BTN_WA_BTN}Escríbenos por WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-sub" aria-labelledby="ayuda404-titulo">
+    <div class="container">
+      <h2 id="ayuda404-titulo">¿No encuentras lo que buscabas?</h2>
+      <p>Estas son las otras secciones del sitio. Si de verdad falta algo, escríbenos y lo Publicamos.</p>
+      <div class="hero-acciones">
+        <a class="btn btn-blanco" href="${ruta}nosotros/index.html">${SVG_BTN_NOSOTROS}Nosotros</a>
+        <a class="btn btn-blanco" href="${ruta}noticias/index.html">${SVG_BTN_NOTICIAS}Noticias y eventos</a>
+        <a class="btn btn-blanco" href="${ruta}inocuidad-alimentaria/index.html">${SVG_BTN_INOCUIDAD}Inocuidad alimentaria</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+${pie(ruta, cursos)}
+
+${cierre(ruta)}
 </body>
 </html>
 `;
@@ -1574,3 +1678,9 @@ for (const f of FICHAS) {
   console.log("Ficha generada:", destino);
 }
 console.log("Total:", FICHAS.length, "fichas");
+
+// La pagina de error vive en la raiz: no entra en el sitemap ni en el menu.
+const destino404 = join(RAIZ, "404.html");
+writeFileSync(destino404, pagina404(), "utf8");
+if (!existsSync(destino404)) throw new Error("no se genero " + destino404);
+console.log("Pagina de error generada:", destino404);

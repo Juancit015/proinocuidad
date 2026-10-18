@@ -29,6 +29,7 @@ cd /home/juan/proinocuidad && python3 -m http.server 8899 --bind 127.0.0.1
 | Qué | Se genera con |
 |---|---|
 | `cursos/<slug>/index.html` (8 fichas) | `node tools/generar-fichas.mjs` |
+| `404.html` (página de error) | `node tools/generar-fichas.mjs`, función `pagina404` |
 | Las tarjetas dentro de `cursos/index.html` (`#lista-cursos`) y `index.html` (`#cursos-destacados`) | `node tools/generar-listados.mjs`, entre los marcadores `<!-- generar-listados:inicio -->` / `:fin` |
 
 **La trampa grande: el `generar-fichas.mjs` también emite la barra de navegación completa.** Un cambio en el menú o la cabecera hay que aplicarlo **al generador y a mano en las otras 10 páginas** que no son fichas. Si solo se edita el HTML, la siguiente generación lo revierte.
@@ -38,6 +39,16 @@ Siempre que se toque algo generado, verificar que el generador reproduce lo edit
 ```bash
 cp -r cursos /tmp/cursos-antes && node tools/generar-fichas.mjs && diff -rq /tmp/cursos-antes cursos
 ```
+
+**El generador usa dos prefijos y no son intercambiables:** `ruta` va hasta la raíz del
+sitio (`"../../"` en las fichas, `""` en el 404) y `cursos` hasta `cursos/index.html`
+(`"../"` en las fichas, `"cursos/"` en el 404). Si se confunden, **las fichas siguen
+funcionando pero cambian de bytes**, porque `../index.html` y `../../cursos/index.html`
+apuntan al mismo archivo. Por eso el `diff` de arriba no es opcional: es el único
+aviso. Revisar el prefijo es lo primero cuando un enlace de una ficha se rompa.
+
+Antes de dar por buena una modificación del generador, **exigir `exit 0`**: si falla,
+`git status` sale limpio porque no se escribió nada, y eso parece un éxito.
 
 ## Verificar UI: Playwright, no el navegador del MCP
 
@@ -70,6 +81,9 @@ Errores de medición que ya se han cometido:
 - **Las trampas de especificidad son reales.** `.nav-menu .nav-drop.abierto > .mega-panel.mega-panel-compacto` (5 clases) anula en silencio a un `.mega-panel-compacto` (1 clase). Una regla puede estar en el archivo y no hacer absolutamente nada: por eso se cambió una y no se notó hasta medir el `padding` computado. **Verificar siempre con `getComputedStyle`, nunca confiando en el CSS escrito.**
 - Los pseudo-elementos no son objetos de evento: al tocar uno, el clic tiene como destino el elemento que lo origina. Por eso "cerrar al tocar fuera" pregunta por el panel y el botón, no por "dentro de la cabecera".
 - Para medir un pseudo-elemento: `getComputedStyle(el, '::after')`.
+- **Los botones apilados se copian de `.matricula-cta-group`**, no se inventan: columna con
+  los botones a `width: 100%` por debajo de 860px. Los grupos que ya funcionan son
+  `.matricula-cta-group`, `.card-acciones` y `.card-body`; **no tocarlos**.
 
 ### Restricciones que no hay que violar
 
@@ -101,6 +115,12 @@ Errores de medición que ya se han cometido:
 - El botón **Aula Virtual** apunta a `https://proinocuidad.com/login/`, que es el login del WordPress viejo: dejará de existir al publicar.
 - **FormSubmit sin activar**: necesita un envío de prueba a `administracion@proinocuidad.com`.
 - **Dos tokens de GitHub quedaron expuestos en el chat y sin revocar.**
+- **El hosting tiene que servir `404.html` con estado 404.** El repositorio no tiene
+  ninguna configuración de servidor: no hay `.htaccess`, ni `netlify.toml`, ni
+  `vercel.json`, ni `_headers`. Sin eso, un `404.html` puede existir en el repo y no
+  mostrarse nunca, en silencio. Netlify, GitHub Pages y Cloudflare Pages lo sirven por
+  convención; Apache o nginx sin configuración, no. Si toca el segundo caso, hace falta
+  un `.htaccess` con `ErrorDocument 404 /404.html`.
 
 ## Datos que se repiten por todo el sitio
 

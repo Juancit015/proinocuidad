@@ -22,7 +22,7 @@ Proniciudad/
 │   └── img/                       # Imágenes optimizadas (logo, favicon, flyers, fotos, QR)
 │       └── pagos/                 # Logos de medios de pago (yape, plin, bbva, western-union, paypal)
 ├── tools/
-│   └── generar-fichas.mjs         # Generador de las 8 fichas estáticas de cursos
+│   └── generar-fichas.mjs         # Generador de las 8 fichas Y de la página 404
 ├── openspec/                      # Especificaciones y cambios del proyecto (ver sección OpenSpec)
 │   ├── pagina web.pdf             # Documento oficial: fuente única de verdad del contenido
 │   └── FOTOS-(1)/FOTOS/           # Material fuente (logo, flyers originales, fotos)
@@ -40,6 +40,7 @@ Proniciudad/
 | Foto de "¿Quiénes somos?" (grupo frente a la casona amarilla) | `assets/img/nosotros.webp`, referenciada en `index.html` y `nosotros/index.html` |
 | Datos de contacto del sitio (email, WhatsApp, horario, comunidad) | constante `PROINO_SITIO` en `assets/js/cursos-data.js` **y** el footer repetido en cada página |
 | Footer y navegación | bloque repetido en cada `index.html` (copiar de una página existente al editar) |
+| Página de error `404.html` | `tools/generar-fichas.mjs` (función `pagina404`). **No se edita el HTML a mano** |
 | Textos de Nosotros / Servicios / Noticias | `nosotros/index.html`, `servicios/index.html`, `noticias/index.html` |
 | Colores institucionales (azul #101477, rojo #AD343B, gris #252525) | variables `:root` en `assets/css/main.css` |
 | Estilos de tarjetas, fichas, pestañas y pagos | `assets/css/main.css` |
@@ -94,6 +95,19 @@ node tools/generar-fichas.mjs
 El generador reescribe los 8 archivos `cursos/<slug>/index.html` a partir del contenido
 definido dentro del propio script. Regenerar **sobrescribe** los HTML de las fichas:
 si una ficha se editó a mano, el cambio se pierde al regenerar — editar el script o la ficha, no ambos.
+
+También emite `404.html` en la raíz, con las mismas funciones de cabecera y pie
+(`cabecera()`, `pie()`, `cierre()`) que usan las fichas. Editar `404.html` a mano es
+inútil: el siguiente `node tools/generar-fichas.mjs` lo sobrescribe.
+
+**Los dos prefijos de ruta no son intercambiables.** `ruta` es el camino hasta la raíz
+del sitio (`"../../"` en las fichas, `""` en el 404) y `cursos` es el camino hasta
+`cursos/index.html` (`"../"` en las fichas, `"cursos/"` en el 404). Confundirlos
+cambia las rutas sin avisar, y las fichas seguirían funcionando porque `../index.html`
+y `../../cursos/index.html` apuntan al mismo sitio. Por eso la comprobación de que
+las fichas salen idénticas es `git status`, no una mirada.
+
+`404.html` **no** entra en `sitemap.xml` ni en el menú, y declara `noindex, follow`.
 
 ## Assets: convenciones
 
