@@ -452,24 +452,14 @@ section:has(> .identidad-grid) { overflow-x: clip; }
 .identidad .mvv-head { background: var(--azul); color: #fff; font-weight: 700; font-size: 16px; line-height: 1.3; padding: 10px; margin: 0 -20px 16px; }
 .identidad .mvv-body { font-size: 14px; line-height: 1.6; color: var(--gris); text-align: justify; }
 .identidad .mvv-body p { margin: 0; }
-/* Tableta: imágenes adaptadas para no acaparar la pantalla */
-@media (min-width: 560px) and (max-width: 860px) {
-  .identidad-grid img { max-height: 280px; object-fit: cover; }
-  .hero img { max-height: 280px; }
-}
-/* Cita institucional en la sección Nosotros del Home: se presenta como bloque
-   de cita, separada del texto corrido, con borde lateral y rótulo "Cita". */
+/* Cita institucional en la sección Nosotros del Home: bloque de cita
+   separado del texto corrido, con borde lateral rojo. */
 .cita-nosotros { margin-top: 1.25rem; padding: 0.5rem 0 0.5rem 1.1rem; border-left: 3px solid var(--rojo); font-style: italic; color: var(--gris); }
-.cita-nosotros p { margin: 0; }","oldString">
-.cita-nosotros { margin-top: 1.25rem; padding: 0.5rem 0 0.5rem 1.1rem; border-left: 3px solid var(--rojo); font-style: italic; color: var(--gris); }
-.cita-nosotros .cita-etiqueta { display: block; font-style: normal; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gris); margin-bottom: 0.3rem; font-weight: 700; }
+.cita-nosotros p { margin: 0; }
 .identidad .mvv-list { list-style: none; padding: 0; margin: 0; text-align: left; }
 .identidad .mvv-list li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--gris); margin-bottom: 8px; }
 .identidad .mvv-list li::before { content: ""; width: 14px; height: 14px; flex-shrink: 0; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='7' fill='%23ad343b'/%3E%3Cpath d='M4 7.2l2 2 4-4.2' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
 @media (max-width: 559px) { .identidad .mvv-grid { grid-template-columns: 1fr; } }
-@media (min-width: 560px) and (max-width: 860px) { .identidad .mvv-grid { grid-template-columns: repeat(2, 1fr); } }","oldString">
-@media (max-width: 800px) { .identidad .mvv-grid { grid-template-columns: 1fr; } }","path">
-/home/juan/proinocuidad/assets/css/main.css
 
 /* ---------- Noticias ---------- */
 .nota-card { display: grid; grid-template-columns: 1fr; overflow: hidden; min-height: 220px; max-width: 80%; margin-inline: auto; }
@@ -579,25 +569,11 @@ section:has(> .identidad-grid) { overflow-x: clip; }
   .identidad-grid { grid-template-columns: minmax(0, 1fr); }
   .identidad-grid > * { min-width: 0; }
   .hero img { max-height: 340px; }
-  .cards-grid, .cards-grid.four { grid-template-columns: repeat(2, 1fr); }","oldString">
-  .cards-grid, .cards-grid.four { grid-template-columns: 1fr; }","path">
-/home/juan/proinocuidad/assets/css/main.css
-  .nota-card { grid-template-columns: 1fr; min-height: 0; max-width: 640px; margin-inline: auto; }","oldString">
-  .nota-card { grid-template-columns: 1fr; min-height: 0; max-width: none; }","path">
-/home/juan/proinocuidad/assets/css/main.css
+  .cards-grid, .cards-grid.four { grid-template-columns: repeat(2, 1fr); }
+  .nota-card { grid-template-columns: 1fr; min-height: 0; max-width: none; }
   .nota-card .nota-portada { min-height: 260px; }
   .topbar { display: none; }
   .topbar .topbar-social { display: none; }
-  /* Tableta: footer apilado y centrado como en móvil */
-  .footer-grid { grid-template-columns: 1fr; gap: 28px; text-align: center; }
-  .footer-brand img { display: block; margin-left: auto; margin-right: auto; }
-  .site-footer h4::after { margin-left: auto; margin-right: auto; }
-  .footer-contacto ul, .footer-links ul { justify-items: center; }
-  .redes-sociales { justify-content: center; }
-  .footer-bottom .container { flex-direction: column; align-items: center; text-align: center; }","oldString">
-  .topbar { display: none; }
-  .topbar .topbar-social { display: none; }","path">
-/home/juan/proinocuidad/assets/css/main.css
 
   /* Menú móvil: panel propio con enlaces y controles táctiles claros */
   .nav-toggle {
@@ -728,17 +704,30 @@ section:has(> .identidad-grid) { overflow-x: clip; }
   .nav-accordion-toggle { display: none; }
 }
 
-@media (max-width: 560px) {
-  section { padding: 46px 0; }
-  .cards-grid, .cards-grid.four { grid-template-columns: 1fr; }","oldString">
-  .cards-grid { grid-template-columns: 1fr; }","path">
-/home/juan/proinocuidad/assets/css/main.css
+/* Tableta (560-860px): el rango intermedio tiene su propio estado. Las
+   tarjetas ya pasan a 2 columnas en el @media de 860px; aquí se apila el
+   footer como en móvil y se acotan las imágenes que acaparaban la pantalla. */
+@media (min-width: 560px) and (max-width: 860px) {
+  .nota-card { max-width: 640px; margin-inline: auto; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; text-align: center; }
   .footer-brand img { display: block; margin-left: auto; margin-right: auto; }
   .site-footer h4::after { margin-left: auto; margin-right: auto; }
   .footer-contacto ul, .footer-links ul { justify-items: center; }
   .redes-sociales { justify-content: center; }
-  .nota-card { max-width: none; }
+  .footer-bottom .container { flex-direction: column; align-items: center; text-align: center; }
+  .identidad .mvv-grid { grid-template-columns: repeat(2, 1fr); }
+  .identidad-grid img { max-height: 280px; object-fit: cover; }
+  .hero .hero-grid > img { max-height: 340px; object-fit: contain; }
+}
+
+@media (max-width: 560px) {
+  section { padding: 46px 0; }
+  .cards-grid, .cards-grid.four { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; text-align: center; }
+  .footer-brand img { display: block; margin-left: auto; margin-right: auto; }
+  .site-footer h4::after { margin-left: auto; margin-right: auto; }
+  .footer-contacto ul, .footer-links ul { justify-items: center; }
+  .redes-sociales { justify-content: center; }
   .footer-links a:hover, .footer-links a:focus-visible { padding-left: 0; }
   .footer-links a::before { display: none; }
   .footer-bottom .container { flex-direction: column; align-items: center; text-align: center; }
@@ -962,6 +951,9 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 .cta-badge { display: inline-block; padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.3); color: #d7d9f2; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
 @media (max-width: 860px) {
   .cta-grid { grid-template-columns: 1fr; }
+}
+@media (min-width: 560px) and (max-width: 860px) {
+  .cta-card { max-width: 520px; margin-inline: auto; }
 }
 
 /* =========================================================

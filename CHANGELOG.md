@@ -3,6 +3,61 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-23 (El Home presenta la cita institucional como cita)
+
+### Changed
+
+- **La frase institucional de la sección Nosotros del Home se presenta como
+  cita**: "Compromiso con la salud pública, rigor técnico, ética profesional,
+  mejora continua y cercanía con el cliente" pasa a un `blockquote` con borde
+  lateral rojo de 3px e itálica, separada del texto corrido. El texto no cambió
+  y el rótulo "Cita" se retiró por redundante con las comillas.
+
+### Verified
+
+- Playwright a 390 y 1024px sobre el Home, 14/14 aserciones: el elemento es
+  `blockquote.cita-nosotros` con borde izquierdo `3px rgb(173, 52, 59)`,
+  `font-style: italic`, margen superior de 20px y el texto exacto; no hay
+  rótulo "Cita" ni desborde horizontal.
+
+## 2026-10-23 (Tableta: tarjetas en dos columnas y footer apilado)
+
+### Changed
+
+- **Entre 560 y 860px las tarjetas se reparten en dos columnas**: servicios,
+  cursos, noticias y cursos destacados dejan de apilarse en una columna y
+  aprovechan el ancho de la tableta. Por debajo de 560px siguen en una columna
+  y por encima de 860px se mantiene la disposición de escritorio.
+- **El footer se apila como en móvil en tableta**: logo, contacto, enlaces y
+  redes pasan a una columna centrada, y el texto de copyright queda centrado
+  bajo las dos líneas del pie.
+- **La tarjeta "Solicita una asesoría" se limita a 520px y se centra** en
+  tableta, en lugar de ocupar todo el ancho; la tarjeta de noticias se limita
+  a 640px.
+- **Misión, visión y valores pasan a dos columnas** en tableta, y las imágenes
+  que acaparaban la pantalla se acotan: la del hero a 340px de alto y la de
+  "Quiénes somos" a 280px.
+
+### Fixed
+
+- **El menú hamburguesa vuelve a mostrarse**: el CSS había quedado con
+  fragmentos de la herramienta de edición incrustados en el archivo, que
+  rompían el bloque `@media (max-width: 860px)` y anulaban en silencio
+  `.nav-toggle`, el panel del menú y parte de las reglas del footer. Se
+  reconstruyó el archivo desde el último estado limpio y se reaplicaron la
+  cita y los cambios de tableta.
+
+### Verified
+
+- Playwright: la hoja parsea sin errores (462 reglas, 0 excepciones); la
+  hamburguesa se muestra y abre/cierra el menú a 390, 683 y 768px, y sigue
+  oculta a 1024px; la cabecera sube a `z-index: 100` con el menú abierto.
+- Tarjetas a 390/683/768/1024px: 1/2/2/4 columnas en el Home, 1/2/2/3 en
+  cursos; footer 1 columna centrada hasta 860px y 4 en escritorio; misión y
+  valores 1/2/2/3; hero de 340px y tarjeta de noticias de 628-640px en tableta.
+- 0 desplazamiento horizontal en Home, Nosotros, Servicios, Cursos, Noticias
+  y una ficha de curso, en los cuatro anchos.
+
 ## 2026-10-23 (El velo del menú móvil cubre también a los botones flotantes)
 
 ### Changed
