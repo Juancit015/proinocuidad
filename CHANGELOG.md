@@ -3,6 +3,42 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-23 (El velo del menú móvil cubre también a los botones flotantes)
+
+### Changed
+
+- **Al abrir el menú hamburguesa en móvil, los dos botones flotantes se atenúan
+  bajo el velo y dejan de ser tocables**: el contacto de WhatsApp y el botón de
+  volver arriba caen bajo el velo `rgba(16, 20, 119, 0.22)`, igual que el resto
+  de la página, y tocar donde están cierra el menú en lugar de abrir el chat o
+  saltar al tope. Al cerrar el menú, la cota de la cabecera vuelve a su base y
+  los dos botones recuperan su brillo y su toque exactos.
+- **El fondo es una capa, no una excepción por clase**: con el menú abierto la
+  cabecera sube de `z-index: 50` a `100`, de modo que el velo — que vive dentro
+  del contexto de la cabecera — se pinta sobre todo lo que apile menos, incluido
+  el par de botones flotantes en `z-index: 90`. Antes la decisión la tomaba el
+  apilado por casualidad y la spec del velo no nombraba a los flotantes; ahora
+  las reglas están escritas en `navegación-global` (delta del change
+  `velo-cubre-flotantes`).
+- **Escritorio no cambia**: por encima de 860px no hay velo, el mega menú funciona
+  como hasta ahora y los dos botones flotantes se comportan como siempre.
+
+### Verified
+
+- Playwright a 390×740 sobre el Home, 19/19 aserciones: la cabecera pasa de
+  `z-index: 50` (cerrado) a `100` (abierto) y de vuelta a `50` con Escape; el
+  `elementFromPoint` del centro del botón pasa de `a.flotante-whatsapp` al
+  `header` que lleva el velo y de vuelta al botón; el tap en el centro del
+  botón cierra el menú con la URL intacta y 0 pestañas nuevas, y el tap en
+  "Subir" lo cierra con la página quieto (scroll 800 antes y después).
+- Color medido con ImageMagick (media del centro del botón): WhatsApp
+  `(110.7, 225.9, 153.7)` → `(89.8, 179.8, 145.6)`, Subir
+  `(51.2, 54.6, 139.0)` → `(43.7, 46.3, 133.9)`; en ambos, el Δ coincide con
+  `0.22 × (velo − color cerrado)` con error ≤ 0.75 — la atenuación es exacta.
+  Tras Escape, WhatsApp `(110.7, 225.9, 153.7)` == cerrado con Δ 0.00.
+- A 1024px: no hay velo (`content: none` del pseudo), la cabecera queda en
+  `z-index: 50` y el centro del botón vuelve a ser del botón.
+
 ## 2026-10-18 (Guía del sitio para asistentes de IA)
 
 ### Added

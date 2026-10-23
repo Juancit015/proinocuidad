@@ -601,6 +601,8 @@ section:has(> .identidad-grid) { overflow-x: clip; }
     transition: opacity 200ms ease, visibility 0s linear 200ms;
   }
   .site-header.menu-abierto::after { opacity: 1; visibility: visible; pointer-events: auto; }
+  /* Con el menú abierto la capa de la cabecera (barra, panel y velo) queda sobre la flotante de los botones: los flotantes se atenúan bajo el velo y su toque llega al velo, que cierra el menú. Al cerrar, la cota vuelve a la base. */
+  .site-header.menu-abierto { z-index: 100; }
   /* Bloqueo del desplazamiento: solo mientras el menú está abierto, y solo en
      móvil, para no afectar al position: sticky de la cabecera ni de las fichas */
   body.menu-abierto-scroll { overflow: hidden; }
