@@ -3,6 +3,35 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-24 (Aviso de inscripción enviada debajo del botón)
+
+### Added
+
+- **Confirmación inline del formulario de inscripción**: el envío pasa a
+  AJAX contra `https://formsubmit.co/ajax/…` y en lugar de saltar a la
+  página de "Thanks!" de FormSubmit aparece debajo del botón un aviso
+  en verde ("✓ Tu inscripción se envió. Te escribiremos al correo para
+  completar la matrícula."), con `role="status"` para lectores de
+  pantalla. El formulario se limpia tras el envío y el botón muestra
+  "Enviando…" mientras viaja (deshabilitado, con `aria-busy`).
+- **Aviso de error en el mismo lugar**: si FormSubmit rechaza o falla la
+  red, el aviso es el mismo elemento en rojo de marca con instrucción de
+  reintentar o escribir al WhatsApp. El botón vuelve a su texto y queda
+  reenviable.
+- **Degradación limpia sin JS**: si no hay `fetch` disponible, no se
+  intercepta nada y el flujo clásico de FormSubmit (página de gracias)
+  sigue intacto. El honeypot y la validación nativa de campos se
+  conservaron: el envío AJAX no corre con el honeypot lleno ni con el
+  formulario inválido.
+
+### Verified
+
+- Playwright en la ficha BPM (1440px): tras el clic la URL no cambia,
+  el aviso queda visible con texto "✓ Tu inscripción se envió…" en
+  `rgb(28, 122, 66)`, el botón restaurado con "Enviar inscripción" y el
+  campo nombre vacío por el `reset()`. El correo volvió a llegar a
+  administracion@ con el campo cargo relleno y el voucher adjunto.
+
 ## 2026-10-24 (Barra superior pegada y mega-panel que se cierra al navegar)
 
 ### Added

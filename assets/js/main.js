@@ -273,6 +273,68 @@
     });
   });
 
+  // --- Envío AJAX del formulario + mensaje de confirmación inline ---
+  // Intercepta el submit y lo manda a https://formsubmit.co/ajax/…, que
+  // responde JSON sin navegar a ninguna página. Sin JS (o sin fetch), el
+  // flujo clásico de FormSubmit queda intacto para el usuario.
+  document.querySelectorAll(".form-inscripcion").forEach(function (form) {
+    var boton = form.querySelector('button[type="submit"]');
+    if (!boton || !window.fetch) return;
+    var accion = (form.getAttribute("action") || "").replace(
+      "https://formsubmit.co/", "https://formsubmit.co/ajax/");
+    if (accion.indexOf("https://formsubmit.co/ajax/") !== 0) return;
+    var mensaje = document.createElement("p");
+    mensaje.className = "form-aviso";
+    mensaje.setAttribute("role", "status");
+    mensaje.setAttribute("aria-live", "polite");
+    mensaje.hidden = true;
+    boton.insertAdjacentElement("afterend", mensaje);
+    form.addEventListener("submit", function (ev) {
+      var honey = form.querySelector(".campo-honey");
+      if (honey && honey.value) return; // bot: no envía nada
+      if (!form.checkValidity()) return; // el navegador marca los campos
+      ev.preventDefault();
+      var textoBoton = boton.innerHTML;
+      var textoAviso = mensaje.textContent;
+      var restaurar = function () {
+        boton.disabled = false;
+        boton.removeAttribute("aria-busy");
+        boton.innerHTML = textoBoton;
+      };
+      var avisar = function (esError, texto) {
+        mensaje.textContent = texto;
+        mensaje.classList.toggle("form-aviso-error", esError);
+        mensaje.hidden = false;
+      };
+      boton.disabled = true;
+      boton.setAttribute("aria-busy", "true");
+      boton.innerHTML = "Enviando…";
+      fetch(accion, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      }).then(function (r) {
+        return r.json().then(function (d) { return { r: r, d: d }; });
+      }).then(function (x) {
+        var ok = x.r.status === 200 && x.d && (x.d.success === "true" || x.d.success === true);
+        if (!ok) throw new Error("formsubmit rechazó");
+        form.reset();
+        restaurar();
+        // Re-actualiza el bloque de comprobante que el reset ocultó
+        var cambio = form.querySelector('input[name="desea_comprobante"]');
+        if (cambio) cambio.dispatchEvent(new Event("change"));
+        mensaje.hidden = false;
+        mensaje.classList.remove("form-aviso-error");
+        mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
+      }).catch(function () {
+        restaurar();
+        mensaje.hidden = false;
+        mensaje.classList.add("form-aviso-error");
+        mensaje.textContent = "No se pudo enviar. Prueba de nuevo o escríbenos directo al WhatsApp.";
+      });
+    });
+  });
+
   // --- Botón de copiado para números de pago / cuentas ---
   document.querySelectorAll(".btn-copiar").forEach(function (btn) {
     btn.addEventListener("click", function () {

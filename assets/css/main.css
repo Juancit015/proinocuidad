@@ -1781,6 +1781,12 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 .form-inscripcion .campo-error {
   margin: 0; font-size: 0.85rem; font-weight: 600; color: var(--rojo);
 }
+/* Aviso de envío: aparece bajo el botón, en verde, cuando la inscripción
+   llegó (AJAX). La variante error usa el rojo de marca. */
+.form-inscripcion .form-aviso {
+  margin: 4px 0 0; font-size: 0.92rem; font-weight: 600; color: #1c7a42;
+}
+.form-inscripcion .form-aviso-error { color: var(--rojo); }
 .form-inscripcion .campo-honey {
   position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0;
 }
