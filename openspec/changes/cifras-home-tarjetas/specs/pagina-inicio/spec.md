@@ -43,7 +43,7 @@ La sección de cifras del Home SHALL mostrar el H2 "Proinocuidad en cifras" y ex
 
 #### Scenario: Legibilidad del título sobre el fondo
 - **WHEN** el usuario lee el H2 de la sección con el fondo de foto detrás
-- **THEN** la palabra "Proinocuidad" lleva el acento del hero `#ff8f96` y "en cifras" conserva el azul de marca, y el conjunto se lee sobre el velo con el peso tipográfico del título
+- **THEN** el H2 completo conserva su color azul de marca y se lee sobre el velo con contraste suficiente, medido sobre los píxeles reales del fondo
 
 ## ADDED Requirements
 
