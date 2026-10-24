@@ -18,6 +18,7 @@
 - [x] 2.7 Añadir como fondo de `.cifras` la foto de planta que aportó el dueño (`assets/img/cifras-fondo.avif`, derivada de su original sin marcas de agua) en dos capas `background-image`: velo degradado blanco `rgba(246,247,251,0.62)→0.30` a 90° y la foto con `cover`, `background-position: center, center 13%`.
 - [x] 2.8 Subir el `padding` de la sección a `64px 0`: la franja de foto pasa de 275px a 307px y la cara de la trabajadora (≈298px en la imagen escalada) entra completa, con gorro y barbilla dentro del cuadro.
 - [x] 2.9 Devolver el título a los colores por defecto del sitio (H2 en `--azul`, subrayado en `--rojo`): retirar las reglas de título blanco y `#ff8f96` de la iteración de velo oscuro.
+- [x] 2.10 Envolver "Proinocuidad" del H2 en `<span class="slogan-destacado">` (la clase del hero) y añadir la regla `.cifras .section-head h2 .slogan-destacado { color: #ff8f96; }` con el literal, igual que en el resto del sitio; el texto del H2 no cambia.
 
 ## 3. Verificación en navegador
 
