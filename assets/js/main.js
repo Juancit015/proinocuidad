@@ -137,6 +137,33 @@
     mostrarSubir();
   }
 
+  // --- Flotantes: frenan sobre la barra de copyright ---
+  // Los botones están a `bottom: 26px`, así que su borde inferior se apoya en
+  // `innerHeight - 26`. Cuando la barra sube por encima de esa línea, el freno
+  // la compensa y deja el botón justo encima de ella; al subir vuelve a 0.
+  // Se lee el `bottom` calculado para no duplicar el valor del CSS.
+  var barraPie = document.querySelector(".footer-bottom");
+  var flotanteWa = document.querySelector(".flotante-whatsapp");
+  if (barraPie && flotanteWa && window.requestAnimationFrame) {
+    var raizFreno = document.documentElement;
+    var frenoPendiente = false;
+    var medirFreno = function () {
+      frenoPendiente = false;
+      var separacion = parseFloat(getComputedStyle(flotanteWa).bottom) || 0;
+      var limite = window.innerHeight - separacion;
+      var freno = Math.max(0, limite - barraPie.getBoundingClientRect().top);
+      raizFreno.style.setProperty("--freno-flotantes", (freno > 0.5 ? freno : 0) + "px");
+    };
+    var pedirFreno = function () {
+      if (frenoPendiente) return;
+      frenoPendiente = true;
+      window.requestAnimationFrame(medirFreno);
+    };
+    window.addEventListener("scroll", pedirFreno, { passive: true });
+    window.addEventListener("resize", pedirFreno);
+    medirFreno();
+  }
+
   // --- Desplegable "Ver más" con transición suave ---
   var reducirMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)");
 

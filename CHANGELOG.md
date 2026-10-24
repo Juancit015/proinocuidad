@@ -3,6 +3,41 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-23 (Los botones flotantes frenan sobre la barra de copyright)
+
+### Changed
+
+- **El WhatsApp y el botón de volver arriba se detienen al llegar al pie**:
+  cuando la barra azul de copyright sube hasta tocarlos, ambos se desplazan
+  hacia arriba lo justo para quedar apoyados sobre su borde superior. Ya no
+  tapan el texto y tampoco desaparecen: siguen visibles y clicables.
+- **El freno sigue al scroll sin retardo**: se recalcula en cada frame del
+  desplazamiento y en los cambios de tamaño de ventana, leyendo el `bottom`
+  real de los botones en lugar de duplicar los 26px en el JavaScript.
+- **Vuelven solos al subir**: cuando la barra sale de su zona el freno regresa
+  a 0 y los botones recuperan su posición base; el de volver arriba mantiene
+  su umbral de 400px.
+
+### Verified
+
+- Playwright a 390×740, 683×623, 1024×768 y 1440×900 sobre el Home: en el
+  final de la página los dos flotantes tienen `opacity: 1` y `visibility:
+  visible`, y su borde inferior coincide con el borde superior de
+  `.footer-bottom` con 0px de solape. El freno medido es 106.4px, 63.9px,
+  64.4px y 31.4px, igual al valor de `--freno-flotantes`.
+- Pasos de 10px cerca del final: el freno sube de 0 a 106.39px sin saltos y
+  el solape se mantiene en 0px en cada paso.
+- `elementFromPoint` sobre el centro de las dos líneas del copyright devuelve
+  la propia barra; el alto de la barra (132/90/90/57px), su fondo y sus textos
+  no cambian, y el alto del documento tampoco.
+- Teclado: desde el último enlace del pie, Tab llega al WhatsApp y al botón de
+  subir; el primero abre el chat y el segundo devuelve el scroll a 0.
+- Menú móvil abierto al final: los botones siguen frenados y el velo impide el
+  clic (0 popups, la URL no cambia).
+- Movimiento reducido: el freno se aplica y `transition` queda en `none`.
+- Misma comprobación en `nosotros/`, `cursos/`, una ficha generada y `404.html`:
+  0px de solape y la barra intacta.
+
 ## 2026-10-23 (El Home presenta la cita institucional como cita)
 
 ### Changed

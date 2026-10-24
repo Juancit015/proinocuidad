@@ -524,7 +524,12 @@ section:has(> .identidad-grid) { overflow-x: clip; }
   background: var(--whatsapp); color: var(--blanco);
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 26px rgba(37, 211, 102, 0.45);
-  transition: var(--transicion);
+  /* El freno lo escribe main.js en --freno-flotantes cuando la barra de
+     copyright llega a los botones: se desplazan hacia arriba lo justo para
+     quedar apoyados sobre ella. `translate` va sin duración para que siga al
+     scroll sin el retardo de 0.25s; el resto sí conserva su transición. */
+  translate: 0 calc(-1 * var(--freno-flotantes, 0px));
+  transition: var(--transicion), translate 0s;
 }
 .flotante-whatsapp svg { width: 30px; height: 30px; display: block; }
 .flotante-whatsapp:hover { background: var(--whatsapp-oscuro); transform: scale(1.06); text-decoration: none; }
@@ -547,7 +552,8 @@ section:has(> .identidad-grid) { overflow-x: clip; }
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 8px 24px rgba(16, 20, 119, 0.3);
   opacity: 0; visibility: hidden; pointer-events: none;
-  transition: opacity 0.35s ease, visibility 0.35s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  translate: 0 calc(-1 * var(--freno-flotantes, 0px));
+  transition: opacity 0.35s ease, visibility 0.35s ease, transform 0.25s ease, box-shadow 0.25s ease, translate 0s;
 }
 .to-top-proi.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
 @media (max-width: 860px) {
@@ -910,6 +916,7 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 @media (prefers-reduced-motion: reduce) {
   html.js-anim .hero-grid > *, html.js-anim .identidad-grid > * { animation: none !important; opacity: 1 !important; transform: none !important; }
   .page-head--servicios, .page-head--nosotros, .page-head--noticias, .page-head--cursos { background-attachment: scroll; }
+  .flotante-whatsapp, .flotante-texto, .to-top-proi { transition: none; }
 }
 
 /* ---------- CTA final de la home ---------- */
