@@ -3,6 +3,40 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-23 (Las cifras del Home pasan a tarjetas compactas)
+
+### Changed
+
+- **La franja de cifras del Home usa el patrón de las fichas de curso**:
+  cada cifra vive en una tarjeta horizontal con icono de 44px en un cuadro
+  azul claro, etiqueta en mayúsculas y gris, y valor en azul oscuro, igual que
+  la barra de datos del diplomado. Reutiliza `.stat-icono` y `.stat-info`, así
+  que un cambio futuro en la ficha se refleja en el Home.
+- **La fila mide 820px como máximo y va centrada**, con tres columnas en
+  escritorio y una sola por debajo de 860px. El H2 "Proinocuidad en cifras"
+  conserva el `section-head` y el subrayado rojo del resto de secciones, y
+  queda alineado con el hero en lugar de sangrado con las tarjetas.
+- **El hover sube 3px y gana sombra, sin borde rojo**, igual que
+  `.ficha-stat-card`; con movimiento reducido el cambio es instantáneo.
+
+### Verified
+
+- Playwright a 390, 561, 683, 860, 861, 1024 y 1440px: tres tarjetas siempre,
+  una columna hasta 860px y tres a partir de 861px, con 0px de desborde
+  horizontal en todos los anchos.
+- A 1440px la fila mide 820px, cada tarjeta 262.7px (antes 381px) y el H2
+  empieza en 130px, alineado con el hero.
+- Estilos computados idénticos a `.ficha-stat-card` del diplomado: padding
+  `18px 16px`, gap 14px, icono 44×44 con fondo `rgb(238, 240, 250)`, etiqueta
+  12.16px `rgb(92, 95, 106)` en mayúsculas y valor 15.36px `rgb(11, 14, 86)`.
+- Hover a 1024px: la tarjeta sube 3px, la sombra pasa a `--sombra` y el borde
+  no cambia; las otras dos no se mueven. Con `prefers-reduced-motion: reduce`
+  la transición es `none`/`0s` y la elevación sigue aplicándose; en táctil no
+  queda estado pegado.
+- Los textos de las tres cifras, el H1, el `<title>`, la meta description y el
+  canonical son idénticos a los de `HEAD`; `index.html` sigue siendo la única
+  página con `.cifras` y no se tocaron JS ni generadores.
+
 ## 2026-10-23 (Los botones flotantes frenan sobre la barra de copyright)
 
 ### Changed
