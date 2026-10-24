@@ -1766,6 +1766,33 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
   box-shadow: 0 0 0 3px rgba(16, 20, 119, 0.12);
 }
 .form-inscripcion input[readonly] { background: var(--fondo); color: var(--gris); }
+/* Campo con prefijo +51 (celular peruano): el contenedor lleva el look del
+   input y el input interno va desnudo. Ojo con la regla genérica de arriba
+   que pinta borde/width en TODO input: el wrapper gana al agruparla. */
+.form-inscripcion .campo-con-prefijo {
+  display: flex; align-items: stretch;
+  border: 1.5px solid var(--gris-linea); border-radius: var(--radio-sm);
+  background: var(--blanco); width: 100%;
+}
+.form-inscripcion .campo-con-prefijo:focus-within {
+  border-color: var(--azul); box-shadow: 0 0 0 3px rgba(16, 20, 119, 0.12);
+}
+.form-inscripcion .campo-con-prefijo .prefijo {
+  display: flex; align-items: center; flex: none;
+  padding: 0 6px 0 14px;
+  color: var(--gris); font-size: 0.95rem; user-select: none;
+}
+.form-inscripcion .campo-con-prefijo input[type="tel"] {
+  flex: 1; min-width: 0; width: auto;
+  border: none; background: transparent;
+  padding: 11px 10px 11px 0; border-radius: inherit;
+  font-size: 0.95rem; color: var(--grafito); font-family: inherit;
+}
+.form-inscripcion .campo-con-prefijo input[type="tel"]:focus {
+  outline: none; border: none; box-shadow: none;
+}
+/* Marca de campo opcional: ventana sobre el label, gris pequeño, sin corte a 390px */
+.form-inscripcion .opcio-campo { font-size: 0.8rem; font-weight: 400; color: var(--gris); white-space: nowrap; }
 .form-inscripcion .form-check {
   display: flex; align-items: flex-start; gap: 10px;
   font-weight: 400; color: var(--grafito); cursor: pointer;

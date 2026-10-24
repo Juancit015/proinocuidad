@@ -256,6 +256,15 @@
     });
     actualizar();
     form.addEventListener("submit", function (ev) {
+      // Celular peruano completo en el correo: "+51 XXX XXX XXX". El prefijo
+      // se prepone una sola vez por envío (si el usuario reenvia tras un
+      // fallo, el valor ya quedo mutado y no se duplica).
+      var inputCelular = form.querySelector('input[name="celular"]');
+      var paisForm = form.querySelector('select[name="pais"]');
+      if (paisForm && paisForm.value === "Perú" && inputCelular && inputCelular.value.indexOf("+51 ") !== 0) {
+        var solos = inputCelular.value.replace(/\D/g, "");
+        inputCelular.value = "+51 " + (solos.length === 9 ? solos.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3") : inputCelular.value.trim());
+      }
       if (check.checked && tipoElegido() === "factura") {
         var rucOk = /^\d{11}$/.test(inputRuc.value.trim());
         var razonOk = inputRazon.value.trim().length > 1;
@@ -271,6 +280,82 @@
       }
       if (error) error.hidden = true;
     });
+  });
+
+  // --- Reglas de documento y celular por país (Perú / Extranjero) ---
+  // El HTML nace con Perú predeterminado por el generador; este bloque
+  // intercambia etiqueta, pattern, placeholder y prefijo cuando el usuario
+  // cambia el select. La mutación del celular con "+51 " corre SOLO en el
+  // submit, para que el correo llegue con el número completo y el valor
+  // editado no se asome en el campo entre envíos.
+  var REGLAS_PAIS = {
+    "Perú": {
+      docLabel: "DNI",
+      docPattern: "[0-9]{8}",
+      docTitle: "El DNI tiene 8 dígitos.",
+      docPlaceholder: "8 dígitos",
+      celPattern: "[0-9]{9}",
+      celMax: "9",
+      celTitle: "El celular peruano lleva 9 dígitos que empiezan en 9.",
+      celPlaceholder: "999 999 999",
+      prefijo: true
+    },
+    "Extranjero": {
+      docLabel: "Documento/Pasaporte",
+      docPattern: "[A-Za-z0-9]{5,17}",
+      docTitle: "Número de pasaporte o documento (letras y números).",
+      docPlaceholder: "N.º de pasaporte",
+      celPattern: "[0-9+ ()-]{5,20}",
+      celMax: "20",
+      celTitle: "Incluye el código de país, ej. +57 300 123 4567.",
+      celPlaceholder: "+57 300 123 4567",
+      prefijo: false
+    }
+  };
+  document.querySelectorAll(".form-inscripcion").forEach(function (form) {
+    var pais = form.querySelector('select[name="pais"]');
+    var docLabel = form.querySelector("label:has(> input[name='dni'])");
+    var inputDni = form.querySelector('input[name="dni"]');
+    var inputCel = form.querySelector('input[name="celular"]');
+    var prefijo = form.querySelector(".campo-con-prefijo .prefijo");
+    if (!pais || !inputDni || !inputCel) return;
+    function aplicarPais(nombre) {
+      var r = REGLAS_PAIS[nombre];
+      if (!r) return;
+      if (docLabel) {
+        // el texto de la etiqueta vive directo en el label (dni) o dentro de
+        // .label-tit (los campos con la marca "(opcional)")
+        var contenedor = docLabel.querySelector(".label-tit") || docLabel;
+        var tn = contenedor.childNodes[0];
+        if (tn && tn.nodeType === 3) { tn.nodeValue = r.docLabel; }
+        else { docLabel.insertBefore(document.createTextNode(r.docLabel + "\n"), docLabel.firstChild); }
+      }
+      inputDni.setAttribute("pattern", r.docPattern);
+      inputDni.setAttribute("title", r.docTitle);
+      inputDni.setAttribute("placeholder", r.docPlaceholder);
+      inputCel.setAttribute("pattern", r.celPattern);
+      inputCel.setAttribute("maxlength", r.celMax);
+      inputCel.setAttribute("title", r.celTitle);
+      inputCel.setAttribute("placeholder", r.celPlaceholder);
+      if (prefijo) prefijo.hidden = !r.prefijo;
+    }
+    pais.addEventListener("change", function () { aplicarPais(pais.value); });
+    // Estado vigente del form al cargar (Perú no cambia nada; por si el HTML
+    // llegara a traer otro select pre-elegido en el futuro)
+    aplicarPais(pais.value);
+    // 2.4: mensaje del documento en .campo-error cuando el bloque falla. El evento
+    // invalid SÍ se dispara aunque el navegador cancele el submit (el listener
+    // submit no corre con el form inválido). La burbuja nativa convive.
+    var errorDoc = form.querySelector(".campo-error");
+    if (errorDoc) {
+      inputDni.addEventListener("invalid", function () {
+        errorDoc.textContent = inputDni.getAttribute("title") || "Ingresa un documento válido.";
+        errorDoc.hidden = false;
+      });
+      inputDni.addEventListener("input", function () {
+        if (inputDni.checkValidity()) errorDoc.hidden = true;
+      });
+    }
   });
 
   // --- Envío de inscripción: confirmación inline sin saltar de página ---

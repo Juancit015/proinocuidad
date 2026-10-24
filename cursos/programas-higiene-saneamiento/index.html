@@ -362,22 +362,26 @@ Elige la opción que más te acomode para realizar tu inversión:
 </div>
 <div class="form-grid">
 <label>Nombre y apellidos
-<input type="text" name="nombre" required autocomplete="name">
+<input type="text" name="nombre" required autocomplete="name" placeholder="Ej.: María Torres Quispe">
 </label>
 <label>DNI
-<input type="text" name="dni" required inputmode="numeric" autocomplete="off">
+<input type="text" name="dni" required inputmode="numeric" autocomplete="off" pattern="[0-9]{8}" maxlength="8" title="El DNI tiene 8 dígitos." placeholder="8 dígitos">
 </label>
-<label>Empresa/Institución
-<input type="text" name="empresa" autocomplete="organization">
+<label>
+<span class="label-tit">Empresa/Institución <span class="opcio-campo">(opcional)</span></span>
+<input type="text" name="empresa" autocomplete="organization" placeholder="Ej.: Conservas del Norte S.A.C.">
 </label>
-<label>Cargo/Ocupación
-<input type="text" name="cargo">
+<label>
+<span class="label-tit">Cargo/Ocupación <span class="opcio-campo">(opcional)</span></span>
+<input type="text" name="cargo" placeholder="Ej.: Jefa de Calidad">
 </label>
 <label>Celular
-<input type="tel" name="celular" required autocomplete="tel">
+<span class="campo-con-prefijo"><span class="prefijo" aria-hidden="true">+51</span>
+<input type="tel" name="celular" required autocomplete="tel" pattern="[0-9]{9}" maxlength="9" title="El celular peruano lleva 9 dígitos que empiezan en 9." placeholder="999 999 999">
+</span>
 </label>
 <label>Correo
-<input type="email" name="correo" required autocomplete="email">
+<input type="email" name="correo" required autocomplete="email" placeholder="correo@ejemplo.com">
 </label>
 <label>País
 <select name="pais" autocomplete="country-name">

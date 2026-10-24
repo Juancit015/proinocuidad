@@ -3,6 +3,54 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-24 (Reglas del formulario: opcionalidad, placeholders, DNI y +51 por país)
+
+### Added
+
+- **Etiqueta "(opcional)" en campos sueltos**: Empresa/Institución y
+  Cargo/Ocupación llevan la marca en gris junto al título; el resto
+  sigue obligatorio. El texto de etiqueta quedó envuelto en
+  `.label-tit` porque el `label` del sitio es grid y el span directo
+  caía a su propia línea.
+- **Placeholders en todos los campos**: ejemplos del formato esperado
+  ("Ej.: María Torres Quispe", "8 dígitos", "999 999 999",
+  "correo@ejemplo.com", etc.). El select de país no lleva placeholder
+  por diseño nativo.
+- **DNI de 8 dígitos solo Perú**: con Perú (`pattern="[0-9]{8}"`,
+  `maxlength="8"`, título claro) un documento de 7 o 9 dígitos bloquea
+  el envío con el aviso nativo + un mensaje custom en `.campo-error`
+  (por el evento `invalid`). Con Extranjero la etiqueta pasa a
+  "Documento/Pasaporte" alfanumérico (`[A-Za-z0-9]{5,17}`), sin regla
+  de 8 dígitos.
+- **Celular con prefijo +51 solo Perú**: el input nace envuelto en
+  `.campo-con-prefijo` con el prefijo "+51" fijo (no editable, fuera
+  del valor) y patrón de 9 dígitos que empiezan en 9. Al enviar, el JS
+  completa el valor a "+51 XXX XXX XXX" (una mutación en el `submit`
+  con formato agrupado y guard contra prefijo duplicado en reintentos).
+  Con Extranjero el prefijo desaparece y el campo queda libre con
+  formato internacional y placeholder de ejemplo.
+- **Formularios intactos por fuera**: el bloque factura/RUC (11
+  dígitos exactos), el honeypot antispam y las dos vías de envío
+  (POST clásico con voucher, AJAX sin voucher) quedan exactamente
+  como estaban; el intercambio de reglas corre solo al cambiar el
+  select.
+
+### Verified
+
+- Regeneración de las 8 fichas: `node tools/generar-fichas.mjs` sale
+  exit 0 y el diff respecto del snapshot muestra solo las líneas del
+  formulario; 404.html queda intocado.
+- Playwright con Perú: checkValidity pasa con "12345678" y falla con
+  "1234567"/"123456789"; el cuerpo del POST capturado contiene
+  `name="celular"` con valor "+51 987 654 321", el dni correcto y el
+  adjunto `filename="voucher-real.png"`.
+- Playwright con Extranjero: etiqueta "Documento/Pasaporte" computada,
+  documento "P1234567" aceptado, celular "771234567" llega tal cual y
+  no existe ningún "+51" en el cuerpo; al volver a Perú se restauran
+  pattern, placeholder, etiqueta y prefijo sin recargar.
+- A 390px: "(opcional)" y placeholders completos visibles, desborde
+  horizontal 0px (también 0px a 1280).
+
 ## 2026-10-24 (Aviso de inscripción enviada debajo del botón)
 
 ### Added
