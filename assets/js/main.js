@@ -445,11 +445,25 @@
     btn.addEventListener("click", function () {
       var texto = btn.getAttribute("data-copiar");
       if (!texto) return;
+      // El botón es icono SVG + texto: se cambia SOLO el nodo de texto para
+      // que el icono del portapapeles no desaparezca (antes se pisaba el
+      // innerHTML/innerText entero y el SVG se perdía para siempre).
+      var textoNodo = function (nuevo) {
+        for (var i = btn.childNodes.length - 1; i >= 0; i--) {
+          var n = btn.childNodes[i];
+          if (n.nodeType === 3 && n.nodeValue.trim()) { if (nuevo) n.nodeValue = nuevo; return n; }
+        }
+        return null;
+      };
+      var restablecer = function () {
+        var n = textoNodo();
+        if (n) n.nodeValue = btn.getAttribute("data-texto");
+      };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(texto).then(function () {
-          var orig = btn.innerText;
-          btn.innerText = "¡Copiado!";
-          setTimeout(function () { btn.innerText = orig; }, 2000);
+          if (!btn.getAttribute("data-texto")) btn.setAttribute("data-texto", textoNodo().nodeValue);
+          textoNodo("¡Copiado!");
+          setTimeout(restablecer, 2000);
         });
       } else {
         var input = document.createElement("input");
@@ -458,10 +472,11 @@
         input.select();
         document.execCommand("copy");
         document.body.removeChild(input);
-        var orig = btn.innerText;
-        btn.innerText = "¡Copiado!";
-        setTimeout(function () { btn.innerText = orig; }, 2000);
+        if (!btn.getAttribute("data-texto")) btn.setAttribute("data-texto", textoNodo().nodeValue);
+        textoNodo("¡Copiado!");
+        setTimeout(restablecer, 2000);
       }
     });
+
   });
 })();
