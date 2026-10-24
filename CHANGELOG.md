@@ -3,6 +3,43 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-23 (La franja de cifras vuelve a la barra plana)
+
+### Changed
+
+- **El bloque de cifras del Home regresa al formato de "mucho antes"** a
+  pedido del dueño: barra plana sobre el fondo claro, con las tres cifras
+  en línea (valor grande en rojo de marca, etiqueta en gris), sin
+  tarjetas de fondo blanco con icono, sin el H2 "Proinocuidad en cifras"
+  y sin la fotografía de planta con velo blanco de fondo. El markup y el
+  CSS se restauran literalmente del historial (el estado previo al
+  change `cifras-home-tarjetas`, verificado en `2ed234e~1`).
+- **Responsive histórico**: tres columnas por encima de 1020px y dos
+  columnas de 1020px hacia abajo (la tercera cifra queda sola en la fila
+  inferior en móvil, tal como se veía antes); desaparece la regla de una
+  columna del rango ≤860px y la elevación al hover.
+- **Se retira `assets/img/cifras-fondo.avif`**: la foto solo vivía en la
+  franja del Home; ninguna página ni hoja de estilo la referencian.
+
+### Verified
+
+- Markup de la sección byte-idéntico a `2ed234e~1` (diff exacto) y las
+  seis líneas de CSS de la franja idénticas al historial; el diff del
+  Home no toca título, meta description, canonical ni H1, y el H1 sigue
+  siendo único en la página.
+- Playwright a 1440, 1024 y 390px: dos columnas en 390px con la tercera
+  en la fila siguiente y tres columnas a partir de 1024px, 0px de
+  desborde en los tres anchos, fondo `rgb(246, 247, 251)` sin imagen
+  (background-image `none`), padding `26px 0`, valores `rgb(173, 52, 59)`
+  a 27.2px (1.7rem) y etiquetas `rgb(92, 95, 106)` a 14.08px (0.88rem),
+  y el margen izquierdo de la franja alineado al del `.container` del
+  hero (15.6px y 15.6px a 390; 41px y 41px a 1024; 130px y 130px a 1440).
+- Las reglas globales de fichas que reutilizan `.stat-icono`,
+  `.stat-info`, `.ficha-stat-card` y el `@media (hover: hover)` quedan
+  intactas y las fichas siguen usándolas; `assets/js/main.js` y los
+  generadores no se tocan, y `index.html` es la única página con
+  `.cifras`.
+
 ## 2026-10-23 (Las cifras del Home pasan a tarjetas compactas)
 
 ### Changed
