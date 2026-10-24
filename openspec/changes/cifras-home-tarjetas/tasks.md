@@ -15,6 +15,9 @@
 - [x] 2.4 Añadir el hover dentro de `@media (hover: hover)`: `translateY(-3px)` y `--sombra`, con `transition` de 0.25s para transform y sombra, sin cambiar el borde.
 - [x] 2.5 Quitar la regla `.cifras .container` del breakpoint de 1020px, el ajuste compacto de 560–860px y la regla de una columna de 560px; añadir una sola columna para `.cifras-grid` en `@media (max-width: 860px)`.
 - [x] 2.6 Añadir `.cifra-card { transition: none; }` al bloque `@media (prefers-reduced-motion: reduce)` existente al final de `main.css`.
+- [x] 2.7 Añadir como fondo de `.cifras` la foto de planta que aportó el dueño (`assets/img/cifras-fondo.avif`, derivada de su original sin marcas de agua) en dos capas `background-image`: velo degradado blanco `rgba(246,247,251,0.62)→0.30` a 90° y la foto con `cover`, `background-position: center, center 13%`.
+- [x] 2.8 Subir el `padding` de la sección a `64px 0`: la franja de foto pasa de 275px a 307px y la cara de la trabajadora (≈298px en la imagen escalada) entra completa, con gorro y barbilla dentro del cuadro.
+- [x] 2.9 Devolver el título a los colores por defecto del sitio (H2 en `--azul`, subrayado en `--rojo`): retirar las reglas de título blanco y `#ff8f96` de la iteración de velo oscuro.
 
 ## 3. Verificación en navegador
 
@@ -27,6 +30,7 @@
 - [x] 3.7 Con `prefers-reduced-motion: reduce`: `transition-property`/`duration` de la tarjeta es `none`/`0s`, y el hover sigue aplicando la elevación.
 - [x] 3.8 Comparar antes/después: el texto de las tres cifras es idéntico, el H1, el `<title>` y el canonical no cambian, y no hay scroll lateral.
 - [x] 3.9 Confirmar que `assets/js/main.js`, `tools/generar-fichas.mjs` y `tools/generar-listados.mjs` no se tocan, y que `index.html` sigue siendo la única página con `.cifras`.
+- [x] 3.10 Verificar el fondo con Playwright a 1440, 1024 y 390: posiciones computadas (`50% 50%, 50% 13%`), 0 desbordes, H2 en `rgb(16, 20, 119)`, cara completa visible a 1440 y 390, sin marcas de agua, y contraste del H2 sobre el velo ≈ 10:1 (fondo medido `rgb(206,202,196)`).
 
 ## 4. Cierre
 

@@ -7,6 +7,7 @@ La franja de cifras del Home es hoy una tira plana de tres pares número/texto s
 ## What Changes
 
 - **La franja pasa a ser una sección con título y tarjetas**: encima de las tres cifras aparece el H2 "Proinocuidad en cifras" y cada cifra vive en su propia tarjeta blanca, con la etiqueta ("personas capacitadas") en gris y pequeña, y el valor ("+1000") grande y en rojo.
+- **Fondo fotográfico con velo blanco**: la sección lleva como fondo la foto de planta que aportó el dueño, cubierta por un velo blanco degradado (más denso tras el título, más transparente sobre la chica) y encuadrada para que su cara se vea completa.
 - **Tarjetas interactivas al puntero**: al pasar el ratón, la tarjeta sube 4px, gana sombra y el borde toma el rojo de marca, con la transición de 0.25s que ya usa el sitio. En táctil no hay cambio de estado pegajoso.
 - **Se conservan las tres cifras y su texto exacto**: no se añade una cuarta cifra ni se inventan datos; el contenido sigue siendo "+1000 personas capacitadas", "8 cursos y un diplomado asíncrono" y "100% compromiso con la salud pública".
 - **Responsive**: tres tarjetas en fila en escritorio y tableta, una columna por debajo de 560px, sin huecos vacíos ni desborde horizontal.
@@ -27,6 +28,7 @@ La franja de cifras del Home es hoy una tira plana de tres pares número/texto s
 
 - `index.html`: única página que tiene la franja; se reescribe solo el bloque `<section class="cifras">` y se añade el H2.
 - `assets/css/main.css`: se sustituyen las reglas `.cifras` por las de la sección, el título, la grilla y las tarjetas, incluida la variante responsive y la de movimiento reducido.
+- `assets/img/cifras-fondo.avif` (+ `.jpg` de respaldo): la foto de planta que aportó el dueño, procesada a AVIF de 12KB.
 - `CHANGELOG.md`: entrada del cambio.
 - Sin cambios en `assets/js/main.js`, `tools/generar-fichas.mjs`, `tools/generar-listados.mjs`, `sitemap.xml` ni `llms.txt`: la página y su URL no cambian.
 

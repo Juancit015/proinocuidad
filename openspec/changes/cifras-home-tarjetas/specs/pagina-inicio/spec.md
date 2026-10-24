@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Franja de cifras del Home
-La sección de cifras del Home SHALL mostrar el H2 "Proinocuidad en cifras" y exactamente tres cifras: "+1000 personas capacitadas", "8 cursos y un diplomado asíncrono" y "100% compromiso con la salud pública", cada una en una tarjeta compacta con icono, etiqueta en mayúsculas gris y valor en azul oscuro. SHALL NOT afirmar años de experiencia ni antigüedad. La fila SHALL medir 820px como máximo, centrada, con tres columnas en escritorio y una por debajo de 860px.
+La sección de cifras del Home SHALL mostrar el H2 "Proinocuidad en cifras" y exactamente tres cifras: "+1000 personas capacitadas", "8 cursos y un diplomado asíncrono" y "100% compromiso con la salud pública", cada una en una tarjeta compacta con icono, etiqueta en mayúsculas gris y valor en azul oscuro. SHALL NOT afirmar años de experiencia ni antigüedad. La fila SHALL medir 820px como máximo, centrada, con tres columnas en escritorio y una por debajo de 860px. La sección SHALL llevar una fotografía de planta de producción como fondo cubierto por un velo blanco suave, con encuadre que muestre la cara completa de la trabajadora.
 
 #### Scenario: Tres cifras, sin antigüedad
 - **WHEN** el usuario ve la sección de cifras del Home
@@ -36,6 +36,14 @@ La sección de cifras del Home SHALL mostrar el H2 "Proinocuidad en cifras" y ex
 #### Scenario: Franja legible en móvil
 - **WHEN** el usuario ve la sección en un móvil de 390px
 - **THEN** las tres tarjetas se apilan en una columna, se leen completas y no desbordan el ancho visible
+
+#### Scenario: Fondo con velo y cara completa
+- **WHEN** el usuario ve la sección en 1440px y en 390px
+- **THEN** distingue la fotografía filtrada por un velo claro, ve la cara de la trabajadora completa (gorro incluido), sin marcas de agua ni recortes que le corten el rostro
+
+#### Scenario: Legibilidad del título sobre el fondo
+- **WHEN** el usuario lee el H2 de la sección con el fondo de foto detrás
+- **THEN** el H2 conserva su color azul de marca y se lee con contraste suficiente sobre el velo
 
 ## ADDED Requirements
 
