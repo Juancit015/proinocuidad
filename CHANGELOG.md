@@ -3,6 +3,27 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-24 (Métricas del Home apiladas en pantallas chicas)
+
+### Changed
+
+- **Los tres indicadores del Home en la misma fila en todos los anchos**:
+  desaparece la regla de 2 columnas y su tercera huérfana en la fila de
+  abajo; la rejilla de 3 columnas vigente en escritorio corre también
+  en tableta y móvil. Los valores suben a 2rem con peso 700 y las
+  etiquetas pasan a versalitas (uppercase, peso 700, tracking 0.08em)
+  en azul oscuro de marca para que rotulen en vez de leerse como texto
+  gris. En pantallas de 480px o menos baja la escala (valor 1.05rem,
+  etiqueta 0.72rem, gap 8px) y la fila quepan cerrada sin desborde.
+
+### Verified
+
+- Playwright: las 3 métricas en la misma fila a 1440, 1024 y 390px
+  (grilla 3 columnas corriendo en los anchos); columnas de
+  aproximadamente 114px por valor y etiquetas que envuelven en 2
+  líneas en móvil, columnas izquierda a 16px, sin cortes ni desborde
+  horizontal (0px a 1440, 1024 y 390), con captura visual a 390px.
+
 ## 2026-10-24 (Reglas del formulario: opcionalidad, placeholders, DNI y +51 por país)
 
 ### Added

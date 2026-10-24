@@ -374,11 +374,11 @@ input[type="submit"] { border-radius: 4px; }
   .hero .hero-grid > img { margin-bottom: -60px; }
 }
 
-/* Franja de cifras */
+/* Franja de cifras: números 700 peso en 2rem, etiqueta rotulada en versalitas */
 .cifras { background: var(--fondo); border-bottom: 1px solid var(--gris-linea); padding: 26px 0; }
 .cifras .container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; text-align: center; }
-.cifras strong { display: block; font-size: 1.7rem; color: var(--rojo); }
-.cifras span { font-size: 0.88rem; color: var(--gris); }
+.cifras strong { display: block; font-size: 2rem; color: var(--rojo); font-weight: 700; }
+.cifras span { display: block; font-size: 0.8rem; color: var(--azul-oscuro); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* ---------- Tarjetas genéricas ---------- */
 .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -585,7 +585,13 @@ section:has(> .identidad-grid) { overflow-x: clip; }
 /* ---------- Responsive ---------- */
 @media (max-width: 1020px) {
   .cards-grid.four { grid-template-columns: repeat(2, 1fr); }
-  .cifras .container { grid-template-columns: repeat(2, 1fr); }
+/* Escritorio y móvil: SIEMPRE las tres cifras en la misma fila. En pantallas
+   chicas baja la tipografía para que las tres columnas quepan sin desborde. */
+@media (max-width: 480px) {
+  .cifras .container { gap: 8px; }
+  .cifras strong { font-size: 1.05rem; }
+  .cifras span { font-size: 0.72rem; }
+}
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
