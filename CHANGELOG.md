@@ -26,6 +26,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
   franja visible de foto no daba para todo el rostro y quedaba cortada en
   la barbilla. El H2 vuelve al azul de marca y el subrayado al rojo: las
   reglas del velo oscuro anterior (título blanco y `#ff8f96`) se retiraron.
+- **La palabra "Proinocuidad" del H2 lleva el acento rosa del hero** (petición
+  del dueño): envuelve la palabra en un `<span class="slogan-destacado">`, la
+  misma clase de "construimos inocuidad!", con la regla
+  `.cifras .section-head h2 .slogan-destacado` y el literal `#ff8f96`, igual
+  que en el resto del sitio. El texto del encabezado no cambia.
 
 ### Verified
 
@@ -45,9 +50,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
   canonical son idénticos a los de `HEAD`; `index.html` sigue siendo la única
   página con `.cifras` y no se tocaron JS ni generadores.
 - Fondo con Playwright a 1440, 1024 y 390px: posiciones computadas
-  `50% 50%, 50% 13%`, 0px de desborde horizontal, H2 en `rgb(16, 20, 119)`
-  con contraste ≈ 10:1 sobre el velo (fondo medido `rgb(206, 202, 196)`) y la
+  `50% 50%, 50% 13%`, 0px de desborde horizontal, contraste del azul del H2
+  ≈ 10:1 sobre el velo (fondo medido `rgb(206, 202, 196)`) y la
   cara completa en los tres anchos, sin marcas de agua en ninguna captura.
+- Acento del H2: el span computa `rgb(255, 143, 150)` igual que el hero,
+  `display: inline`, texto del H2 intacto ("Proinocuidad en cifras") y
+  0px de desborde a 1440. Nota: el rosa sobre el velo mide ≈1.3:1 de
+  contraste, decisión visual del dueño documentada en design.md.
 
 ## 2026-10-23 (Los botones flotantes frenan sobre la barra de copyright)
 

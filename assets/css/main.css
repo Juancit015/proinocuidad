@@ -364,6 +364,7 @@ input[type="submit"] { border-radius: 4px; }
   border-bottom: 1px solid var(--gris-linea);
   padding: 64px 0;
 }
+.cifras .section-head h2 .slogan-destacado { color: #ff8f96; }
 .cifras-head { margin-bottom: 22px; }
 .cifras-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 820px; margin-inline: auto; }
 .cifra-card {
