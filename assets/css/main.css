@@ -141,7 +141,13 @@ input[type="submit"] { border-radius: 4px; }
 .nav-menu .btn-aula-nav { border-radius: 4px !important; }
 
 /* ---------- Topbar + navegación ---------- */
-.topbar { background: var(--azul-oscuro); color: #cfd2ec; font-size: 0.82rem; }
+/* La barra superior queda pegada en escritorio y acompaña el scroll, con la
+   cabecera unida justo debajo (su top apunta al alto de la topbar). En 860px
+   o menos la regla display: none del media la saca del flujo y anula esto. */
+.topbar {
+  position: sticky; top: 0; z-index: 51;
+  background: var(--azul-oscuro); color: #cfd2ec; font-size: 0.82rem;
+}
 .topbar .container {
   display: flex; justify-content: space-between; align-items: center;
   gap: 12px; padding: 7px 0;
@@ -160,6 +166,12 @@ input[type="submit"] { border-radius: 4px; }
    se reserva ese espacio más 8px de aire para que no quede debajo de ella.
    Móvil y escritorio por igual, porque la cabecera es fija en ambos. */
 [id] { scroll-margin-top: 84px; }
+/* Escritorio: con la barra superior pegada por encima de la cabecera, el conjunto
+   visible mide 35px + 76px; el ancla se despega del conjunto completo. */
+@media (min-width: 861px) {
+  .site-header { top: 35px; }
+  [id] { scroll-margin-top: 119px; }
+}
 .navbar {
   display: flex; align-items: center; justify-content: space-between;
   gap: 18px; padding: 12px 0;
@@ -229,6 +241,14 @@ input[type="submit"] { border-radius: 4px; }
 .nav-drop:hover .mega-panel, .nav-drop:focus-within .mega-panel {
   opacity: 1; visibility: visible;
   transform: translateX(-50%) translateY(0);
+}
+/* Guard del cierre por ancla (escritorio): tras pulsar un ancla de la misma
+   página el cursor queda sobre el drop y :hover no se limpia; la clase que
+   añade main.js oculta el panel hasta que el ratón sale del drop o el foco
+   vuelve por teclado (ambos retiran la clase). Sobrevive al estado hover
+   porque va después en igual especificidad. */
+@media (min-width: 861px) {
+  .nav-drop.cerrado-por-ancla .mega-panel { display: none; }
 }
 .mega-panel::before {
   content: ""; position: absolute; top: -10px; left: 50%;

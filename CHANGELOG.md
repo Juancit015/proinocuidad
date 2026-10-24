@@ -3,6 +3,48 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-24 (Barra superior pegada y mega-panel que se cierra al navegar)
+
+### Added
+
+- **La barra de contacto acompaña el scroll en escritorio**: la `.topbar`
+  (Contacto, correo, RUC y redes) pasa a `position: sticky; top: 0` con
+  z-index 51 en pantallas de más de 860px, y la cabecera desplaza su punto
+  de pegado a 35px (la altura de la topbar) para quedar unida justo
+  debajo: el conjunto azul+blanco de 111px queda fijo durante todo el
+  scroll. En 860px o menos no cambia nada: la topbar sigue oculta y la
+  cabecera se pega en `top: 0`.
+- **El mega-panel se cierra al entrar a una sección por ancla**: al pulsar
+  un ítem del mega de "Servicios" (o "Cursos") que es ancla de la misma
+  página, el panel se cierra y deja legible el contenido de destino. En
+  `main.js` se hace `blur()` del enlace tras el clic (suelta el
+  `:focus-within`) y, como el `:hover` del cursor persistía, una clase
+  guard `cerrado-por-ancla` en el `.nav-drop` oculta el panel
+  (`display: none` en ≥861px) hasta que el ratón sale del drop o el foco
+  vuelve por teclado, mecanismos que retiran la clase.
+- **Anclas recalculadas en escritorio**: `scroll-margin-top` pasa de 84px
+  a 119px en pantallas de más de 860px (35px de topbar + 76px de cabecera
+  + 8px de aire), para que las secciones de destino sigan quedando bajo
+  el conjunto pegado; en móvil se conservan los 84px.
+
+### Verified
+
+- Playwright a 1440 y 1024px en `servicios/index.html`: tras el clic en
+  "Registro sanitario" el panel queda con `visibility: hidden`, el foco
+  pasa a `body`, la sección de destino queda con su H2 a 232/241px (bajo
+  el conjunto pegado de 111px de alto), `scroll-margin-top: 119px`
+  computado, y el conjunto medido es topbar top 0 / header top 35 con
+  z-index 51 sobre 50. La re-apertura funciona: al salir el cursor del
+  drop la clase guard se limpia y el hover vuelve a abrir el panel, y el
+  foco por teclado lo abre igual que antes (el Escape en escritorio no
+  cerraba el mega-panel tampoco antes de este cambio: su handler solo
+  actúa con el menú móvil abierto).
+- A 390px: topbar `display: none`, header `top: 0`,
+  `scroll-margin-top: 84px` y 0px de desborde (a 1440, 1024 y 390).
+- Solo `assets/js/main.js` y `assets/css/main.css` cambian; regeneración
+  de fichas (`node tools/generar-fichas.mjs`) sale `exit 0` sin
+  diferencias, y la regla guard va en `@media (min-width: 861px)`.
+
 ## 2026-10-23 (La franja de cifras vuelve a la barra plana)
 
 ### Changed

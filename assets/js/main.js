@@ -113,7 +113,27 @@
   document.querySelectorAll(".nav-menu a").forEach(function (a) {
     a.addEventListener("click", function () {
       if (a.getAttribute("target") || mobileQuery.matches) cerrarMenu(false);
+      // Ancla de la misma página en escritorio: el foco queda en el enlace
+      // dentro del .nav-drop y :focus-within mantiene el mega-panel abierto
+      // sobre el contenido de destino. Al soltar el foco el panel se cierra
+      // por su regla CSS; si el cursor sigue encima, :hover lo mantiene y
+      // la clase guard inferior lo oculta hasta que el ratón sale del drop
+      // (la apertura por teclado no se toca: esto solo corre en el clic).
+      else if (a.getAttribute("href").charAt(0) === "#") {
+        a.blur();
+        var drop = a.closest(".nav-drop");
+        if (drop) drop.classList.add("cerrado-por-ancla");
+      }
     });
+  });
+  // --- Limpia la clase guard del cierre por ancla ---
+  // Sin esto el drop quedaría cerrado aunque el cursor se apartara. Sale el
+  // ratón (mouseleave) o vuelve el foco por teclado (focusin) y el drop
+  // vuelve a comportarse como siempre.
+  document.querySelectorAll(".nav-drop").forEach(function (d) {
+    var limpiar = function () { d.classList.remove("cerrado-por-ancla"); };
+    d.addEventListener("mouseleave", limpiar);
+    d.addEventListener("focusin", limpiar);
   });
   // --- Entrada animada de bloques de dos columnas (sin JS = contenido visible) ---
   var raiz = document.documentElement;
