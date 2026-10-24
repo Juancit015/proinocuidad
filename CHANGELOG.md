@@ -7,13 +7,23 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
-- **Confirmación inline del formulario de inscripción**: el envío pasa a
-  AJAX contra `https://formsubmit.co/ajax/…` y en lugar de saltar a la
-  página de "Thanks!" de FormSubmit aparece debajo del botón un aviso
-  en verde ("✓ Tu inscripción se envió. Te escribiremos al correo para
-  completar la matrícula."), con `role="status"` para lectores de
-  pantalla. El formulario se limpia tras el envío y el botón muestra
-  "Enviando…" mientras viaja (deshabilitado, con `aria-busy`).
+- **Confirmación inline del formulario de inscripción**: en lugar de
+  saltar a la página de "Thanks!" de FormSubmit, el aviso aparece debajo
+  del botón en verde ("✓ Tu inscripción se envió. Te escribiremos al
+  correo para completar la matrícula."), con `role="status"` para
+  lectores de pantalla. El formulario se limpia tras el envío y el botón
+  muestra "Enviando…" mientras viaja (deshabilitado, con `aria-busy`).
+- **Dos vías de envío según el voucher (adjunto garantizado)**: el
+  endpoint AJAX de FormSubmit acepta archivos pero no los entrega al
+  correo (experimento controlado: mismo PNG por AJAX no llega adjunto;
+  el POST clásico multipart sí lo adjunta, confirmado en buzón). Con
+  voucher seleccionado se envía el POST clásico con un `_next` inyectado
+  por JS de vuelta a la ficha con `#inscripcion-enviada`, para que el
+  usuario regrese solo y vea el mismo mensaje verde sin pasar
+  visualmente por FormSubmit; el hash se limpia con
+  `history.replaceState`. Sin voucher, o con otro campo obligatorio
+  vacío, no se envía nada y es el navegador quien marca el campo. Sin
+  voucher va por el AJAX JSON, sin navegar.
 - **Aviso de error en el mismo lugar**: si FormSubmit rechaza o falla la
   red, el aviso es el mismo elemento en rojo de marca con instrucción de
   reintentar o escribir al WhatsApp. El botón vuelve a su texto y queda
@@ -26,11 +36,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
 ### Verified
 
-- Playwright en la ficha BPM (1440px): tras el clic la URL no cambia,
-  el aviso queda visible con texto "✓ Tu inscripción se envió…" en
-  `rgb(28, 122, 66)`, el botón restaurado con "Enviar inscripción" y el
-  campo nombre vacío por el `reset()`. El correo volvió a llegar a
-  administracion@ con el campo cargo relleno y el voucher adjunto.
+- Playwright en la ficha BPM (1440px), vía con voucher: FormSubmit
+  responde 302, el navegador regresa solo a la ficha sin hash
+  (`history.replaceState`), el aviso queda visible con texto
+  "✓ Tu inscripción se envió…" en `rgb(28, 122, 66)`, botón restaurado
+  y campo nombre vacío por el `reset()`. El correo llegó a
+  administracion@ con todos los campos, `voucher` listado en la tabla y
+  la imagen `voucher-real.png` adjunta (313 bytes, confirmada por el
+  dueño en su buzón).
 
 ## 2026-10-24 (Barra superior pegada y mega-panel que se cierra al navegar)
 

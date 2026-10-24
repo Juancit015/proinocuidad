@@ -273,38 +273,58 @@
     });
   });
 
-  // --- Envío AJAX del formulario + mensaje de confirmación inline ---
-  // Intercepta el submit y lo manda a https://formsubmit.co/ajax/…, que
-  // responde JSON sin navegar a ninguna página. Sin JS (o sin fetch), el
-  // flujo clásico de FormSubmit queda intacto para el usuario.
+  // --- Envío de inscripción: confirmación inline sin saltar de página ---
+  // Dos vías, según el voucher: con archivo adjunto el endpoint AJAX de
+  // FormSubmit acepta el archivo pero NO lo entrega por correo, así que se
+  // envía el POST clásico multipart (que sí lo adjunta) con un _next de
+  // vuelta a esta misma ficha con #inscripcion-enviada para que el usuario
+  // regrese solo, sin pasar visualmente por ninguna página de FormSubmit.
+  // Sin voucher valdrá el AJAX, que responde JSON sin navegar. Sin JS (o
+  // sin fetch), el flujo clásico de FormSubmit queda intacto.
   document.querySelectorAll(".form-inscripcion").forEach(function (form) {
     var boton = form.querySelector('button[type="submit"]');
-    if (!boton || !window.fetch) return;
-    var accion = (form.getAttribute("action") || "").replace(
-      "https://formsubmit.co/", "https://formsubmit.co/ajax/");
-    if (accion.indexOf("https://formsubmit.co/ajax/") !== 0) return;
+    if (!boton) return;
     var mensaje = document.createElement("p");
     mensaje.className = "form-aviso";
     mensaje.setAttribute("role", "status");
     mensaje.setAttribute("aria-live", "polite");
     mensaje.hidden = true;
     boton.insertAdjacentElement("afterend", mensaje);
+    // Retorno del envío con voucher: el _next vuelve con el hash y el aviso
+    // aparece en el mismo lugar que en la vía AJAX.
+    if (location.hash === "#inscripcion-enviada") {
+      mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
+      mensaje.hidden = false;
+      history.replaceState(null, "", location.pathname);
+    }
     form.addEventListener("submit", function (ev) {
       var honey = form.querySelector(".campo-honey");
       if (honey && honey.value) return; // bot: no envía nada
       if (!form.checkValidity()) return; // el navegador marca los campos
+      var voucher = form.querySelector('input[name="voucher"]');
+      var conAdjunto = voucher && voucher.files && voucher.files.length;
+      if (conAdjunto) {
+        // POST clásico con retorno a la ficha; _next se inyecta aquí para
+        // no cambiar el HTML de las fichas ni los generadores.
+        var previo = form.querySelector('input[name="_next"]');
+        if (previo) previo.remove();
+        var next = document.createElement("input");
+        next.type = "hidden";
+        next.name = "_next";
+        next.value = location.origin + location.pathname + "#inscripcion-enviada";
+        form.appendChild(next);
+        return; // navegación nativa
+      }
+      if (!window.fetch) return; // flujo clásico de FormSubmit
+      var accion = (form.getAttribute("action") || "").replace(
+        "https://formsubmit.co/", "https://formsubmit.co/ajax/");
+      if (accion.indexOf("https://formsubmit.co/ajax/") !== 0) return;
       ev.preventDefault();
       var textoBoton = boton.innerHTML;
-      var textoAviso = mensaje.textContent;
       var restaurar = function () {
         boton.disabled = false;
         boton.removeAttribute("aria-busy");
         boton.innerHTML = textoBoton;
-      };
-      var avisar = function (esError, texto) {
-        mensaje.textContent = texto;
-        mensaje.classList.toggle("form-aviso-error", esError);
-        mensaje.hidden = false;
       };
       boton.disabled = true;
       boton.setAttribute("aria-busy", "true");
