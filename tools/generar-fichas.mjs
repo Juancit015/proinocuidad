@@ -845,7 +845,7 @@ const DIPLOMADO = {
     {
       badge: "MÓDULO I",
       titulo: "Contexto Nacional e Internacional de la Calidad e Inocuidad",
-      abierto: true,
+      abierto: false,
       html: `<li>Contexto de la Inocuidad Global y cadenas de suministro alimentarias.</li>
 <li>Enfermedades Transmitidas por Alimentos (ETAS) y su impacto en salud pública.</li>
 <li>Organismos reguladores en el Perú (DIGESA, SANIPES, SENASA) y rol de la COMPIAL.</li>
@@ -961,7 +961,7 @@ const LEGISLACION = {
     {
       badge: "MÓDULO I",
       titulo: "1. Aspectos generales · 2. Marco nacional",
-      abierto: true,
+      abierto: false,
       html: `<li>1. Aspectos generales</li>
 <li><strong>2. Marco nacional</strong></li>
 <li>2.1. Ley de Inocuidad de los alimentos - DL 1062-2008.</li>
@@ -1027,7 +1027,7 @@ const BPM_POES = {
     {
       badge: "MÓDULO I",
       titulo: "Introducción a la inocuidad alimentaria, peligros y BPM",
-      abierto: true,
+      abierto: false,
       html: `<li>Introducción a la inocuidad alimentaria</li>
 <li>Peligros en los alimentos</li>
 <li>Taller de búsqueda de normas en Codex Alimentarius</li>
@@ -1149,7 +1149,7 @@ const DIGESA = {
     {
       badge: "MÓDULO I",
       titulo: "Fundamentos de HACCP y marco normativo peruano",
-      abierto: true,
+      abierto: false,
       html: `<li><strong>1. Introducción a la inocuidad alimentaria</strong>
 <ul>
 <li>Concepto de inocuidad vs. calidad</li>
@@ -1293,7 +1293,7 @@ const BPM_CODEX = {
     {
       badge: "MÓDULO I",
       titulo: "Introducción a las BPM y programas prerrequisitos · Parte I",
-      abierto: true,
+      abierto: false,
       html: `<li><strong>Definiciones importantes</strong>
 <ul>
 <li>Contaminantes</li>
@@ -1400,7 +1400,7 @@ const PHS = {
     {
       badge: "MÓDULO I",
       titulo: "Temario completo",
-      abierto: true,
+      abierto: false,
       html: `<li><strong>Introducción:</strong> Terminología y conceptos básicos. Importancia de la Higiene y saneamiento en el procesamiento de alimentos.</li>
 <li><strong>Aspectos regulatorios.</strong></li>
 <li><strong>Control de abastecimiento y suministro de agua:</strong> Conceptos generales. Control de agua. Programa y monitoreo de agua.</li>
@@ -1454,7 +1454,7 @@ const FSSC = {
     {
       badge: "MÓDULO I",
       titulo: "Fundamentos, ISO 22000 y FSSC 22000",
-      abierto: true,
+      abierto: false,
       html: `<li>Generalidades del Sistema HACCP</li>
 <li>Definiciones básicas</li>
 <li>Generalidades ISO 22000:2018</li>
@@ -1552,7 +1552,7 @@ const AUDITOR = {
     {
       badge: "MÓDULO I",
       titulo: "Generalidades del Sistema HACCP e introducción a la auditoría",
-      abierto: true,
+      abierto: false,
       html: `<li>¿Qué es HACCP?</li>
 <li>Características</li>
 <li>Programas Prerrequisitos</li>
