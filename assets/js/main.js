@@ -256,15 +256,11 @@
     });
     actualizar();
     form.addEventListener("submit", function (ev) {
-      // Celular peruano completo en el correo: "+51 XXX XXX XXX". El prefijo
-      // se prepone una sola vez por envío (si el usuario reenvia tras un
-      // fallo, el valor ya quedo mutado y no se duplica).
-      var inputCelular = form.querySelector('input[name="celular"]');
-      var paisForm = form.querySelector('select[name="pais"]');
-      if (paisForm && paisForm.value === "Perú" && inputCelular && inputCelular.value.indexOf("+51 ") !== 0) {
-        var solos = inputCelular.value.replace(/\D/g, "");
-        inputCelular.value = "+51 " + (solos.length === 9 ? solos.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3") : inputCelular.value.trim());
-      }
+      // La mutación del celular a "+51 " NO va aquí: se hace en el listener
+      // de envío, después de la verificación de validez, porque el valor con
+      // prefijo no pasa el pattern ni el maxlength del input y dejaba el
+      // form.checkValidity() en false justo cuando el otro listener lo
+      // re-checka: el envío salia sin preventDefault, sin AJAX y sin _next.
       if (check.checked && tipoElegido() === "factura") {
         var rucOk = /^\d{11}$/.test(inputRuc.value.trim());
         var razonOk = inputRazon.value.trim().length > 1;
@@ -359,13 +355,14 @@
   });
 
   // --- Envío de inscripción: confirmación inline sin saltar de página ---
-  // Dos vías, según el voucher: con archivo adjunto el endpoint AJAX de
-  // FormSubmit acepta el archivo pero NO lo entrega por correo, así que se
-  // envía el POST clásico multipart (que sí lo adjunta) con un _next de
-  // vuelta a esta misma ficha con #inscripcion-enviada para que el usuario
-  // regrese solo, sin pasar visualmente por ninguna página de FormSubmit.
-  // Sin voucher valdrá el AJAX, que responde JSON sin navegar. Sin JS (o
-  // sin fetch), el flujo clásico de FormSubmit queda intacto.
+  // Dos vías, según el voucher. Sin archivo va AJAX (/ajax/), que responde
+  // JSON sin navegar. Con archivo el POST clásico multipart es lo único que
+  // entrega el adjunto al correo, pero FormSubmit dejó de honrar el _next
+  // (responde 200 con su página "Thanks" sin redirigir; comprobado el
+  // 2026-10-24 con el header de respuesta y en navegador real), así que el
+  // POST clásico se manda dentro de un iframe oculto con form.target: el
+  // "Thanks" de FormSubmit se carga ahí y el usuario nunca sale de la
+  // ficha. Sin JS (o sin fetch), el flujo clásico queda intacto.
   document.querySelectorAll(".form-inscripcion").forEach(function (form) {
     var boton = form.querySelector('button[type="submit"]');
     if (!boton) return;
@@ -386,19 +383,66 @@
       var honey = form.querySelector(".campo-honey");
       if (honey && honey.value) return; // bot: no envía nada
       if (!form.checkValidity()) return; // el navegador marca los campos
+      // Formato "+51 XXX XXX XXX" para el correo y el POST clásico: DESPUÉS
+      // del checkValidity() porque el valor con prefijo no pasa el pattern
+      // ni el maxlength del input. Se prepone una sola vez (reintentos no
+      // duplican el prefijo).
+      var inputCelular = form.querySelector('input[name="celular"]');
+      var paisForm = form.querySelector('select[name="pais"]');
+      if (paisForm && paisForm.value === "Perú" && inputCelular && inputCelular.value.indexOf("+51 ") !== 0) {
+        var solos = inputCelular.value.replace(/\D/g, "");
+        inputCelular.value = "+51 " + (solos.length === 9 ? solos.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3") : inputCelular.value.trim());
+      }
       var voucher = form.querySelector('input[name="voucher"]');
       var conAdjunto = voucher && voucher.files && voucher.files.length;
       if (conAdjunto) {
-        // POST clásico con retorno a la ficha; _next se inyecta aquí para
-        // no cambiar el HTML de las fichas ni los generadores.
-        var previo = form.querySelector('input[name="_next"]');
-        if (previo) previo.remove();
-        var next = document.createElement("input");
-        next.type = "hidden";
-        next.name = "_next";
-        next.value = location.origin + location.pathname + "#inscripcion-enviada";
-        form.appendChild(next);
-        return; // navegación nativa
+        // POST clásico multipart dentro de un iframe oculto: retiene al
+        // usuario en la ficha (el _next de FormSubmit ya no redirige).
+        ev.preventDefault();
+        var marco = form.querySelector("iframe[data-inscripcion]");
+        if (!marco) {
+          marco = document.createElement("iframe");
+          marco.setAttribute("data-inscripcion", "");
+          marco.name = "inscripcion-retorno-" + Math.floor(Math.random() * 1e6);
+          marco.style.display = "none";
+          marco.style.border = "0";
+          marco.setAttribute("aria-hidden", "true");
+          marco.tabIndex = -1;
+          marco.title = "Envío de inscripción";
+          form.appendChild(marco);
+          var pendiente = false;
+          marco.addEventListener("load", function () {
+            // La carga inicial de about:blank dispara load también: se distingue
+            // porque about:blank es de origen propio (legible) y la respuesta
+            // de FormSubmit es cross-origin (su location lanza SecurityError).
+            var vacia = false;
+            try { vacia = marco.contentWindow.location.href === "about:blank"; } catch (e) { vacia = false; }
+            if (vacia || !pendiente) return;
+            pendiente = false;
+            restaurar();
+            form.reset();
+            if (inputCelular) inputCelular.value = "";
+            var cambio = form.querySelector('input[name="desea_comprobante"]');
+            if (cambio) cambio.dispatchEvent(new Event("change"));
+            mensaje.hidden = false;
+            mensaje.classList.remove("form-aviso-error");
+            mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
+          });
+        }
+        form.target = marco.name;
+        pendiente = true;
+        var textoBoton2 = boton.innerHTML;
+        var restaurar = function () {
+          boton.disabled = false;
+          boton.removeAttribute("aria-busy");
+          boton.innerHTML = textoBoton2;
+        };
+        boton.disabled = true;
+        boton.setAttribute("aria-busy", "true");
+        boton.innerHTML = "Enviando…";
+        form.submit();
+        form.removeAttribute("target");
+        return;
       }
       if (!window.fetch) return; // flujo clásico de FormSubmit
       var accion = (form.getAttribute("action") || "").replace(
@@ -433,6 +477,12 @@
         mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
       }).catch(function () {
         restaurar();
+        // El valor quedó con "+51 " (pattern-inválido) y el navegador
+        // bloquearía el reintento antes de llegar a este listener: se
+        // devuelve el celular a 9 dígitos para que pueda volver a enviar.
+        if (inputCelular && inputCelular.value.indexOf("+51 ") === 0) {
+          inputCelular.value = inputCelular.value.slice(4).replace(/\s/g, "");
+        }
         mensaje.hidden = false;
         mensaje.classList.add("form-aviso-error");
         mensaje.textContent = "No se pudo enviar. Prueba de nuevo o escríbenos directo al WhatsApp.";
