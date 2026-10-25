@@ -3,6 +3,51 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-25 (Página de detalle para la nota de DIGESA, con `Article`)
+
+### Added
+
+- **Página de detalle `noticias/vigencia-indeterminada-haccp/`** para la
+  nota "DIGESA aclara el alcance de la nueva vigencia indeterminada del
+  HACCP" (hallazgo H5 de la auditoría): title "Vigencia indeterminada
+  del plan HACCP | Proinocuidad" (52 car.), meta 154, canonical y
+  `og:url` propios, migajas de pan "Inicio / Noticias / Vigencia del
+  HACCP" y un único `<h1>` con el título de la nota. El contenido se
+  trasladó tal cual de la tarjeta (sin reescribir), con sus 4 subtítulos
+  H2 ya promovidos, la fecha de corte del 11 de junio de 2026 y la
+  fuente "Ministerio de Salud".
+- **JSON-LD `Article`** con headline de la nota, author "Equipo
+  Proinocuidad", image de la portada autoalojada
+  (`assets/img/noticia-digesa-haccp.jpg`) y publisher de la organización.
+  `datePublished` **2026-09-03**, confirmada viendo la nota original
+  (`industriaalimentaria.org`, misma pieza, fecha visible
+  03/09/2026 17:38) y registrada aquí el 2026-10-24; al escribir el
+  change la fecha aún no estaba confirmada y el bloque saldría sin ella.
+- **Inventario de páginas a 20**: `sitemap.xml` y `llms.txt` (sección
+  Información) suman la URL nueva; los conteos se verificaron como
+  conjuntos iguales (20=20) y las 20 resuelven a archivos reales. La
+  enumeración de las specs `seo-base` y `diseno-responsive` se
+  sincroniza al archivar el change.
+
+### Changed
+
+- **Tarjeta de la nota en `/noticias/`**: queda como resumen breve
+  (título, autoría y primer párrafo) con botón "Leer la nota"
+  (`btn btn-rojo btn-sm`, patrón de las tarjetas de cursos) hacia la
+  página de detalle. Antes el ítem no enlazaba a nada y contradecía el
+  escenario vigente "el ítem enlaza al contenido completo".
+
+### Verificación
+
+- Script de metadatos sobre las 20 páginas: titles ≤60, metas 120-160,
+  1 `<h1>` por página y todos los enlaces internos resuelven (incluido
+  el botón "Leer la nota" y los enlaces del detalle).
+- JSON-LD parseado como JSON válido (`Organization` + `Article`);
+  `datePublished` ausente, author y headline confirmados por script.
+- Playwright: 0 px de desborde horizontal en el detalle a 1280, 860 y
+  390 px (1 `<h1>`, 4 `<h2>`); sin regresión en `/noticias/` (tarjeta
+  acortada) a 1280, 768 y 390 px.
+
 ## 2026-10-25 (Página de servicio ISO 22000)
 
 ### Added

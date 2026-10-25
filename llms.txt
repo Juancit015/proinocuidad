@@ -35,6 +35,7 @@ Ocho cursos y un diplomado, todos asíncronos y con certificado digital. El list
 
 - [Inicio](https://proinocuidad.com/): Presentación de la empresa, sus cifras y sus líneas de trabajo.
 - [Nosotros](https://proinocuidad.com/nosotros/): Razón social, RUC, fecha de fundación, misión, visión y valores.
+- [DIGESA aclara el alcance de la nueva vigencia indeterminada del HACCP](https://proinocuidad.com/noticias/vigencia-indeterminada-haccp/): Nota oficial sobre la vigencia de la Validación Técnica Oficial del Plan HACCP y las obligaciones sanitarias que se mantienen.
 
 ## Optional
 
