@@ -32,4 +32,4 @@
 
 - [x] 5.1 Commits separados por tema: (a) `AGENTS.md` + `CHANGELOG.md` pendientes del fix 5ab6263; (b) código de este change (`main.js` + `main.css` + `.htaccess` + fichas regeneradas) con mensaje en español que explique el "por qué" y bloque `Verificado:`; push solo con confirmación explícita de Juan.
 - [x] 5.2 Entrada en `CHANGELOG.md` de este change con los resultados medidos (bolita medida con getComputedStyle, archivos rechazados/aceptados con tamaños, cabeceras de caché post-deploy).
-- [ ] 5.3 `openspec validate formulario-envio-indicador-limite-adjunto --strict` y `openspec archive` al cerrar.
+- [x] 5.3 `openspec validate formulario-envio-indicador-limite-adjunto --strict` y `openspec archive` al cerrar.
