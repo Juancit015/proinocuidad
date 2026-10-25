@@ -87,6 +87,45 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 - Conjunto de URLs de `llms.txt` = conjunto de `sitemap.xml` (19=19) y
   las 19 resuelven a archivos reales.
 
+## 2026-10-25 (Auditoría SEO de sitio local: correcciones de texto aprobadas)
+
+### Changed
+
+- **Titles alineados a su keyword (H2, H8, H10, H12, H13, H15)**: título
+  de la guía ("Qué es la inocuidad alimentaria"), de la ficha BPM ("Curso
+  BPM: Buenas Prácticas de Manufactura", con H1 renombrado), del servicio
+  de certificación HACCP ("Validación técnica HACCP DIGESA"), de FSSC
+  22000 ("... en Perú"), de BRCGS ("Implementación BRCGS Food Safety
+  Perú") y de la ficha de higiene ("Cursos de higiene y saneamiento de
+  alimentos", keyword "higiene y saneamiento"). H11 verificado sin
+  cambio (el title ya lleva "Auditor Interno HACCP").
+- **Bloques "Preguntas frecuentes" + JSON-LD `FAQPage` (H1, H9)** en la
+  home, las 8 fichas de curso (vía `tools/generar-fichas.mjs`) y los 4
+  servicios de detalle; el de registro sanitario DIGESA responde qué es
+  el trámite, quién lo necesita, qué incluye y tiempo/costo (keywords
+  "registro sanitario", "registro sanitario digesa"). El texto visible
+  es idéntico al del JSON-LD, comprobado por script en las 13 páginas.
+- **Promoción de encabezados sin tocar contenido (H3, H4)**: los 4
+  subtítulos de la nota de noticias pasan de `h4` a `h2` y `/cursos/`
+  gana los H2 "Cursos asíncronos" y "Cursos en vivo" (fuera de los
+  marcadores de `generar-listados`).
+- **JSON-LD `Organization` en las páginas que lo faltaban (H6)**:
+  nosotros, servicios, noticias, cursos y la guía; ya estaba en home,
+  fichas y servicios de detalle.
+
+### Verified
+
+- Titles 46-57 car. y meta 124-160 car. en las 18 URLs (script de
+  metadatos); `og:title` actualizado junto al title en las 6 páginas
+  modificadas.
+- Regeneración de fichas: `node tools/generar-fichas.mjs` exit 0 y
+  `diff -rq` solo lista las 8 fichas (el 404 no cambió); `canonical` y
+  `og:url` intactos y el `Course` de la ficha BPM solo cambia su `name`
+  porque se alimenta del H1 aprobado.
+- Playwright (Chromium): 18 URLs × 1280/390 px, 0 px de desborde en las
+  36 mediciones y diferencias limitadas a los campos aprobados.
+- `openspec validate auditoria-seo-sitio-local --strict` pasa.
+
 ## 2026-10-24 (Métricas del Home apiladas en pantallas chicas)
 
 ### Changed

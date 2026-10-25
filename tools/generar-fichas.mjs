@@ -521,6 +521,32 @@ ${SVG_BTN_SOPORTE}Contactar Asesor
 </aside>`;
 }
 
+function jsonLdFaq(curso) {
+  if (!Array.isArray(curso.faq) || !curso.faq.length) return "";
+  const datos = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: curso.faq.map((p) => ({
+      "@type": "Question",
+      name: p.q,
+      acceptedAnswer: { "@type": "Answer", text: p.a },
+    })),
+  };
+  return JSON.stringify(datos, null, 2);
+}
+
+function faqBloque(curso) {
+  if (!Array.isArray(curso.faq) || !curso.faq.length) return "";
+  return `<article class="ficha-seccion" id="faq">
+<div class="ficha-seccion-header">
+<span class="seccion-tag" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+<h2>Preguntas frecuentes</h2>
+</div>
+${curso.faq.map((p) => `<h3 style="color: var(--azul); font-size: 1.02rem; line-height: 1.35; margin: 16px 0 6px;">${p.q}</h3>
+<p style="margin: 0 0 14px;">${p.a}</p>`).join("\n")}
+</article>`;
+}
+
 function cuerpoModerno(curso, ruta) {
   return `<div class="ficha-layout">
 <div class="ficha-main-col">
@@ -532,6 +558,7 @@ ${temarioBloque(curso)}
 ${metodologiaBloque(curso)}
 ${pagosBloque(curso, ruta)}
 ${inscripcionBloque(curso)}
+${faqBloque(curso)}
 ${formInscripcionBloque(curso)}
 </div>
 ${sidebar(curso, ruta)}
@@ -706,6 +733,9 @@ function ficha(curso) {
 <script type="application/ld+json">
 ${jsonLdCurso(curso)}
 </script>
+${curso.faq && curso.faq.length ? `<script type="application/ld+json">
+${jsonLdFaq(curso)}
+</script>` : ""}
 <link rel="icon" href="${ruta}assets/img/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="${ruta}assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="${ruta}assets/css/main.css">
@@ -824,6 +854,24 @@ const DIPLOMADO = {
   descripcion:
     "Desarrollar competencias para implementar y auditar sistemas de gestión de calidad e inocuidad alimentaria basados en HACCP, ISO 9001, ISO 22000 y BRCGS.",
   h1: "Diplomado de Especialización: “Gestión de la Calidad e Inocuidad en la Industria Alimentaria”",
+  faq: [
+    {
+      q: "¿En qué consiste el diplomado?",
+      a: "En 6 sesiones asíncronas (384 horas académicas) para desarrollar sistemas de gestión de la calidad e inocuidad alimentaria: programas prerrequisitos, HACCP, ISO 9001, ISO 22000 y BRCGS Food Safety V9, hasta la auditoría de sistemas integrados.",
+    },
+    {
+      q: "¿Es 100% asíncrono y puedo avanzar a mi ritmo?",
+      a: "Sí: se cursa en aula virtual permanente disponible las 24 horas, sin límites ni caducidad de acceso, para compatibilizar el estudio con tus labores.",
+    },
+    {
+      q: "¿El certificado es verificable?",
+      a: "Sí: se emite un certificado digital con código QR oficial que respalda las 384 horas académicas del programa.",
+    },
+    {
+      q: "¿Cómo pago la matrícula?",
+      a: "Con los medios de pago detallados en la sección Medios de Pago y Matrícula de esta ficha (QR del banco y wallets digitales); al inscribirte adjuntas el voucher de pago en el formulario.",
+    },
+  ],
   objetivoTitulo: "Objetivo General:",
   objetivo:
     "Desarrollar competencias sólidas para diseñar, implementar, mantener y auditar sistemas integrados de gestión de calidad e inocuidad alimentaria bajo los estándares más exigentes: <strong>HACCP, ISO 9001, ISO 22000 y BRCGS Food Safety</strong>.",
@@ -951,6 +999,20 @@ const LEGISLACION = {
   descripcion:
     "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
   h1: "Curso: “Legislación Sanitaria de Alimentos Nacional e Internacional”",
+  faq: [
+    {
+      q: "¿Qué estudia el curso de legislación sanitaria de alimentos?",
+      a: "El marco normativo sanitario de los alimentos a nivel nacional e internacional, con talleres prácticos de aplicación, en 3 sesiones asíncronas de 40 horas académicas.",
+    },
+    {
+      q: "¿A quién va dirigido?",
+      a: "A profesionales y personal de empresas de alimentos que necesiten interpretar y aplicar la normativa sanitaria vigente para producir, etiquetar y comercializar alimentos.",
+    },
+    {
+      q: "¿Qué certificado recibo?",
+      a: "Un certificado digital con código QR que respalda las 40 horas académicas del curso.",
+    },
+  ],
   objetivoTitulo: "Objetivo:",
   objetivo:
     "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
@@ -1008,7 +1070,7 @@ const BPM_POES = {
   waCorto: "Curso de BPM, POES y HACCP",
   waLargo: "el Curso de Implementación y Auditoría de BPM, POES, POE y Plan HACCP",
   title: "Curso: Implementación y Auditoría de las BPM, Higiene y Saneamiento, POES, POE, Plan HACCP | Proinocuidad",
-  seoTitle: "Curso BPM, POES y plan HACCP en Perú | Proinocuidad",
+  seoTitle: "Curso BPM: Buenas Prácticas de Manufactura | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones sobre implementación y auditoría de BPM, higiene y saneamiento, POES, POE y plan HACCP. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: BPM, los POES 1 al 8, POE 1 al 9 y el Sistema HACCP con sus 7 principios y 12 pasos, con talleres prácticos. Certificado digital con QR.",
@@ -1016,7 +1078,25 @@ const BPM_POES = {
   miga: "BPM, POES, POE y Plan HACCP",
   descripcion:
     "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
-  h1: "Curso: “Implementación y Auditoría de las BPM, Higiene y Saneamiento, POES, POE, Plan HACCP”",
+  h1: "Curso: “Buenas Prácticas de Manufactura (BPM), POES, POE y Plan HACCP”",
+  faq: [
+    {
+      q: "¿Qué temas abarca el curso?",
+      a: "La introducción a la inocuidad alimentaria con peligros y BPM, la higiene y el saneamiento con POES y POE, y el sistema HACCP con su auditoría, en 3 sesiones asíncronas de 40 horas académicas.",
+    },
+    {
+      q: "¿Qué son las BPM?",
+      a: "Las BPM son las Buenas Prácticas de Manufactura: las condiciones y prácticas sanitarias que garantizan que los alimentos se elaboren de manera segura. Este curso muestra cómo implementarlas y auditarlas junto con los POES, los POE y el plan HACCP.",
+    },
+    {
+      q: "¿Puedo avanzar a mi ritmo?",
+      a: "Sí: el curso es 100% asíncrono (grabado) y se cursa con aula virtual permanente y material disponible las 24 horas.",
+    },
+    {
+      q: "¿Qué certificado recibo?",
+      a: "Un certificado digital con código QR que respalda las 40 horas académicas del curso.",
+    },
+  ],
   objetivoTitulo: "Objetivo:",
   objetivo:
     "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
@@ -1139,6 +1219,24 @@ const DIGESA = {
   descripcion:
     "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",
   h1: "Curso de Especialización: “HACCP: Implementación y Certificación en Perú (DIGESA / SENASA)”",
+  faq: [
+    {
+      q: "¿Qué incluye el curso?",
+      a: "Fundamentos de HACCP y el marco normativo peruano, el diseño e implementación del sistema HACCP, y su validación, certificación y auditoría, en 3 sesiones asíncronas de 40 horas académicas.",
+    },
+    {
+      q: "¿El curso entrega la Validación Técnica Oficial del Plan HACCP?",
+      a: "No: el curso forma para diseñar, implementar, validar y gestionar el sistema HACCP conforme a los requisitos de DIGESA y SENASA. La Validación Técnica Oficial la otorga la autoridad sanitaria; para acompañarla existe un servicio de asesoría aparte.",
+    },
+    {
+      q: "¿Cómo accedo al aula virtual?",
+      a: "Al inscribirte recibes acceso permanente al aula virtual con las clases y el material actualizado del curso.",
+    },
+    {
+      q: "¿Qué certificado recibo?",
+      a: "Un certificado digital con código QR que respalda las 40 horas académicas del curso.",
+    },
+  ],
   objetivoTitulo: "Objetivo:",
   objetivo:
     "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",
@@ -1283,6 +1381,20 @@ const BPM_CODEX = {
   descripcion:
     "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",
   h1: "Curso: “Buenas Prácticas de Manufactura y Programas Prerrequisitos según Codex 2022 e ISO 22002-1:2009”",
+  faq: [
+    {
+      q: "¿De qué trata el curso?",
+      a: "De las Buenas Prácticas de Manufactura y los programas prerrequisitos según el Codex Alimentarius 2022 y la ISO 22002-1:2009, en 3 sesiones asíncronas de 40 horas académicas.",
+    },
+    {
+      q: "¿A quién va dirigido?",
+      a: "A profesionales y personal de plantas de alimentos que aplican las BPM y los programas prerrequisitos en su operación.",
+    },
+    {
+      q: "¿Qué certificado recibo?",
+      a: "Un certificado digital con código QR que respalda las 40 horas académicas del curso.",
+    },
+  ],
   objetivoTitulo: "Objetivo:",
   objetivo:
     "Desarrollar las competencias necesarias para diseñar, implementar, validar y gestionar un sistema HACCP conforme a la normativa vigente en Perú, cumpliendo los requisitos establecidos por DIGESA y SENASA, con el fin de garantizar la inocuidad de los alimentos y facilitar procesos de certificación.",
@@ -1381,7 +1493,7 @@ const PHS = {
   waCorto: "Curso de Higiene y Saneamiento",
   waLargo: "el Curso de Programas de Higiene y Saneamiento",
   title: "Curso: Programas de Higiene y Saneamiento en la Industria Alimentaria | Proinocuidad",
-  seoTitle: "Curso de programas de higiene y saneamiento | Proinocuidad",
+  seoTitle: "Cursos de higiene y saneamiento de alimentos | Proinocuidad",
   seoDesc: "Curso asíncrono de 3 sesiones sobre higiene y saneamiento en alimentos: agua, limpieza, plagas y residuos. Certificado digital con QR.",
   desc:
     "Curso asíncrono (grabado) de 40 horas académicas: diseño, ejecución y validación de los Programas de Higiene y Saneamiento (PHS): agua, limpieza y desinfección, higiene del personal, plagas, residuos, productos químicos y gestión documentaria.",
@@ -1390,6 +1502,20 @@ const PHS = {
   descripcion:
     "Establecer los lineamientos técnicos para el diseño, ejecución y validación de los Programas de Higiene y Saneamiento (PHS), con el fin de garantizar que la infraestructura, equipos y utensilios se mantengan libres de agentes contaminantes, asegurando un entorno de trabajo seguro que cumpla con los estándares de inocuidad y la normativa legal vigente.",
   h1: "Curso: “Programas de Higiene y Saneamiento en la Industria Alimentaria”",
+  faq: [
+    {
+      q: "¿Qué es un Programa de Higiene y Saneamiento (PHS)?",
+      a: "Es el conjunto de lineamientos técnicos para el diseño, la ejecución y la validación que mantiene la infraestructura, los equipos y los utensilios de una planta de alimentos en condiciones sanitarias adecuadas.",
+    },
+    {
+      q: "¿De qué trata el curso?",
+      a: "Del diseño, la ejecución y la validación de los Programas de Higiene y Saneamiento (PHS) en la industria alimentaria, en 3 sesiones asíncronas de 40 horas académicas.",
+    },
+    {
+      q: "¿Qué certificado recibo?",
+      a: "Un certificado digital con código QR que respalda las 40 horas académicas del curso.",
+    },
+  ],
   objetivoTitulo: "Objetivo:",
   objetivo:
     "Establecer los lineamientos técnicos para el diseño, ejecución y validación de los Programas de Higiene y Saneamiento (PHS), con el fin de garantizar que la infraestructura, equipos y utensilios se mantengan libres de agentes contaminantes, asegurando un entorno de trabajo seguro que cumpla con los estándares de inocuidad y la normativa legal vigente.",
@@ -1444,6 +1570,20 @@ const FSSC = {
   descripcion:
     "Desarrollar la competencia para diseñar, implementar y gestionar un sistema HACCP robusto, integrando los principios científicos de la revisión 2022 del Codex Alimentarius con los requisitos de certificación del esquema FSSC 22000, asegurando un control eficaz de los peligros significativos y garantizando el cumplimiento de los estándares internacionales de inocuidad más exigentes del mercado global.",
   h1: "Curso: “Sistema HACCP según FSSC 22000 y Codex Alimentarius Revisión 2022”",
+  faq: [
+    {
+      q: "¿HACCP y FSSC 22000 son lo mismo?",
+      a: "No. HACCP es el sistema para identificar y controlar los peligros del proceso alimentario; FSSC 22000 es el esquema de certificación que integra ese sistema con los requisitos de ISO 22000 y requisitos adicionales. El curso desarrolla el sistema HACCP desde esos referentes y la revisión 2022 del Codex Alimentarius.",
+    },
+    {
+      q: "¿De qué trata el curso?",
+      a: "Del diseño, la implementación y la gestión de un sistema HACCP que integra los principios de la revisión 2022 del Codex Alimentarius con los requisitos de certificación del esquema FSSC 22000, en 3 sesiones asíncronas de 40 horas académicas.",
+    },
+    {
+      q: "¿Qué certificado recibo?",
+      a: "Un certificado digital con código QR que respalda las 40 horas académicas del curso.",
+    },
+  ],
   objetivoTitulo: "Objetivo:",
   objetivo:
     "Desarrollar la competencia para diseñar, implementar y gestionar un sistema HACCP robusto, integrando los principios científicos de la revisión 2022 del Codex Alimentarius con los requisitos de certificación del esquema FSSC 22000, asegurando un control eficaz de los peligros significativos y garantizando el cumplimiento de los estándares internacionales de inocuidad más exigentes del mercado global.",
@@ -1542,6 +1682,20 @@ const AUDITOR = {
   descripcion:
     "Especializar al participante en la planificación, ejecución y cierre de auditorías internas del sistema HACCP, desarrollando el juicio crítico necesario para verificar no solo el cumplimiento documental, sino también la eficacia operativa y la validación científica de los controles, bajo los lineamientos de la norma ISO 19011 y los estándares internacionales de inocuidad alimentaria.",
   h1: "Curso: “Formación de Auditor Interno del Sistema HACCP”",
+  faq: [
+    {
+      q: "¿De qué trata la formación de auditor interno HACCP?",
+      a: "De planificar, ejecutar y cerrar auditorías internas del sistema HACCP, verificando tanto el cumplimiento documental como la eficacia operativa, en 3 sesiones asíncronas de 40 horas académicas.",
+    },
+    {
+      q: "¿Qué módulos tiene el curso?",
+      a: "Presenta las generalidades del sistema HACCP con introducción a la auditoría, sigue con la planeación y ejecución de la auditoría, y cierra con hallazgos, informe, seguimiento y acciones correctivas.",
+    },
+    {
+      q: "¿Qué certificado recibo?",
+      a: "Un certificado digital con código QR que respalda las 40 horas académicas del curso.",
+    },
+  ],
   objetivoTitulo: "Objetivo:",
   objetivo:
     "Especializar al participante en la planificación, ejecución y cierre de auditorías internas del sistema HACCP, desarrollando el juicio crítico necesario para verificar no solo el cumplimiento documental, sino también la eficacia operativa y la validación científica de los controles, bajo los lineamientos de la norma ISO 19011 y los estándares internacionales de inocuidad alimentaria.",
