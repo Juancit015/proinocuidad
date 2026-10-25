@@ -772,8 +772,12 @@ ${cierre(ruta)}
    Vive en la raiz, asi que sus dos prefijos son distintos de los de las fichas.
    No se declara en el menu: no es una pagina a la que se navegue. */
 function pagina404() {
-  const ruta = "";            // ya estamos en la raiz del sitio
-  const cursos = "cursos/";   // y el directorio de cursos cuelga de ella
+  // Ruta absoluta: el ErrorDocument sirve ESTE html con cualquier URL que
+  // haya escrito el usuario (incluidas anidadas tipo /a/b/c); una ruta
+  // relativa resolveria assets/ dentro de ese subdirectorio y el CSS
+  // daria 404 (bug visto en produccion el 2026-10-25).
+  const ruta = "/";
+  const cursos = "/cursos/";
   const url = "https://proinocuidad.com/404.html";
   const titulo = "Página no encontrada | Proinocuidad";
   return `<!DOCTYPE html>
