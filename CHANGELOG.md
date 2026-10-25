@@ -3,6 +3,37 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-25 (Formulario: entrega del correo por SMTP directo —PHPMailer + Zoho—, FormSubmit fuera)
+
+### Changed
+
+- **FormSubmit dejó de entregar el correo**. Con la variante `/ajax/`
+  (Referer + Accept json) respondía `success:true` y el endpoint daba el
+  verde, pero el correo no llegaba y **el voucher se descartaba en
+  silencio**; sin Referer contestaba 200 con `success:false`, y la URL
+  original devolvía HTML de error. Seis pruebas cronometradas (A–K) lo
+  dejaron sin duda: el verde era falso.
+- **Endpoint ahora entrega por SMTP directo**: PHPMailer v6.9.3
+  (descargada en `~/phpmailer/src/`, fuera del docroot) contra
+  `smtp.zoho.com:465` (TLS directo, SMTPS) con la app password de Zoho
+  de `formacion_academica@proinocuidad.com` guardada en
+  `~/datos-formularios/credenciales-smtp.php` (chmod 640, fuera del
+  docroot). El asunto se reconstruye en el servidor ("Inscripción web —
+  {curso}") y la lista blanca ya no reenvía `_subject`/`_template`/
+  `_captcha`. El cuerpo repone la plantilla "table" (tabla HTML +
+  texto plano con los mismos campos y hora de Lima).
+- **El adjunto llega por fin**: envío de prueba en producción con voucher
+  de 5 MB (N3): HTTP 200 en ~5 s, correo en la bandeja con el PDF
+  adjunto, y el límite sigue funcionando (6 MB → HTTP 422 "supera el
+  máximo de 5 MB"). Log temporal de diagnóstico en
+  `~/datos-formularios/envio-log.tsv` (sin datos personales), apagado
+  tras verificar (`SMTP_DEBUG`).
+- **Cliente con trato honesto de la espera** (`assets/js/main.js`):
+  timeouts reales —AJAX 45 s e iframe 90 s con `AbortController` y
+  reloj visible—, texto de progreso "Subiendo comprobante… puede tardar
+  hasta 60 s" en la subida del voucher, y el verde solo aparece con
+  respuesta explícita de éxito: ningún falso exito si la red se cae.
+
 ## 2026-10-25 (Formulario: límites y validación en el servidor, no solo en el navegador)
 
 ### Added

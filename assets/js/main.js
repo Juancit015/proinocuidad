@@ -528,7 +528,20 @@
           marco.tabIndex = -1;
           marco.title = "Envío de inscripción";
           form.appendChild(marco);
-          marco.addEventListener("load", function () {
+        }
+        // El fin del envío SOLO es la carga del iframe con data-resultado;
+        // si nunca dispara (red caída, respuesta errónea), el usuario se
+        // queda en "Cargando…" para siempre. Reloj de 90 s: si no respondió,
+        // error rojo y se ignora la carga tardía (pendienteIframe = false).
+        var relojIframe = setTimeout(function () {
+          if (!pendienteIframe) return;
+          pendienteIframe = false;
+          restaurarBoton();
+          mensaje.hidden = false;
+          mensaje.classList.add("form-aviso-error");
+          mensaje.textContent = "El envío está tardando más de lo esperado y no pudimos confirmar que salió. Revisa tu conexión y comprueba con nosotros por WhatsApp antes de reenviar, para no duplicar la inscripción.";
+        }, 90000);
+        marco.addEventListener("load", function () {
             // La carga inicial de about:blank dispara load también: se distingue
             // porque about:blank es de origen propio. La respuesta llega del
             // endpoint (same-origin, legible), así que además del vacía se
@@ -537,6 +550,7 @@
             try { vacia = marco.contentWindow.location.href === "about:blank"; } catch (e) { vacia = false; }
             if (vacia || !pendienteIframe) return;
             pendienteIframe = false;
+            clearTimeout(relojIframe);
             var doc = null;
             try { doc = marco.contentDocument || marco.contentWindow.document; } catch (e) { doc = null; }
             var res = doc ? doc.querySelector("[data-resultado]") : null;
@@ -562,13 +576,15 @@
             mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
             iniciarCooldown();
           });
-        }
         form.target = marco.name;
         textoBotonBase = boton.innerHTML;
         pendienteIframe = true;
         boton.disabled = true;
         boton.setAttribute("aria-busy", "true");
-        boton.innerHTML = "Cargando…";
+        boton.innerHTML = "Enviando…";
+        mensaje.hidden = false;
+        mensaje.classList.remove("form-aviso-error");
+        mensaje.textContent = "Subiendo comprobante, puede tardar hasta 60 s…";
         form.submit();
         form.removeAttribute("target");
         return;
@@ -584,13 +600,23 @@
       boton.disabled = true;
       boton.setAttribute("aria-busy", "true");
       boton.innerHTML = "Cargando…";
+      // Sin respuesta en 45 s el envío se aborta con mensaje claro: nunca
+      // queda "Cargando…" eterno. Restaura el patrón del celular para que
+      // el reintento sea posible.
+      var ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+      var agoto = false;
+      var relojFetch = ctrl ? setTimeout(function () { agoto = true; ctrl.abort(); }, 45000) : null;
       fetch(accion, {
         method: "POST",
         body: new FormData(form),
         headers: { Accept: "application/json" },
+        signal: ctrl ? ctrl.signal : undefined,
       }).then(function (r) {
         return r.json().then(function (d) { return { r: r, d: d }; }).catch(function () { return { r: r, d: null }; });
       }).then(function (x) {
+        if (relojFetch) clearTimeout(relojFetch);
+        // verde SOLO con 2xx Y success explícito en el JSON; cualquier otra
+        // cosa es error con el mensaje del servidor.
         var ok = x.r.status === 200 && x.d && (x.d.success === "true" || x.d.success === true);
         if (!ok) {
           // 429 (límite por IP), 409 (DNI ya inscrito) y errores del
@@ -615,6 +641,7 @@
         mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
         iniciarCooldown();
       }).catch(function () {
+        if (relojFetch) clearTimeout(relojFetch);
         restaurarBoton();
         // El valor quedó con "+51 " (pattern-inválido) y el navegador
         // bloquearía el reintento antes de llegar a este listener: se
@@ -624,7 +651,9 @@
         }
         mensaje.hidden = false;
         mensaje.classList.add("form-aviso-error");
-        mensaje.textContent = "No se pudo enviar. Prueba de nuevo o escríbenos directo al WhatsApp.";
+        mensaje.textContent = agoto
+          ? "El envío tardó más de 45 s y se canceló. Si ya sacaste el aviso verde en otro intento, escríbenos por WhatsApp antes de reenviar para no duplicar la inscripción."
+          : "No se pudo enviar. Prueba de nuevo o escríbenos directo al WhatsApp.";
       });
     });
   });

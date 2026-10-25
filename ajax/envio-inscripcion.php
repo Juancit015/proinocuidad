@@ -1,13 +1,16 @@
 <?php
 /**
  * Endpoint único de inscripción: puerta de entrada del formulario de las
- * 8 fichas. Valida y limita en el servidor ANTES de reenviar a FormSubmit,
- * que sigue siendo quien entrega el correo con el voucher adjunto.
+ * 8 fichas. Valida y limita en el servidor y ENTREGA el correo con el
+ * voucher adjunto por SMTP directo (PHPMailer + la cuenta Zoho del
+ * formulario). Se dejó de usar FormSubmit: la variante /ajax/ descartaba
+ * los adjuntos silenciosamente (respondía success:true y el voucher no
+ * viajaba) y la entrega al buzón principal no llegaba nunca.
  *
  * Flujo: honeypot → control de POST vacío (post_max_size) → voucher
  * (MIME real + peso + extensión) → campos → reservar cupo por IP y
- * dedup DNI+curso (bajo lock, ANTES del cURL; se liberan si FormSubmit
- * falla) → reenvío a FormSubmit (cURL multipart).
+ * dedup DNI+curso (bajo lock, ANTES del envío; se liberan si el SMTP
+ * falla) → envío por SMTP a formacion_academica@proinocuidad.com.
  *
  * Estado: ficheros JSON en ~/datos-formularios/ (fuera del docroot),
  * escrituras atómicas con rename. Cada fichero .lock se toca desde UN
@@ -25,10 +28,16 @@ declare(strict_types=1);
 
 date_default_timezone_set('America/Lima');
 
-// URL de entrega. El override por entorno es SOLO para los arneses de
-// prueba (apuntar a un mock local evita correos reales); en producción
-// la variable no existe y queda la URL real.
-define('FORMSUBMIT_URL', getenv('FORMSUBMIT_URL_OVERRIDE') ?: 'https://formsubmit.co/ajax/formacion_academica@proinocuidad.com');
+// Envío directo por SMTP (Zoho) con PHPMailer: la librería vive en
+// ~/phpmailer/ y la contraseña de APLICACIÓN de Zoho en
+// ~/datos-formularios/credenciales-smtp.php, ambos FUERA del docroot.
+define('PHPMAILER_SRC', dirname(__DIR__, 2) . '/phpmailer/src');
+define('CREDENCIALES',  dirname(__DIR__, 2) . '/datos-formularios/credenciales-smtp.php');
+// Log temporal de diagnóstico de envíos: se escribe en
+// datos-formularios/envio-log.tsv (fuera del docroot, sin datos
+// personales: solo hora, veredicto y motivo). APAGAR (= false) en
+// producción.
+define('SMTP_DEBUG', false);
 const MAX_RAFAGA       = 3;      // envíos por IP
 const VENTANA_RAFAGA   = 600;    // ... cada 600 segundos
 const MAX_DIA          = 10;     // envíos por IP por día natural de Lima
@@ -36,13 +45,11 @@ const MAX_PESO         = 5242880; // 5 MB en bytes
 const EDAD_LIMPIEZA    = 172800;  // 2 días: limpieza de contadores viejos
 const RETENCION_DEDUP  = 86400;   // 24 h: pasado esto, mismo DNI+curso puede reenviar
 
-// Campos que se reenvían a FormSubmit (lista cerrada). Es la lista de
-// name de tools/generar-fichas.mjs; todo lo demás (_cc, _next,
-// razon_social, ruc, extra inyectados…) se descarta.
+// Campos del POST que llegan al correo (lista cerrada de los name reales
+// del form). El asunto lo reconstruye el servidor ("Inscripción web —
+// {curso}") y NO se reenvía ningún campo oculto del cliente.
 const CAMPOS_PERMITIDOS = array(
     'nombre', 'dni', 'empresa', 'cargo', 'celular', 'correo', 'pais', 'curso',
-    '_subject', '_template', '_captcha',
-    // bloque comprobante de pago y aceptación (name reales del form)
     'desea_comprobante', 'tipo_comprobante', 'ruc', 'razon_social', 'conformidad',
 );
 
@@ -309,58 +316,91 @@ function campos_validos(array $post, array &$respuesta): bool {
     return true;
 }
 
-/* ---------- reenvío a FormSubmit ---------- */
+/* ---------- envío del correo (SMTP directo vía Zoho) ---------- */
 
-function reenviar_formsubmit(array $campos, array $f, string $curso): array {
+function log_envio(string $veredicto, string $motivo): void {
+    // Log temporal de diagnóstico (SMTP_DEBUG): fuera del docroot y sin
+    // datos personales, solo el veredicto y el motivo técnico.
+    if (!SMTP_DEBUG) return;
+    $fila = sprintf("%s\t%s\t%s\n", gmdate('Y-m-d\TH:i:s'), $veredicto, str_replace(array("\n", "\r", "\t"), ' ', $motivo));
+    @file_put_contents($GLOBALS['datos_dir'] . '/envio-log.tsv', $fila, FILE_APPEND);
+}
+
+function envio_zoho(array $campos, array $f, string $curso): array {
     // Lista blanca de campos (CAMPOS_PERMITIDOS): lo demás (_cc, _next,
-    // extras inyectados…) NO se reenvía. El adjunto se recarga con
-    // CURLFile y el MIME real detectado por finfo.
-    $post = array();
+    // extras inyectados…) NO va al correo.
+    $limpios = array();
     foreach ($campos as $clave => $texto) {
         if (!in_array($clave, CAMPOS_PERMITIDOS, true)) continue;
         if (!is_scalar($texto)) continue;
-        $post[$clave] = (string)$texto;
+        $limpios[$clave] = (string)$texto;
     }
-    // _subject / _template / _captcha los FIJA el servidor, a partir de
-    // los valores actuales del form: _subject se recompone con el campo
-    // curso (readonly, no editable en cliente) y los otros dos son
-    // constantes. Lo que venga del cliente en esos tres campos se ignora.
-    unset($post['_subject'], $post['_template'], $post['_captcha']);
-    $post['_subject'] = 'Inscripción web — ' . $curso;
-    $post['_template'] = 'table';
-    $post['_captcha'] = 'false';
-    if (($f['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
-        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($f['tmp_name']);
-        $post['voucher'] = new CURLFile($f['tmp_name'], (string)$mime, (string)$f['name']);
+    try {
+        require_once PHPMAILER_SRC . '/Exception.php';
+        require_once PHPMAILER_SRC . '/SMTP.php';
+        require_once PHPMAILER_SRC . '/PHPMailer.php';
+        if (!is_file(CREDENCIALES)) return array(false, 'sin-credenciales');
+        $c = require CREDENCIALES;
+        if (!is_array($c) || empty($c['usuario']) || empty($c['clave']) || empty($c['host'])) {
+            return array(false, 'credenciales-malas');
+        }
+        // El voucher se recarga con el MIME REAL detectado por finfo.
+        $usa_adj = ($f['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK;
+        $nombre_adj = (string)($f['name'] ?? '');
+        if ($usa_adj) {
+            $mime_adj = (string)(new finfo(FILEINFO_MIME_TYPE))->file($f['tmp_name']);
+        }
+        $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host = (string)$c['host'];
+        $mail->Port = (int)($c['puerto'] ?? 465);
+        $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS; // TLS directo
+        $mail->SMTPAuth = true;
+        $mail->Username = (string)$c['usuario'];
+        $mail->Password = (string)$c['clave'];
+        $mail->Timeout = 25;
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom((string)$c['usuario'], 'Proinocuidad Inscripciones');
+        $mail->addAddress((string)$c['usuario']); // el buzón del negocio
+        $mail->Subject = 'Inscripción web — ' . $curso;
+        // Tabla parecida a la plantilla "table" que traía FormSubmit:
+        // etiqueta legible por campo, valores escapados.
+        $etiquetas = array(
+            'nombre' => 'Nombre', 'dni' => 'Documento', 'empresa' => 'Empresa/Institución',
+            'cargo' => 'Cargo', 'celular' => 'Celular', 'correo' => 'Correo',
+            'pais' => 'País', 'curso' => 'Curso',
+            'desea_comprobante' => '¿Comprobante?', 'tipo_comprobante' => 'Tipo de comprobante',
+            'ruc' => 'RUC', 'razon_social' => 'Razón social', 'conformidad' => 'Aceptación',
+        );
+        $filas = '';
+        $texto = '';
+        foreach ($etiquetas as $clave => $etiqueta) {
+            $v = isset($limpios[$clave]) ? trim($limpios[$clave]) : '';
+            if ($v === '') $v = '-';
+            $filas .= '<tr><td style="padding:4px 10px;font-weight:bold;background:#f2f3fa">' . htmlspecialchars($etiqueta, ENT_QUOTES, 'UTF-8') . '</td><td style="padding:4px 10px">' . htmlspecialchars($v, ENT_QUOTES, 'UTF-8') . '</td></tr>';
+            $texto .= $etiqueta . ': ' . $v . "\n";
+        }
+        if ($usa_adj) {
+            $filas .= '<tr><td style="padding:4px 10px;font-weight:bold;background:#f2f3fa">Voucher</td><td style="padding:4px 10px">' . htmlspecialchars($nombre_adj !== '' ? $nombre_adj : 'adjunto', ENT_QUOTES, 'UTF-8') . ' (adjunto al correo)</td></tr>';
+        }
+        $mail->isHTML(true);
+        $mail->Body = '<p>Inscripción recibida desde proinocuidad.com:</p>'
+            . '<table border="0" cellpadding="2" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:13px">' . $filas . '</table>'
+            . '<p style="font-size:12px;color:#5c5f6a">Enviado el ' . htmlspecialchars(date('d/m/Y H:i'), ENT_QUOTES, 'UTF-8') . ' (hora de Lima).</p>';
+        $mail->AltBody = "Inscripción recibida desde proinocuidad.com:\n\n" . rtrim($texto)
+            . "\n\nEnviado el " . date('d/m/Y H:i') . " (hora de Lima).";
+        if ($usa_adj) {
+            $mail->addAttachment((string)$f['tmp_name'], $nombre_adj !== '' ? $nombre_adj : 'voucher', 'base64', $mime_adj);
+        }
+        $mail->send();
+        log_envio('OK', 'asunto="' . $mail->Subject . '"' . ($usa_adj ? ' voucher=' . (int)($f['size'] ?? 0) . 'B' : ' sin-voucher'));
+        return array(true, 'ok');
+    } catch (Throwable $e) {
+        // PHPMailer lanza exception con el motivo exacto del servidor SMTP:
+        // eso es un FALLO real, nunca se da por éxito.
+        log_envio('FALLO', substr((string)$e->getMessage(), 0, 200));
+        return array(false, 'smtp');
     }
-    $ch = curl_init();
-    curl_setopt_array($ch, array(
-        CURLOPT_URL => FORMSUBMIT_URL,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $post,
-        CURLOPT_RETURNTRANSFER => true,
-        // La variante /ajax/ devuelve JSON cuando se negocia Accept; la
-        // URL básica redirige (302) y la petición se vería como fallida.
-        CURLOPT_HTTPHEADER => array('Accept: application/json'),
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_USERAGENT => 'proinocuidad-endpoint/1.0',
-    ));
-    $cuerpo = (string)curl_exec($ch);
-    $codigo = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $tipo = (string)curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-    $error_red = curl_errno($ch) !== 0;
-    curl_close($ch);
-    if ($error_red || $codigo === 0) return array(false, 'red');
-    if ($codigo < 200 || $codigo >= 300) return array(false, 'no2xx');
-    // Si FormSubmit contesta JSON se respeta su success; si no, basta 2xx.
-    if (strpos($tipo, 'application/json') !== false) {
-        $d = json_decode($cuerpo, true);
-        if (is_array($d) && isset($d['success']) && ($d['success'] === true || $d['success'] === 'true')) return array(true, $cuerpo);
-        if (is_array($d) && isset($d['success']) && ($d['success'] === false || $d['success'] === 'false')) return array(false, 'no2xx');
-        return array(true, $cuerpo); // JSON sin expected shape: 2xx gana
-    }
-    return array(true, $cuerpo);
 }
 
 /* ---------- la puerta ---------- */
@@ -398,7 +438,7 @@ if (!campos_validos($_POST, $respuesta)) {
     exit;
 }
 
-// 5) Reserva ANTES del cURL (cupo IP + dedup), bajo lock: si FormSubmit
+// 5) Reserva ANTES del envío (cupo IP + dedup), bajo lock: si el SMTP
 // falla, se libera después.
 $dni_norm = (string)($_POST['dni'] ?? '');
 $curso_norm = (string)($_POST['curso'] ?? '');
@@ -409,11 +449,11 @@ if (!reservar_envio($datos_dir, $ip, $clave, $respuesta, $ts_reserva)) {
     exit;
 }
 
-// 6) Reenvío a FormSubmit: quien entrega el correo con el adjunto.
-$ok_envio = reenviar_formsubmit($_POST, $_FILES['voucher'] ?? array(), $curso_norm);
+// 6) Envío por SMTP (Zoho): quien entrega el correo con el voucher.
+$ok_envio = envio_zoho($_POST, $_FILES['voucher'] ?? array(), $curso_norm);
 
 if (!$ok_envio[0]) {
-    // FormSubmit no confirmó: se SUELTAN cupo y dedup; el intento NO cuenta.
+    // El SMTP no confirmó: se SUELTAN cupo y dedup; el intento NO cuenta.
     liberar_reserva($datos_dir, $ip, $ts_reserva);
     liberar_dedup($datos_dir, $clave);
     responder(false, 'No se pudo enviar. Pruébalo de nuevo en unos minutos o escríbenos directo al WhatsApp.', 502, $quiere_json);
