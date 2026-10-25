@@ -130,6 +130,53 @@ Errores de medición que ya se han cometido:
 - No mezclar el trabajo de Juan con el del agente en un mismo commit: si van juntos porque comparten líneas del mismo archivo, decirlo en el mensaje.
 - Mensajes en español: asunto corto, cuerpo explicando **por qué** (no un listado de cambios), y un bloque `Verificado:` con los hechos medidos.
 
+## Formulario de inscripción (2026-10-25)
+
+**Estado actual:** el form de las 8 fichas envía TODO por AJAX (JSON,
+multipart cuando hay voucher) a `/ajax/envio-inscripcion.php`; el endpoint
+valida, limita y **entrega el correo por SMTP directo con PHPMailer 6.9.3
+(Zoho)**. FormSubmit se abandonó definitivamente: respondía `success:true`
+y descartaba el voucher en silencio — el verde era falso. Commit de origen:
+`e8c40a1`.
+
+Puntos que hay que no romper:
+
+- **Librería y credenciales viven FUERA del docroot**, en la home del
+  cPanel: `~/phpmailer/src/` (PHPMailer v6.9.3) y
+  `~/datos-formularios/credenciales-smtp.php` (host/usuario/clave del
+  SMTP, chmod 640). La clave de aplicación de Zoho **no va nunca al
+  repo ni a este fichero**; si se rota, se edita ahí en el server y no se
+  pega en el chat.
+- **Host SMTP es `smtp.zoho.com:465` (SMTPS).** `smtppro.zoho.com`
+  rechaza con 554 "Access Restricted": es información de otro en la
+  configuración de credenciales.
+- El asunto lo reconstruye el servidor (`"Inscripción web — {curso}"`);
+  `CAMPOS_PERMITIDOS` es la lista cerrada y ya no incluye
+  `_subject`/`_template`/`_captcha`. El cuerpo reproduce la plantilla
+  "table" (tabla HTML + `AltBody` en texto, hora de Lima).
+- `SMTP_DEBUG` en el endpoint controla el log de diagnóstico
+  (`~/datos-formularios/envio-log.tsv`, sin datos personales).
+  **`false` en producción**; `true` solo durante una investigación, con
+  borrado del .tsv al terminar.
+- El voucher es **obligatorio** en el endpoint (≤ 5 MB; 6 MB → 422 con
+  "El archivo supera el máximo de 5 MB") y el MIME se verifica con
+  `finfo` server-side.
+- El cliente (`assets/js/main.js`) tiene timeouts reales: **45 s** el
+  AJAX (con `AbortController`) y **90 s** el reloj visible; progreso
+  "Subiendo comprobante… puede tardar hasta 60 s"; verde solo con
+  confirmación del servidor. No cambiarlos sin pensar en líneas de
+  Perú lentas de subida.
+- Server y repo DEBEN quedar idénticos (`md5sum` del endpoint en ambos;
+  el server se edita por fs_edit del MCP aplicando los mismos parches y
+  verificando con `php -l` + md5). Última verificación: mismos md5
+  `ed7b939806ba8558939eb8f304c86cf4` (23454 B) ambos lados.
+
+Pruebas hechas en producción (2026-10-25, confirmadas por Juan):
+voucher 5 MB → HTTP 200 en ~5 s y correo en bandeja de Gmail con la tabla
+correcta y el PDF adjunto (correo "Inscripción web — PRUEBA-TÉCNICA
+PHPMailer (N3, ignorar)"); voucher 6 MB → 422 con el mensaje del límite;
+sin voucher → 422 "El voucher es obligatorio".
+
 ## Publicación del sitio estático (2026-10-24, server hora 2026-10-25)
 
 - El sitio nuevo está **en producción** en la raíz de `proinocuidad.com` (commit
@@ -144,14 +191,14 @@ Errores de medición que ya se han cometido:
   tocaría una línea de `.gitignore` — por ahora nada del aula vive en este repo).
 - El botón **Aula Virtual** ya apunta a `/aula/login/`: dará 404 hasta que el Moodle
   esté instalado en `/aula/` (F3, el agente de infraestructura o Juan vía MCP).
-- **FormSubmit funciona pero dejó de honrar el `_next`** (2026-10-24: responde
-  200 con su página "Thanks" sin redirigir). El flujo del formulario de
-  inscripción se rehízo en el commit `5ab6263`: sin voucher va por AJAX
-  (`/ajax/`, JSON, sin adjuntos); con voucher el POST clásico multipart
-  (el único que entrega el adjunto al correo) va a un **iframe oculto**
-  con `form.target`, y el aviso verde aparece al `load` del iframe. No
-  añadir jamás un campo `_next` ni un envío clásico sin `form.target`:
-  mandaría al usuario a la página "Thanks" de nuevo.
+- **FormSubmit se abandonó** (2026-10-25): dejaba correo y voucher sin
+  entregar respondiendo `success:true`. El envío pasó a SMTP directo con
+  PHPMailer contra Zoho; ver sección **Formulario de inscripción**. Los
+  tres avisos de esa época siguen válidos como historia del flujo con
+  iframe que ya no se usa con FormSubmit: el formulario ACTUAL (2026-10-25)
+  envía TODO por AJAX al endpoint `/ajax/envio-inscripcion.php`, también
+  con voucher (Adjunta hasta 5 MB; los timeouts del cliente son 45 s AJAX
+  / 90 s máx). No añadir jamás un campo `_next` al form.
 - La mutación del celular a "+51 XXX XXX XXX" va **después** del
   `checkValidity()` del listener de envío: antes del fix rompía la
   validación (el valor con prefijo no pasa `pattern` ni `maxlength`) y el
