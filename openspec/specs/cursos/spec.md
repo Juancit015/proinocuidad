@@ -66,7 +66,7 @@ Las certificaciones mostradas SHALL ser las del documento base: 384 horas para e
 - **THEN** ve 40 horas académicas
 
 ### Requirement: Aula virtual permanente (metodología)
-El bloque Metodología de toda ficha asíncrona SHALL indicar el aula virtual permanente disponible en `https://proinocuidad.com/login/` con usuario y contraseña asignados por participante, y el requisito de nota mínima de 14/20 para el certificado de aprobación (o de participación en caso contrario).
+El bloque Metodología de toda ficha asíncrona SHALL indicar el aula virtual permanente disponible en `https://proinocuidad.com/aula/login/` con usuario y contraseña asignados por participante, y el requisito de nota mínima de 14/20 para el certificado de aprobación (o de participación en caso contrario).
 
 #### Scenario: Metodología visible
 - **WHEN** el usuario lee el bloque Metodología de cualquier curso

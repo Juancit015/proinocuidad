@@ -26,7 +26,7 @@ servicios de consultoría y las novedades del sector alimentario y de la regulac
 - **Noticias y eventos** — novedades del sector y de la regulación sanitaria
   (vigente: la nota de DIGESA sobre la nueva vigencia indeterminada del HACCP).
 - **Aula Virtual** — acceso a la plataforma de estudio:
-  [proinocuidad.com/login](https://proinocuidad.com/login/)
+  [aula virtual (Moodle en /aula/)](https://proinocuidad.com/aula/login/)
 
 ## Servicios
 

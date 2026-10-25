@@ -45,11 +45,11 @@ Al colocar el puntero sobre un elemento que tiene submenús, la barra de navegac
 - **THEN** los ítems del submenú se reparten en dos columnas, el enlace de todos los servicios o cursos ocupa el ancho completo del panel, y el panel no llega al borde inferior de la ventana
 
 ### Requirement: Aula Virtual en pestaña nueva
-El enlace "Aula Virtual" SHALL dirigir a `https://proinocuidad.com/login/` abierto en una pestaña nueva.
+El enlace "Aula Virtual" SHALL dirigir a `https://proinocuidad.com/aula/login/` abierto en una pestaña nueva.
 
 #### Scenario: Acceso al aula virtual
 - **WHEN** el usuario hace clic en "Aula Virtual"
-- **THEN** se abre `https://proinocuidad.com/login/` en una pestaña nueva del navegador
+- **THEN** se abre `https://proinocuidad.com/aula/login/` en una pestaña nueva del navegador
 
 ### Requirement: Navegación en móvil
 En pantallas móviles, la navegación SHALL colapsar tras un botón de menú; los grupos con submenús SHALL abrirse en modo acordeón, y al seleccionar un enlace el menú SHALL cerrarse y navegar a la página.

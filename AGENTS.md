@@ -134,7 +134,9 @@ Errores de medición que ya se han cometido:
 
 `proinocuidad.com` sigue siendo un WordPress ("Flavita"); el sitio nuevo no está publicado. Antes hay que resolver:
 
-- El botón **Aula Virtual** apunta a `https://proinocuidad.com/login/`, que es el login del WordPress viejo: dejará de existir al publicar.
+- El botón **Aula Virtual** ahora apunta a `https://proinocuidad.com/aula/login/`
+  (se cambió en el commit del botón, antes de publicar). El *404 es temporal*: existirá
+  de verdad cuando el Moodle esté instalado en `/aula/` (F3, agente de infraestructura).
 - **FormSubmit sin activar**: necesita un envío de prueba a `administracion@proinocuidad.com`.
 - **Dos tokens de GitHub quedaron expuestos en el chat y sin revocar.**
 - **El hosting tiene que servir `404.html` con estado 404.** El repositorio no tiene
