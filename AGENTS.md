@@ -176,6 +176,6 @@ Errores de medición que ya se han cometido:
 
 ## Datos que se repiten por todo el sitio
 
-Aparecen en 93 líneas de los HTML, así que tocarlos a mano es propenso a dejar incoherencias: WhatsApp `+51 981 365 982`, `administracion@proinocuidad.com`, RUC `20615307603`, Yape/Plin `+51 971 625 142`, Lun-Vie 8AM-8PM.
+Aparecen en 93 líneas de los HTML, así que tocarlos a mano es propenso a dejar incoherencias: WhatsApp `+51 981 365 982`, `formacion_academica@proinocuidad.com`, RUC `20615307603`, Yape/Plin `+51 971 625 142`, Lun-Vie 8AM-8PM.
 
 En las fichas, el origen único son las constantes de `tools/generar-fichas.mjs`. El campo `waLargo` de `assets/js/cursos-data.js` tiene que coincidir con la constante del generador, o los mensajes de los botones de la ficha y de los listados no serán iguales.

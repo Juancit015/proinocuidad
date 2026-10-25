@@ -386,7 +386,7 @@ function formInscripcionBloque(curso) {
 <span class="seccion-tag" aria-hidden="true">${SVG_DOC}</span>
 <h2>Formulario de Inscripción</h2>
 </div>
-<form class="form-inscripcion" action="https://formsubmit.co/administracion@proinocuidad.com" method="POST" enctype="multipart/form-data">
+<form class="form-inscripcion" action="https://formsubmit.co/formacion_academica@proinocuidad.com" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="_subject" value="Inscripción web — ${curso.miga}">
 <input type="hidden" name="_template" value="table">
 <input type="hidden" name="_captcha" value="false">
@@ -608,7 +608,7 @@ function cabecera(ruta, cursos) {
 Contacto:
 <a href="${waContacto}" target="_blank" rel="noopener">+51 981 365 982</a>
 &nbsp;·&nbsp;
-<a href="mailto:administracion@proinocuidad.com">administracion@proinocuidad.com</a>
+<a href="mailto:formacion_academica@proinocuidad.com">formacion_academica@proinocuidad.com</a>
 &nbsp;·&nbsp;
 RUC: <strong>20615307603</strong>
 </span>
@@ -678,7 +678,7 @@ function pie(ruta, cursos) {
 <h4>Contacto</h4>
 <ul>
 <li><strong>Contacto:</strong> <a href="${waContacto}" target="_blank" rel="noopener">+51 981 365 982</a></li>
-<li><strong>Correo:</strong> <a href="mailto:administracion@proinocuidad.com">administracion@proinocuidad.com</a></li>
+<li><strong>Correo:</strong> <a href="mailto:formacion_academica@proinocuidad.com">formacion_academica@proinocuidad.com</a></li>
 <li><strong>Horario de atención:</strong> Lunes a viernes de 8 AM a 8 PM</li>
 <li><strong>Ubicación:</strong> Trujillo, La Libertad, Perú</li>
 </ul>

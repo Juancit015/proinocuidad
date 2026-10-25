@@ -57,7 +57,7 @@ mediante el formulario oficial de la institución y el pago en línea a través 
 
 ## Contacto
 
-- **Correo:** [administracion@proinocuidad.com](mailto:administracion@proinocuidad.com)
+- **Correo:** [formacion_academica@proinocuidad.com](mailto:formacion_academica@proinocuidad.com)
 - **Teléfono/WhatsApp:** [+51 981 365 982](https://wa.me/51981365982)
 - **Comunidad WhatsApp:** [Comunidad PROINOCUIDAD](https://chat.whatsapp.com/GXh0wdFZWgEGz2dlpCTPvN)
 - **Redes sociales:** [Facebook](https://www.facebook.com/share/16XUyQ5JDR/) ·

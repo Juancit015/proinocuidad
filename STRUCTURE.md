@@ -225,7 +225,7 @@ Los cambios de la sesión 2026-10-15 pendientes de publicar son 3 (ver `CHANGELO
   blanca a la derecha (el bug medía +219px por el honeypot).
 - Formulario de cualquier ficha: País es desplegable con Perú por defecto
   y opción Extranjero, con flecha azul integrada.
-- Enviar una inscripción de prueba llega a `administracion@proinocuidad.com`
+- Enviar una inscripción de prueba llega a `formacion_academica@proinocuidad.com`
   con `pais=Perú` (o `Extranjero`).
 
 ### Rollback

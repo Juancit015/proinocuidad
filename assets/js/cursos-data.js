@@ -142,7 +142,7 @@ window.PROINO_CURSOS = [
 window.PROINO_SITIO = {
   whatsapp: "https://wa.me/51981365982",
   whatsappNumeroVisible: "+51 981 365 982",
-  email: "administracion@proinocuidad.com",
+  email: "formacion_academica@proinocuidad.com",
   horario: "Lunes a viernes de 8 AM a 8 PM",
   ubicacion: "Trujillo, La Libertad, Perú",
   direccionExacta: "Próximamente",

@@ -124,7 +124,7 @@ La barra superior (`.topbar`, con la línea de contacto y los iconos de redes) S
 
 #### Scenario: móvil sin barra superior
 - **WHEN** el usuario abre cualquier página con un ancho de 390px
-- **THEN** no se muestra la línea "Contacto: +51 981 365 982 · administracion@proinocuidad.com" ni los iconos de redes sobre la cabecera, y el teléfono y correo siguen visibles en el footer
+- **THEN** no se muestra la línea "Contacto: +51 981 365 982 · formacion_academica@proinocuidad.com" ni los iconos de redes sobre la cabecera, y el teléfono y correo siguen visibles en el footer
 
 #### Scenario: escritorio sin cambios
 - **WHEN** el ancho es mayor a 860px

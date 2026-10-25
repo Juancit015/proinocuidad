@@ -7,7 +7,7 @@ Definir el footer de contacto y los datos de contacto transversales del sitio (e
 ## Requirements
 
 ### Requirement: Datos de contacto
-El footer de todas las páginas SHALL mostrar: correo `administracion@proinocuidad.com`, WhatsApp +51 981 365 982 (enlace `wa.me/51981365982`), horario de atención "Lunes a viernes de 8 AM a 8 PM" y ubicación "Trujillo, La Libertad, Perú" (la dirección exacta se mostrará como "Próximamente").
+El footer de todas las páginas SHALL mostrar: correo `formacion_academica@proinocuidad.com`, WhatsApp +51 981 365 982 (enlace `wa.me/51981365982`), horario de atención "Lunes a viernes de 8 AM a 8 PM" y ubicación "Trujillo, La Libertad, Perú" (la dirección exacta se mostrará como "Próximamente").
 
 #### Scenario: Contacto visible
 - **WHEN** el usuario mira el footer de cualquier página
