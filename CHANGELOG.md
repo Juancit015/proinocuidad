@@ -3,6 +3,61 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-25 (Formulario: indicador de envío y límite del voucher)
+
+### Added
+
+- **Indicador de envío en el botón de inscripción**: mientras corre el
+  envío (vía AJAX sin voucher y vía iframe con voucher), el botón se
+  convierte en "Cargando…" con una bolita CSS hecha con
+  `::before` (`@keyframes giro-envio`, `currentColor` sobre el rojo de
+  marca) y `cursor: wait`; pasa a `disabled` con `aria-busy="true"`.
+- **Límite del voucher: solo imagen o PDF, hasta 5 MB.** El aviso de
+  error vive en cada ficha (`<p class="campo-error"
+  data-campo-error="voucher" hidden>`, añadido por
+  `tools/generar-fichas.mjs`). La validación corre dos veces: al elegir
+  el archivo (evento `change` por delegación en el form, sobrevive al
+  clonado del input) y otra vez antes de las vías de envío en el
+  `submit` (con `preventDefault`: nunca sale un POST ni el botón queda
+  en estado de carga).
+
+### Fixed
+
+- `marcarVoucher` limpiaba el archivo seleccionado incluso cuando era
+  VÁLIDO (la llamada de "limpiar mensaje" también vaciaba el input) y el
+  `required` bloqueaba todo envío con voucher. Ahora solo se descarta el
+  archivo cuando hay mensaje de error.
+
+### Changed
+
+- Caché: LiteSpeed sirve HTML/JS/CSS con `max-age=604800` por defecto;
+  un `main.js` viejo cacheado 7 días revive bugs corregidos y esconde
+  cada mejora tras un deploy. `.htaccess` ahora manda `no-cache,
+  must-revalidate` para `index.html`, `main.js` y `main.css` (plan B si
+  el hosting no honra `mod_headers`: versionado `?v=`).
+
+### Verified
+
+- Suite Playwright local (fichas servidas, FormSubmit simulado con
+  900 ms de latencia): durante el envío el botón mide
+  `{"Cargando…", aria-busy, disabled, cursor: wait, animation:
+  giro-envio, ::before 14px}` y al confirmar vuelve al texto original
+  con aviso verde, en AMBAS vías (AJAX y voucher con 1 POST clásico).
+  Fallo AJAX (500 simulado): aviso de error y botón restituido; el
+  reintento sale verde.
+- Vouchers: `voucher-falso.mp4` (200 KB) y `voucher-grande.png` (6 MB)
+  → error inmediato visible, input vaciado, CERO POSTs tras el click e
+  URL intacta; `voucher-chico.pdf` y `voucher-test.png` (1 KB) pasan el
+  flujo completo con aviso verde. Elegir un archivo válido tras uno
+  inválido limpia el mensaje.
+- Con `prefers-reduced-motion: reduce` la bolita se sirve sin giro
+  (`animation-name: none`) y el envío funciona igual.
+- Sin desborde horizontal a 1280 y 390 px con el mensaje de voucher
+  visible (`scrollWidth <= innerWidth` en ambos).
+- Regeneración de fichas con el guard del repo: las 8 fichas difieren
+  SOLO en el párrafo de error nuevo; `404.html` byte-idéntico. Sin JS,
+  el párrafo queda oculto y `accept`/`required` intactos.
+
 ## 2026-10-25 (Formulario de inscripción: aviso verde sin salir de la ficha)
 
 ### Fixed

@@ -379,9 +379,60 @@
       mensaje.hidden = false;
       history.replaceState(null, "", location.pathname);
     }
+    // --- Validación del voucher: solo imagen o PDF, hasta 5 MB ---
+    var PESO_MAXIMO = 5 * 1024 * 1024;
+    var errorVoucher = form.querySelector('[data-campo-error="voucher"]');
+    var marcarVoucher = function (input, texto) {
+      if (errorVoucher) {
+        errorVoucher.textContent = texto;
+        errorVoucher.hidden = !texto;
+      }
+      // Con mensaje hay que descartar el archivo (no se lo debe poder
+      // enviar); con la limpieza del mensaje el archivo seleccionado
+      // VÁLIDO se conserva.
+      if (input && texto) {
+        try {
+          input.value = "";
+        } catch (e) {
+          // Navegador que no permite reasignar el value de un file input:
+          // se clona el input; el form escucha el change por delegación.
+          var clon = input.cloneNode(true);
+          input.parentNode.replaceChild(clon, input);
+        }
+      }
+    };
+    var voucherInvalido = function () {
+      var input = form.querySelector('input[name="voucher"]');
+      if (!input || !input.files || !input.files.length) return false; // vacío: required y checkValidity lo cubren
+      var f = input.files[0];
+      var esPdf = f.type === "application/pdf" || (/\.pdf$/i.test(f.name || ""));
+      var ok = (f.type && f.type.indexOf("image/") === 0) || esPdf;
+      if (!ok) {
+        marcarVoucher(input, "Solo se aceptan imágenes o PDF (máximo 5 MB).");
+        return true;
+      }
+      if (f.size > PESO_MAXIMO) {
+        marcarVoucher(input, "El archivo supera el máximo de 5 MB.");
+        return true;
+      }
+      marcarVoucher(input, "");
+      return false;
+    };
+    // Por delegación en el form: sobrevive a un eventual clon del input.
+    form.addEventListener("change", function (ev) {
+      if (!ev.target || ev.target.name !== "voucher") return;
+      voucherInvalido(); // marca o limpia el aviso sin esperar el submit
+    });
     form.addEventListener("submit", function (ev) {
       var honey = form.querySelector(".campo-honey");
       if (honey && honey.value) return; // bot: no envía nada
+      // Validación del voucher ANTES de las vías de envío: tipo (imagen o
+      // PDF) y peso (5 MB). Corre en change (error inmediato al elegir) y
+      // otra vez aquí; falla => el error se muestra y no hay envío.
+      if (voucherInvalido && voucherInvalido()) {
+        ev.preventDefault();
+        return;
+      }
       if (!form.checkValidity()) return; // el navegador marca los campos
       // Formato "+51 XXX XXX XXX" para el correo y el POST clásico: DESPUÉS
       // del checkValidity() porque el valor con prefijo no pasa el pattern
@@ -439,7 +490,7 @@
         };
         boton.disabled = true;
         boton.setAttribute("aria-busy", "true");
-        boton.innerHTML = "Enviando…";
+        boton.innerHTML = "Cargando…";
         form.submit();
         form.removeAttribute("target");
         return;
@@ -457,7 +508,7 @@
       };
       boton.disabled = true;
       boton.setAttribute("aria-busy", "true");
-      boton.innerHTML = "Enviando…";
+      boton.innerHTML = "Cargando…";
       fetch(accion, {
         method: "POST",
         body: new FormData(form),

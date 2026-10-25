@@ -427,6 +427,7 @@ function formInscripcionBloque(curso) {
 </label>
 <label>Enviar Comprobante De Pago
 <input type="file" name="voucher" accept="image/*,.pdf" required>
+<p class="campo-error" data-campo-error="voucher" hidden></p>
 </label>
 </div>
 <label class="form-check">

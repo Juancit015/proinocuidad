@@ -117,6 +117,19 @@ section { padding: 64px 0; }
 .btn:hover { text-decoration: none; transform: translateY(-1px); }
 .btn-rojo { background: var(--rojo); color: var(--blanco); }
 .btn-rojo:hover { background: var(--rojo-oscuro); }
+/* Bolita de envío en curso: el JS del formulario marca aria-busy al
+   enviar, y esta bolita gira a la izquierda del texto "Cargando…"
+   hasta que vuelve la confirmación. currentColor la adapta al color
+   de fondo del botón (el real es .btn-rojo, fondo rojo, bolita blanca). */
+.btn[aria-busy="true"] { cursor: wait; }
+.btn[aria-busy="true"]::before {
+  content: ""; width: 14px; height: 14px; flex: none;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: giro-envio 0.8s linear infinite;
+}
+@keyframes giro-envio { to { transform: rotate(360deg); } }
 .btn-azul { background: var(--azul); color: var(--blanco); }
 .btn-azul:hover { background: var(--azul-oscuro); }
 .btn-blanco { background: var(--blanco); color: var(--azul); }
@@ -943,6 +956,8 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
   html.js-anim .hero-grid > *, html.js-anim .identidad-grid > * { animation: none !important; opacity: 1 !important; transform: none !important; }
   .page-head--servicios, .page-head--nosotros, .page-head--noticias, .page-head--cursos { background-attachment: scroll; }
   .flotante-whatsapp, .flotante-texto, .to-top-proi { transition: none; }
+  /* La bolita de envío queda estática (media arco fijo) sin giro. */
+  .btn[aria-busy="true"]::before { animation: none; }
 }
 
 /* ---------- CTA final de la home ---------- */
