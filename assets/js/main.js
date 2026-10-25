@@ -387,6 +387,21 @@
       mensaje.hidden = false;
       history.replaceState(null, "", location.pathname);
     }
+    // --- Estado compartido por TODOS los envíos de este form ---
+    // El listener de submit corre por envío y cada llamada tiene su propio
+    // scope: un var dentro suyo NO lo ve el listener load del iframe (que se
+    // registró una sola vez, en el primer envío, y capturó ESA invocación).
+    // Así quedó el segundo envío entregando el correo con el botón atorado
+    // en "Cargando…": el load miraba la binding vieja, que quedó en false
+    // tras la primera respuesta. Esto vive en el callback del forEach, que
+    // NO se recrea por envío.
+    var pendienteIframe = false;
+    var textoBotonBase = null;
+    var restaurarBoton = function () {
+      boton.disabled = false;
+      boton.removeAttribute("aria-busy");
+      if (textoBotonBase) boton.innerHTML = textoBotonBase;
+    };
     // --- Validación del voucher: solo imagen o PDF, hasta 5 MB ---
     var PESO_MAXIMO = 5 * 1024 * 1024;
     var errorVoucher = form.querySelector('[data-campo-error="voucher"]');
@@ -475,16 +490,15 @@
           marco.tabIndex = -1;
           marco.title = "Envío de inscripción";
           form.appendChild(marco);
-          var pendiente = false;
           marco.addEventListener("load", function () {
             // La carga inicial de about:blank dispara load también: se distingue
             // porque about:blank es de origen propio (legible) y la respuesta
             // de FormSubmit es cross-origin (su location lanza SecurityError).
             var vacia = false;
             try { vacia = marco.contentWindow.location.href === "about:blank"; } catch (e) { vacia = false; }
-            if (vacia || !pendiente) return;
-            pendiente = false;
-            restaurar();
+            if (vacia || !pendienteIframe) return;
+            pendienteIframe = false;
+            restaurarBoton();
             form.reset();
             if (inputCelular) inputCelular.value = "";
             var cambio = form.querySelector('input[name="desea_comprobante"]');
@@ -495,13 +509,8 @@
           });
         }
         form.target = marco.name;
-        pendiente = true;
-        var textoBoton2 = boton.innerHTML;
-        var restaurar = function () {
-          boton.disabled = false;
-          boton.removeAttribute("aria-busy");
-          boton.innerHTML = textoBoton2;
-        };
+        textoBotonBase = boton.innerHTML;
+        pendienteIframe = true;
         boton.disabled = true;
         boton.setAttribute("aria-busy", "true");
         boton.innerHTML = "Cargando…";
@@ -514,12 +523,7 @@
         "https://formsubmit.co/", "https://formsubmit.co/ajax/");
       if (accion.indexOf("https://formsubmit.co/ajax/") !== 0) return;
       ev.preventDefault();
-      var textoBoton = boton.innerHTML;
-      var restaurar = function () {
-        boton.disabled = false;
-        boton.removeAttribute("aria-busy");
-        boton.innerHTML = textoBoton;
-      };
+      textoBotonBase = boton.innerHTML;
       boton.disabled = true;
       boton.setAttribute("aria-busy", "true");
       boton.innerHTML = "Cargando…";
@@ -533,7 +537,7 @@
         var ok = x.r.status === 200 && x.d && (x.d.success === "true" || x.d.success === true);
         if (!ok) throw new Error("formsubmit rechazó");
         form.reset();
-        restaurar();
+        restaurarBoton();
         // Re-actualiza el bloque de comprobante que el reset ocultó
         var cambio = form.querySelector('input[name="desea_comprobante"]');
         if (cambio) cambio.dispatchEvent(new Event("change"));
@@ -541,7 +545,7 @@
         mensaje.classList.remove("form-aviso-error");
         mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
       }).catch(function () {
-        restaurar();
+        restaurarBoton();
         // El valor quedó con "+51 " (pattern-inválido) y el navegador
         // bloquearía el reintento antes de llegar a este listener: se
         // devuelve el celular a 9 dígitos para que pueda volver a enviar.
