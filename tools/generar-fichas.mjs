@@ -397,11 +397,14 @@ function formInscripcionBloque(curso) {
 </label>
 </div>
 <div class="form-grid">
-<label>Nombre y apellidos
+<label>
+<span class="label-tit">Nombre y apellidos <span class="req-ast" aria-hidden="true">*</span></span>
 <input type="text" name="nombre" required autocomplete="name" placeholder="Ej.: María Torres Quispe">
 </label>
-<label>DNI
+<label>
+<span class="label-tit">DNI <span class="req-ast" aria-hidden="true">*</span></span>
 <input type="text" name="dni" required inputmode="numeric" autocomplete="off" pattern="[0-9]{8}" maxlength="8" title="El DNI tiene 8 dígitos." placeholder="8 dígitos">
+<p class="campo-error" data-campo-error="dni" hidden></p>
 </label>
 <label>
 <span class="label-tit">Empresa/Institución <span class="opcio-campo">(opcional)</span></span>
@@ -411,12 +414,14 @@ function formInscripcionBloque(curso) {
 <span class="label-tit">Cargo/Ocupación <span class="opcio-campo">(opcional)</span></span>
 <input type="text" name="cargo" placeholder="Ej.: Jefa de Calidad">
 </label>
-<label>Celular
+<label>
+<span class="label-tit">Celular <span class="req-ast" aria-hidden="true">*</span></span>
 <span class="campo-con-prefijo"><span class="prefijo" aria-hidden="true">+51</span>
 <input type="tel" name="celular" required autocomplete="tel" pattern="[0-9]{9}" maxlength="9" title="El celular peruano lleva 9 dígitos que empiezan en 9." placeholder="999 999 999">
 </span>
 </label>
-<label>Correo
+<label>
+<span class="label-tit">Correo <span class="req-ast" aria-hidden="true">*</span></span>
 <input type="email" name="correo" required autocomplete="email" placeholder="correo@ejemplo.com">
 </label>
 <label>País
@@ -425,7 +430,8 @@ function formInscripcionBloque(curso) {
 <option value="Extranjero">Extranjero</option>
 </select>
 </label>
-<label>Enviar Comprobante De Pago
+<label>
+<span class="label-tit">Enviar Comprobante De Pago <span class="req-ast" aria-hidden="true">*</span></span>
 <input type="file" name="voucher" accept="image/*,.pdf" required>
 <p class="campo-error" data-campo-error="voucher" hidden></p>
 </label>
@@ -450,7 +456,7 @@ Deseo comprobante de pago
 </fieldset>
 <label class="form-check">
 <input type="checkbox" name="conformidad" required>
-El envío de este formulario representa la conformidad con los datos registrados, así como la aceptación de la modalidad de pago, las reglas y políticas de Proinocuidad.
+El envío de este formulario representa la conformidad con los datos registrados, así como la aceptación de la modalidad de pago, las reglas y políticas de Proinocuidad. <span class="req-ast" aria-hidden="true">*</span>
 </label>
 <button class="btn btn-rojo" type="submit">${SVG_BTN_ENVIO}Enviar inscripción</button>
 </form>

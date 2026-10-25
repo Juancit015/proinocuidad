@@ -3,6 +3,46 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-25 (Formulario: asteriscos de requerido y mensajito del DNI en su sitio)
+
+### Fixed
+
+- **El mensajito del DNI ("El DNI tiene 8 dígitos.") salía debajo del
+  campo equivocado**: el selector genérico de errores tomaba el primer
+  `<p class="campo-error">` del form, que es el del voucher, y ahí
+  aparecía el aviso del DNI (y el de factura se lo cebaba igual). Ahora
+  cada bloque tiene el suyo por atributo (`data-campo-error="dni"`, el
+  de factura acotado al fieldset). El mensajito se despliega bajo el
+  input al intentar enviar (+28 px de alto) y el form vuelve a su alto
+  original al completar los 8 dígitos; mientras escribes NO se abre
+  antes de tiempo (`validity.valid` no dispara `invalid`, cosa que
+  `checkValidity()` sí hacía). La burbuja nativa de Chrome del DNI se
+  suprime para que hable solo el mensajito inline.
+- **El envío ignoraba el bloqueo del bloque boleta/factura**: con RUC
+  corto, el segundo listener del `submit` disparaba el AJAX pese al
+  `preventDefault` del primero (mismo evento, dos listeners) y el
+  usuario veía el error rojo y el aviso verde a la vez, con un envío
+  incompleto de por medio. El listener de envío ahora respeta
+  `ev.defaultPrevented`.
+
+### Added
+
+- Asterisco rojo (`*`) en los campos requeridos: nombre, DNI, celular,
+  correo, voucher y la casilla de conformidad (generador; sobrevive al
+  cambio de país, que reescribe el título del label del DNI).
+
+### Verified
+
+- Playwright: asteriscos en los 6 campos requeridos con el rojo de
+  marca (rgb(173, 52, 59), peso 700); mensajito del DNI visible y
+  dentro del label del DNI, bajo el input, voucher limpio; alto del
+  form 572 → 600 → 572 px; Extranjero: etiqueta Documento/Pasaporte,
+  patrón y placeholder cambiados, asterisco y mensajito intactos;
+  factura con RUC "123": error visible, 0 AJAX, sin verde, y al
+  completar el RUC y la razón social el envío sale verde; sin
+  desborde a 1280 y 390 px. Regeneración con guard: solo cambian las
+  8 fichas en los cambios de formulario; `404.html` byte-idéntico.
+
 ## 2026-10-25 (Formulario: indicador de envío y límite del voucher)
 
 ### Added

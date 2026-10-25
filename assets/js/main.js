@@ -235,7 +235,9 @@
     var bloqueFactura = form.querySelector(".form-factura");
     var inputRuc = form.querySelector('input[name="ruc"]');
     var inputRazon = form.querySelector('input[name="razon_social"]');
-    var error = form.querySelector(".campo-error");
+    // SU párrafo de error (fieldset de factura), no el primero del form
+    // (antes caía en el del voucher y se lo cebaba).
+    var error = form.querySelector('.form-tipo-comp .campo-error');
     if (!check || !bloqueTipo) return;
     function tipoElegido() {
       var r = form.querySelector('input[name="tipo_comprobante"]:checked');
@@ -339,17 +341,23 @@
     // Estado vigente del form al cargar (Perú no cambia nada; por si el HTML
     // llegara a traer otro select pre-elegido en el futuro)
     aplicarPais(pais.value);
-    // 2.4: mensaje del documento en .campo-error cuando el bloque falla. El evento
-    // invalid SÍ se dispara aunque el navegador cancele el submit (el listener
-    // submit no corre con el form inválido). La burbuja nativa convive.
-    var errorDoc = form.querySelector(".campo-error");
+    // 2.4: mensaje del documento en SU párrafo (bajo el input del DNI, no
+    // el genérico del form). El evento invalid SÍ se dispara aunque el
+    // navegador cancele el submit; preventDefault lo corta para que solo
+    // hable el mensajito inline (la burbuja nativa de Chrome salía encima
+    // del campo y tapaba la cabecera en móvil).
+    var errorDoc = form.querySelector('[data-campo-error="dni"]');
     if (errorDoc) {
-      inputDni.addEventListener("invalid", function () {
+      inputDni.addEventListener("invalid", function (ev) {
+        ev.preventDefault(); // sin burbuja nativa: el párrafo bajo el input
         errorDoc.textContent = inputDni.getAttribute("title") || "Ingresa un documento válido.";
         errorDoc.hidden = false;
       });
       inputDni.addEventListener("input", function () {
-        if (inputDni.checkValidity()) errorDoc.hidden = true;
+        // validity.valid (lectura) NO dispara el evento invalid: si usara
+        // checkValidity() aquí, cada dígito a la mitad del DNI abriría el
+        // mensajito antes de que el usuario lo intente enviar.
+        if (inputDni.validity.valid) errorDoc.hidden = true;
       });
     }
   });
@@ -424,6 +432,12 @@
       voucherInvalido(); // marca o limpia el aviso sin esperar el submit
     });
     form.addEventListener("submit", function (ev) {
+      // Un listener anterior (el bloque boleta/factura) ya pudo decidir
+      // bloquear el envío con su preventDefault (RUC corto) pese a que el
+      // form es válido a la vista del navegador. El preventDefault NO corta
+      // este listener: hay que respetarlo, o sale a la vez el error rojo y
+      // el envío con el aviso verde.
+      if (ev.defaultPrevented) return;
       var honey = form.querySelector(".campo-honey");
       if (honey && honey.value) return; // bot: no envía nada
       // Validación del voucher ANTES de las vías de envío: tipo (imagen o

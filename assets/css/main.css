@@ -1814,6 +1814,8 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 }
 /* Marca de campo opcional: ventana sobre el label, gris pequeño, sin corte a 390px */
 .form-inscripcion .opcio-campo { font-size: 0.8rem; font-weight: 400; color: var(--gris); white-space: nowrap; }
+/* Asterisco de campo requerido: rojo de marca, pegado al título del label. */
+.form-inscripcion .req-ast { color: var(--rojo); font-weight: 700; }
 .form-inscripcion .form-check {
   display: flex; align-items: flex-start; gap: 10px;
   font-weight: 400; color: var(--grafito); cursor: pointer;
