@@ -27,6 +27,6 @@
 
 ## 4. Despliegue y cierre
 
-- [ ] 4.1 Commit (asunto corto + por qué + `Verificado:`), push con confirmación de Juan, `git_snapshot` antes del deploy, lista blanca con `ajax/`, deploy al docroot (md5 del endpoint y del `main.js` idénticos repo/server).
-- [ ] 4.2 Pruebas reales en producción: curl de voucher 5 MB ok / 6 MB rechazado / 4.º envío → 429 / DNI duplicado → 409; envío real desde la ficha (asunto `PRUEBA-FA-limite-…`) llega a la bandeja vía FormSubmit como hoy.
-- [ ] 4.3 CHANGELOG; `openspec validate <change> --strict`; `openspec archive --yes` verificando que el sync de specs no trunca la spec principal.
+- [x] 4.1 Commit (asunto corto + por qué + `Verificado:`), push con confirmación de Juan, `git_snapshot` antes del deploy, lista blanca con `ajax/`, deploy al docroot (md5 del endpoint y del `main.js` idénticos repo/server).
+- [x] 4.2 Pruebas reales en producción: curl de voucher 5 MB ok / 6 MB rechazado / 4.º envío → 429 / DNI duplicado → 409; envío real desde la ficha (asunto `PRUEBA-FA-limite-…`) llega a la bandeja vía FormSubmit como hoy.
+- [x] 4.3 CHANGELOG; `openspec validate <change> --strict`; `openspec archive --yes` verificando que el sync de specs no trunca la spec principal.
