@@ -433,6 +433,7 @@ function formInscripcionBloque(curso) {
 <label>
 <span class="label-tit">Enviar Comprobante De Pago <span class="req-ast" aria-hidden="true">*</span></span>
 <input type="file" name="voucher" accept="image/*,.pdf" required>
+<p class="campo-ayuda">Solo imágenes o PDF, de hasta 5&nbsp;MB.</p>
 <p class="campo-error" data-campo-error="voucher" hidden></p>
 </label>
 </div>

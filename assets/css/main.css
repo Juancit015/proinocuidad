@@ -1812,6 +1812,12 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 .form-inscripcion .campo-con-prefijo input[type="tel"]:focus {
   outline: none; border: none; box-shadow: none;
 }
+/* Sin prefijo (Extranjero) el número empezaba pegado al borde izquierdo
+   del contenedor: los demás inputs del form tienen 14px a la izquierda y
+   el placeholder "+57 300…" se veía desplazado. */
+.form-inscripcion .campo-con-prefijo .prefijo[hidden] + input[type="tel"] {
+  padding-left: 14px;
+}
 /* Marca de campo opcional: ventana sobre el label, gris pequeño, sin corte a 390px */
 .form-inscripcion .opcio-campo { font-size: 0.8rem; font-weight: 400; color: var(--gris); white-space: nowrap; }
 /* Asterisco de campo requerido: rojo de marca, pegado al título del label. */
@@ -1830,6 +1836,10 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 }
 .form-inscripcion .campo-error {
   margin: 0; font-size: 0.85rem; font-weight: 600; color: var(--rojo);
+}
+/* Ayuda permanente del voucher: el límite antes de intentar enviar. */
+.form-inscripcion .campo-ayuda {
+  margin: 0; font-size: 0.85rem; font-weight: 400; color: var(--gris);
 }
 /* Aviso de envío: aparece bajo el botón, en verde, cuando la inscripción
    llegó (AJAX). La variante error usa el rojo de marca. */
