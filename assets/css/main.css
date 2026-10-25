@@ -378,7 +378,13 @@ input[type="submit"] { border-radius: 4px; }
 .hero-grid > div { position: relative; z-index: 2; }
 @media (min-width: 861px) {
   .hero-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); }
-  .hero-grid > img { width: min(783px, 45.3vw); max-width: none; justify-self: end; }
+  /* width resuelve contra su TRACK (~481px con container 1180): el desborde
+     de +48px es el gap propio y +52px más caen sobre el borde del texto,
+     replicando el roce de 26px que la vista original ya tenía a 1280px,
+     constante a todos los anchos (antes, 45.3vw crecía con el viewport y a
+     80% de zoom desbordaba 244px: el H1 perdía 169px, el párrafo 59px).
+     100% = ancho del track, no de la imagen natural. */
+  .hero-grid > img { width: min(783px, calc(100% + 100px)); max-width: none; justify-self: end; }
 }
 @media (max-width: 860px) {
   .hero .hero-grid > img { max-height: none; margin-bottom: -84px; width: calc(100% + 40px); max-width: none; margin-left: -20px; }
