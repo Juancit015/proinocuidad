@@ -3,6 +3,45 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-25 (Página de servicio ISO 22000)
+
+### Added
+
+- **Página `servicios/implementacion-iso-22000/`** para atender la keyword
+  "iso 22000" (100 vol/mes, dificultad 18, la más baja del vector custodiado
+  en la auditoría; hallazgo H7). Patrón de las páginas de detalle: title
+  "Implementación ISO 22000 en Perú | Proinocuidad" (47 car.), meta 152,
+  `Service` + `FAQPage` JSON-LD, H1 único con la keyword, FAQ visible de
+  4 preguntas con texto idéntico al JSON-LD y CTA `.cta-sub` con H2
+  propio ("¿Implantamos la norma ISO 22000 en tu empresa?"). Contenido
+  derivado solo del grupo "sistemas de gestión" del docx ya publicado y
+  de afirmaciones visibles del sitio; sin precios, plazos ni promesas.
+- **Enlace desde el listado**: botón "Ver ISO 22000" en el grupo de
+  sistemas de gestión de `servicios/index.html`, junto a "Ver FSSC
+  22000" y "Ver BRCGS Food Safety".
+
+### Changed
+
+- **Inventario de páginas a 19**: `sitemap.xml` (1 URL nueva, absoluta y
+  con `/` final) y `llms.txt` (ítem en la sección Servicios y conteo de
+  la entrada actualizado de cuatro a cinco servicios). La enumeración de
+  las specs `seo-base` y `diseno-responsive` se sincroniza al archivar
+  el change `servicio-iso-22000`.
+- **`llms-full.txt`**: nueva entrada "Implementación de ISO 22000" en la
+  sección de servicios, con su URL de contenido.
+
+### Verificación
+
+- Script de metadatos sobre las 19 páginas: titles ≤60 y metas 120-160,
+  1 `<h1>` por página, FAQ visible = JSON-LD (4 preguntas en la nueva),
+  y todos los enlaces internos resuelven, incluidos los del enlace
+  "Ver ISO 22000" y el del Diplomado.
+- Playwright: 0 px de desborde horizontal en la página nueva a 1280,
+  860 y 390 px; sin regresión en `servicios/` (que gana un tercer
+  botón) a 1280, 768 y 390 px.
+- Conjunto de URLs de `llms.txt` = conjunto de `sitemap.xml` (19=19) y
+  las 19 resuelven a archivos reales.
+
 ## 2026-10-24 (Métricas del Home apiladas en pantallas chicas)
 
 ### Changed

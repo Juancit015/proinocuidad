@@ -10,10 +10,11 @@ Contacto: WhatsApp +51 981 365 982, correo administracion@proinocuidad.com, de l
 
 Consultoría para empresas del sector alimentario. Cada página describe el servicio, qué incluye y en qué casos aplica.
 
-- [Consultoría y capacitación en inocuidad alimentaria](https://proinocuidad.com/servicios/): Capacitación in house, implementación de normativa sanitaria, sistemas de gestión y trámite de registro sanitario. Entrada a los cuatro servicios de consultoría.
+- [Consultoría y capacitación en inocuidad alimentaria](https://proinocuidad.com/servicios/): Capacitación in house, implementación de normativa sanitaria, sistemas de gestión y trámite de registro sanitario. Entrada a los cinco servicios de consultoría.
 - [Trámite de registro sanitario DIGESA](https://proinocuidad.com/servicios/registro-sanitario-digesa/): Asesoría técnica y acompañamiento documental para registrar alimentos y bebidas en Perú.
 - [Certificación HACCP](https://proinocuidad.com/servicios/certificacion-haccp/): Validación técnica oficial del plan HACCP y elaboración del expediente de certificación.
 - [Implementación FSSC 22000](https://proinocuidad.com/servicios/implementacion-fssc-22000/): Implementación de sistemas de gestión de inocuidad con FSSC 22000, ISO 22000 e ISO 9001, con acompañamiento en la auditoría.
+- [Implementación de ISO 22000](https://proinocuidad.com/servicios/implementacion-iso-22000/): Implementación de sistemas de gestión de la calidad e inocuidad con ISO 22000, con acompañamiento en la auditoría de certificación.
 - [Implementación BRCGS Food Safety](https://proinocuidad.com/servicios/brcgs-food-safety/): Documentación, capacitación y acompañamiento durante la auditoría de certificación BRCGS.
 
 ## Cursos
