@@ -146,7 +146,7 @@ window.PROINO_SITIO = {
   horario: "Lunes a viernes de 8 AM a 8 PM",
   ubicacion: "Trujillo, La Libertad, Perú",
   direccionExacta: "Próximamente",
-  aulaVirtual: "https://proinocuidad.com/login/",
+  aulaVirtual: "https://proinocuidad.com/aula/login/",
   comunidad: "https://chat.whatsapp.com/GXh0wdFZWgEGz2dlpCTPvN",
   formularioInscripcion:
     "https://docs.google.com/forms/d/1OoggGqBor_FDBcKoo807nPf0atujRvqqXrIqDhBiRpI/viewform",

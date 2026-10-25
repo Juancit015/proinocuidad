@@ -652,7 +652,7 @@ RUC: <strong>20615307603</strong>
 </div>
 </li>
 <li><a href="${ruta}noticias/index.html">Noticias</a></li>
-<li><a class="btn-aula-nav" href="https://proinocuidad.com/login/" target="_blank" rel="noopener">${SVG_BTN_AULA}Aula Virtual</a></li>
+<li><a class="btn-aula-nav" href="https://proinocuidad.com/aula/login/" target="_blank" rel="noopener">${SVG_BTN_AULA}Aula Virtual</a></li>
 </ul>
 </nav>
 </header>`;
@@ -684,7 +684,7 @@ function pie(ruta, cursos) {
 <li><a href="${ruta}servicios/index.html">Servicios</a></li>
 <li><a href="${cursos}index.html">Cursos</a></li>
 <li><a href="${ruta}noticias/index.html">Noticias y eventos</a></li>
-<li><a href="https://proinocuidad.com/login/" target="_blank" rel="noopener">Aula Virtual</a></li>
+<li><a href="https://proinocuidad.com/aula/login/" target="_blank" rel="noopener">Aula Virtual</a></li>
 </ul>
 </div>
 <div>
