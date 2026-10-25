@@ -12,7 +12,7 @@ forma permanente.
 #### Scenario: Segundo envío con voucher en la misma sesión
 
 - **WHEN** una inscripción con voucher se envía con éxito (aviso verde) y, sin recargar, el usuario llena el formulario otra vez, adjunta un voucher válido y lo envía
-- **THEN** el correopensó con el adjunto sale igual que en el primer envío, el botón vuelve a su texto e icono originales al llegar la respuesta (sale del estado de carga) y el aviso verde se muestra de nuevo
+- **THEN** el correo con el adjunto sale igual que en el primer envío, el botón vuelve a su texto e icono originales al llegar la respuesta (sale del estado de carga) y el aviso verde se muestra de nuevo
 
 #### Scenario: Indicador nunca queda estancado
 

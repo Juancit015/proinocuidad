@@ -15,6 +15,6 @@
 
 ## 3. Despliegue y cierre
 
-- [ ] 3.1 Commit del fix (asunto corto + por qué + bloque `Verificado:` con los datos de la suite), push con confirmación de Juan, `git_snapshot` del dominio antes del deploy y lista blanca copiada al docroot.
-- [ ] 3.2 Verificación post-deploy en producción: dos envíos reales seguidos (asunto `PRUEBA-FA-reenvio`, voucher válido; el usuario re-llena sin recargar): ambos salen, ambos restauran el botón y el segundo muestra el aviso verde; md5 de `main.js` idéntico repo/server.
-- [ ] 3.3 CHANGELOG entrada del fix; `openspec validate <change> --strict` y `openspec archive` al cerrar.
+- [x] 3.1 Commit del fix (asunto corto + por qué + bloque `Verificado:` con los datos de la suite), push con confirmación de Juan, `git_snapshot` del dominio antes del deploy y lista blanca copiada al docroot.
+- [x] 3.2 Verificación post-deploy en producción: dos envíos reales seguidos (asunto `PRUEBA-FA-reenvio`, voucher válido; el usuario re-llena sin recargar): ambos salen, ambos restauran el botón y el segundo muestra el aviso verde; md5 de `main.js` idéntico repo/server.
+- [x] 3.3 CHANGELOG entrada del fix; `openspec validate <change> --strict` y `openspec archive` al cerrar.
