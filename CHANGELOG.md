@@ -3,6 +3,43 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-25 (Formulario de inscripción: aviso verde sin salir de la ficha)
+
+### Fixed
+
+- **El envío de inscripción saltaba a la página "Thanks" de FormSubmit**
+  (sin el mensajito verde de confirmación). Dos causas encadenadas:
+  1. Un listener mutaba el celular a `"+51 981 365 982"` ANTES del
+     `checkValidity()` del listener de envío; el valor con prefijo no pasa
+     el `pattern` ni el `maxlength` del input, así que el envío salía
+     **sin `preventDefault`** y navegaba nativamente (también se saltaba
+     la inyección del `_next`). El formato `"+51"` ahora se aplica
+     después de la verificación de validez, con restauración del valor
+     si el envío falla, para que el reintento no choque con la
+     validación nativa.
+  2. FormSubmit **dejó de honrar el `_next`** el 2026-10-24: responde 200
+     con su página "Thanks" sin redirigir (comprobado con el header de
+     la respuesta y en navegador real con el `_next` en el post). Como
+     la vía AJAX no entrega adjuntos y el voucher solo llega por el
+     multipart clásico, el POST clásico ahora va a un **iframe oculto**
+     con `form.target`. El correo sale con el voucher adjunto como
+     siempre, el "Thanks" de FormSubmit carga dentro del iframe y el
+     usuario nunca sale de la ficha.
+
+### Verified
+
+- Playwright contra la ficha real en producción con FormSubmit simulado:
+  AJAX ok (aviso verde, URL intacta), AJAX en fallo (aviso de error,
+  celular restaurado a 9 dígitos, reintento exitoso) y voucher (POST
+  multipart con voucher y celular `+51 XXX XXX XXX`, sin `_next`,
+  usuario permanece en la ficha, aviso verde tras el `load` del iframe).
+- Deploy a producción (commit `5ab6263`): `assets/js/main.js` idéntico
+  por md5 entre repo y server, y prueba end-to-end real con voucher:
+  el usuario permanece en la ficha, aviso verde visible y correo con
+  adjunto en camino (asunto `PRUEBA-FOPX-eliminar`).
+- Snapshot de rollback del dominio antes del deploy:
+  `d703e1e3` ("antes del fix del formulario (5ab6263)").
+
 ## 2026-10-24 (Publicación en producción y documentación alineada)
 
 ### Added

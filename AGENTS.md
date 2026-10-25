@@ -144,8 +144,18 @@ Errores de medición que ya se han cometido:
   tocaría una línea de `.gitignore` — por ahora nada del aula vive en este repo).
 - El botón **Aula Virtual** ya apunta a `/aula/login/`: dará 404 hasta que el Moodle
   esté instalado en `/aula/` (F3, el agente de infraestructura o Juan vía MCP).
-- **FormSubmit ya probado** por Juan: el formulario entrega a
-  `administracion@proinocuidad.com` (2026-10-24).
+- **FormSubmit funciona pero dejó de honrar el `_next`** (2026-10-24: responde
+  200 con su página "Thanks" sin redirigir). El flujo del formulario de
+  inscripción se rehízo en el commit `5ab6263`: sin voucher va por AJAX
+  (`/ajax/`, JSON, sin adjuntos); con voucher el POST clásico multipart
+  (el único que entrega el adjunto al correo) va a un **iframe oculto**
+  con `form.target`, y el aviso verde aparece al `load` del iframe. No
+  añadir jamás un campo `_next` ni un envío clásico sin `form.target`:
+  mandaría al usuario a la página "Thanks" de nuevo.
+- La mutación del celular a "+51 XXX XXX XXX" va **después** del
+  `checkValidity()` del listener de envío: antes del fix rompía la
+  validación (el valor con prefijo no pasa `pattern` ni `maxlength`) y el
+  formulario salía sin preventDefault hacia la página "Thanks".
 - **Flujo futuro del deploy**: commit → push → `tools/publicar.sh` (+ `git_snapshot`
   del dominio antes, para poder retroceder con `git_restore`).
 - Pendiente **de seguridad**: revocar los dos tokens de GitHub que quedaron expuestos
