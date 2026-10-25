@@ -66,7 +66,7 @@ La página Servicios SHALL cerrar con un bloque diseñado (tarjeta o banda con t
 - **THEN** usa solo los colores de marca existentes (`#101477`, `#ad343b`, `#5c5f6a`, `#e3e5ee`) y componentes ya presentes en el sitio
 
 ### Requirement: Enlace a la página de detalle de cada servicio prioritario
-La página Servicios SHALL enlazar a la página de detalle de registro sanitario, certificación HACCP, implementación FSSC 22000 y BRCGS Food Safety, cuando esa página exista.
+La página Servicios SHALL enlazar a la página de detalle de registro sanitario, certificación HACCP, implementación FSSC 22000, BRCGS Food Safety e implementación ISO 22000, cuando esa página exista.
 
 #### Scenario: Enlace desde el listado
 - **WHEN** el usuario abre la página Servicios
