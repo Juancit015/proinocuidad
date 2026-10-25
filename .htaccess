@@ -1,0 +1,11 @@
+# Proinocuidad — sitio estático en production (LiteSpeed/Apache)
+
+# Charset por defecto para HTML y CSS
+AddDefaultCharset UTF-8
+
+# La página de error 404 debe servirse con estado 404:
+# el hosting no lo hace por convención sin esta directiva.
+ErrorDocument 404 /404.html
+
+# Página índice de cada carpeta
+DirectoryIndex index.html
