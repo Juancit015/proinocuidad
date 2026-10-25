@@ -28,6 +28,33 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
   regresiva y persistente en `localStorage` (sobrevive a la recarga;
   solo usabilidad: en cada POST el servidor decide).
 
+### Segunda revisión (misma fecha): entrega, documentos por país y límites
+
+- **URL FormSubmit a `/ajax/` + `Accept: application/json`**: la URL
+  básica suele responder 302 y el endpoint solo aceptaba 2xx, así que un
+  envío exitoso se habría marcado fallido (reintentos → duplicados).
+  Envío real de prueba desde el servidor: 200 y correo aceptado
+  (FormSubmit no redirige por esta vía; la 302 quedó documentada como
+  caso de fallo: el endpoint entonces responde 502 y no consume cupo).
+- **Documento por país**: Perú exige DNI de 8 dígitos; Extranjero acepta
+  pasaporte de 5–20 letras/números (el cliente ya intercambiaba el
+  pattern según el país; ahora ajusta también `maxlength`: 8 ↔ 20).
+- **Lista blanca completa**: suma `desea_comprobante`,
+  `tipo_comprobante`, `ruc`, `razon_social` y `conformidad` (los name
+  reales del form); `_subject`, `_template` y `_captcha` los fija el
+  servidor (`_subject` se recompone con el campo curso, readonly) y se
+  ignora lo que llegue del cliente en esos tres campos.
+- **Límites de subida en `/ajax/`**: `.htaccess` (php_value LiteSpeed,
+  verificado con un probe que luego se borró) y `.user.ini` de
+  respaldo con `upload_max_filesize = 6M` / `post_max_size = 8M`.
+- **IPv6 agrupado por /64** con `inet_pton` (los primeros 8 bytes): los
+  vecinos de la misma subred comparten límite; IPv4 pasa tal cual.
+- **Retención del dedup a 24 h** (antes 90 días): quien escribió mal un
+  dato puede reenviar el día siguiente.
+- **Poda de contadores viejos con probabilidad 1/50** (antes 1/petición).
+
+## 2026-10-25 (Formulario: reenvío sin recargar ya no se queda en "Cargando…")
+
 ### Fixed
 
 - deadlock propio de una primera versión del contador de envíos (un

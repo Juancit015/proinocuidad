@@ -290,6 +290,7 @@
     "Perú": {
       docLabel: "DNI",
       docPattern: "[0-9]{8}",
+      docMax: "8",
       docTitle: "El DNI tiene 8 dígitos.",
       docPlaceholder: "8 dígitos",
       celPattern: "[0-9]{9}",
@@ -300,8 +301,9 @@
     },
     "Extranjero": {
       docLabel: "Documento/Pasaporte",
-      docPattern: "[A-Za-z0-9]{5,17}",
-      docTitle: "Número de pasaporte o documento (letras y números).",
+      docPattern: "[A-Za-z0-9]{5,20}",
+      docMax: "20",
+      docTitle: "Número de pasaporte o documento (5 a 20 letras o números).",
       docPlaceholder: "N.º de pasaporte",
       celPattern: "[0-9+ ()-]{5,20}",
       celMax: "20",
@@ -329,6 +331,7 @@
         else { docLabel.insertBefore(document.createTextNode(r.docLabel + "\n"), docLabel.firstChild); }
       }
       inputDni.setAttribute("pattern", r.docPattern);
+      inputDni.setAttribute("maxlength", r.docMax);
       inputDni.setAttribute("title", r.docTitle);
       inputDni.setAttribute("placeholder", r.docPlaceholder);
       inputCel.setAttribute("pattern", r.celPattern);

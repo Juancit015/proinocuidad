@@ -1,0 +1,7 @@
+# Límites de subida del endpoint (LiteSpeed sí honra php_value en .htaccess;
+# el .user.ini del mismo directorio queda como respaldo si la config de
+# PHP pasa a CGI/FastCGI puro, donde honra .user.ini y no .htaccess).
+<IfModule mod_litespeed>
+  php_value upload_max_filesize 6M
+  php_value post_max_size 8M
+</IfModule>
