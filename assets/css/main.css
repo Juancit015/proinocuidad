@@ -1760,6 +1760,7 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 }
 .form-inscripcion label {
   display: grid; gap: 6px;
+  align-content: start;
   font-size: 0.88rem; font-weight: 600; color: var(--azul-oscuro);
 }
 .form-inscripcion input[type="text"],
