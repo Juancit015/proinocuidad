@@ -17,9 +17,9 @@
 
 ## 3. Caché: HTML, JS y CSS frescos tras cada despliegue
 
-- [ ] 3.1 Completar el bloque `.htaccess` ya editado: `no-cache, must-revalidate` para `main.js` (ya está) + `index.html` (todas las carpetas via `<Files "index.html">`) + `main.css` (extraer del `max-age=604800` de LiteSpeed). Sin tocar otras reglas del fichero (ErrorDocument, DirectoryIndex).
-- [ ] 3.2 Tras el deploy: `curl -I https://proinocuidad.com/`, `.../cursos/legislacion-sanitaria-alimentos/`, `/assets/js/main.js` y `/assets/css/main.css` muestran `Cache-Control: no-cache, must-revalidate`; si LiteSpeed lo ignorara (sin mod_headers), plan B: añadir versionado `?v=` a mano en el generador y 22 HTML (tarea que se abre solo si el plan A falla).
-- [ ] 3.3 Pedir a Juan una recarga dura (Ctrl+F5 o reinicio) UNA vez para el despliegue de este change: los navegadores que ya guardaron HTML con el max-age viejo de 7 días no lo revalidan solos; a futuro el `no-cache` hace que cualquier despliegue se vea en la recarga normal.
+- [x] 3.1 Completar el bloque `.htaccess` ya editado: `no-cache, must-revalidate` para `main.js` (ya está) + `index.html` (todas las carpetas via `<Files "index.html">`) + `main.css` (extraer del `max-age=604800` de LiteSpeed). Sin tocar otras reglas del fichero (ErrorDocument, DirectoryIndex).
+- [x] 3.2 Tras el deploy: `curl -I https://proinocuidad.com/`, `.../cursos/legislacion-sanitaria-alimentos/`, `/assets/js/main.js` y `/assets/css/main.css` muestran `Cache-Control: no-cache, must-revalidate`; si LiteSpeed lo ignorara (sin mod_headers), plan B: añadir versionado `?v=` a mano en el generador y 22 HTML (tarea que se abre solo si el plan A falla).
+- [x] 3.3 Pedir a Juan una recarga dura (Ctrl+F5 o reinicio) UNA vez para el despliegue de este change: los navegadores que ya guardaron HTML con el max-age viejo de 7 días no lo revalidan solos; a futuro el `no-cache` hace que cualquier despliegue se vea en la recarga normal.
 
 ## 4. Verificación integral (Playwright contra producción con mocks)
 
@@ -30,6 +30,6 @@
 
 ## 5. Cierre
 
-- [ ] 5.1 Commits separados por tema: (a) `AGENTS.md` + `CHANGELOG.md` pendientes del fix 5ab6263; (b) código de este change (`main.js` + `main.css` + `.htaccess` + fichas regeneradas) con mensaje en español que explique el "por qué" y bloque `Verificado:`; push solo con confirmación explícita de Juan.
-- [ ] 5.2 Entrada en `CHANGELOG.md` de este change con los resultados medidos (bolita medida con getComputedStyle, archivos rechazados/aceptados con tamaños, cabeceras de caché post-deploy).
+- [x] 5.1 Commits separados por tema: (a) `AGENTS.md` + `CHANGELOG.md` pendientes del fix 5ab6263; (b) código de este change (`main.js` + `main.css` + `.htaccess` + fichas regeneradas) con mensaje en español que explique el "por qué" y bloque `Verificado:`; push solo con confirmación explícita de Juan.
+- [x] 5.2 Entrada en `CHANGELOG.md` de este change con los resultados medidos (bolita medida con getComputedStyle, archivos rechazados/aceptados con tamaños, cabeceras de caché post-deploy).
 - [ ] 5.3 `openspec validate formulario-envio-indicador-limite-adjunto --strict` y `openspec archive` al cerrar.
