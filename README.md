@@ -18,8 +18,10 @@ servicios de consultoría y las novedades del sector alimentario y de la regulac
   destacados y las noticias vigentes.
 - **Nosotros** — quiénes somos (RUC, fundación, experiencia con más de 1000 personas
   capacitadas), las líneas de Capacitación y Consultoría, y la Misión, Visión y Valores.
-- **Servicios** — los 4 servicios de la empresa, con casos reales de capacitación:
+- **Servicios** — los 5 servicios de la empresa, con casos reales de capacitación:
   Agroindustrial Laredo S.A., Productos Razzeto & Nestorovic S.A.C. y Cevichería Dsumare (Trujillo).
+- **Guía de inocuidad alimentaria** — página pilar "Qué es la inocuidad alimentaria": qué es
+  la inocuidad, cómo se gestiona y qué pide la normativa sanitaria vigente.
 - **Cursos** — listado con pestañas **Asíncronos** (8 cursos disponibles) y **En vivo**
   (sin cursos por el momento); cada curso tiene su ficha de detalle con temario desplegable,
   metodología, inversión e inscripción.
@@ -33,7 +35,8 @@ servicios de consultoría y las novedades del sector alimentario y de la regulac
 1. **Capacitación Empresarial** — programas in house, cursos y diplomados a medida para la industria alimentaria.
 2. **Implementación de normativa sanitaria de alimentos** — Certificación de Principios Generales de Higiene y Validación Técnica Oficial del Plan HACCP (expediente con Manual BPM, POES, PHS y Plan HACCP).
 3. **Implementación de sistemas de gestión de la calidad e inocuidad alimentaria** — ISO 9001, ISO 22000, FSSC 22000 y BRCGS FOOD.
-4. **Trámite de registro sanitario de alimentos y bebidas** — gestión del registro sanitario en el menor tiempo posible.
+4. **Implementación de la ISO 22000** — implantación del sistema de gestión con acompañamiento hasta la auditoría de certificación (funciona [guía](https://proinocuidad.com/servicios/implementacion-iso-22000/)).
+5. **Trámite de registro sanitario de alimentos y bebidas** — orientación de requisitos, revisión técnica y expediente DIGESA; la aprobación depende de la autoridad sanitaria.
 
 ## Cursos y diplomados (modalidad asíncrona, con certificado digital con QR)
 

@@ -8,9 +8,15 @@ contenido ver [README.md](README.md); el registro de cambios está en [CHANGELOG
 ```
 Proniciudad/
 ├── index.html                     # Página Inicial (hero, cifras, servicios, cursos, noticia, footer)
+├── 404.html                       # Página de error (generada por tools/generar-fichas.mjs)
+├── robots.txt / sitemap.xml / llms.txt / llms-full.txt   # Rastreadores y asistentes (a mano, ver sección)
+├── .htaccess                      # ErrorDocument 404 para el hosting (Apache/LiteSpeed)
 ├── nosotros/index.html            # Página Nosotros
+├── inocuidad-alimentaria/index.html  # Página pilar "Qué es la inocuidad alimentaria"
 ├── servicios/index.html           # Página Servicios (con anclas #capacitacion-empresarial, etc.)
+│   └── <slug>/index.html          # Ficha de cada servicio priorizado (5 fichas)
 ├── noticias/index.html            # Página Noticias y eventos
+│   └── vigencia-indeterminada-haccp/index.html  # Detalle de la nota DIGESA (JSON-LD Article)
 ├── cursos/
 │   ├── index.html                 # Listado con pestañas Asíncronos / En vivo
 │   └── <slug>/index.html          # Ficha de detalle de cada curso (8 fichas)
@@ -22,7 +28,8 @@ Proniciudad/
 │   └── img/                       # Imágenes optimizadas (logo, favicon, flyers, fotos, QR)
 │       └── pagos/                 # Logos de medios de pago (yape, plin, bbva, western-union, paypal)
 ├── tools/
-│   └── generar-fichas.mjs         # Generador de las 8 fichas Y de la página 404
+│   ├── generar-fichas.mjs         # Generador de las 8 fichas Y de la página 404 (emite también la navbar)
+│   └── publicar.sh                # Deploy al hosting: lista blanca de 12 ítems + checklist
 ├── openspec/                      # Especificaciones y cambios del proyecto (ver sección OpenSpec)
 │   ├── pagina web.pdf             # Documento oficial: fuente única de verdad del contenido
 │   └── FOTOS-(1)/FOTOS/           # Material fuente (logo, flyers originales, fotos)
@@ -137,8 +144,8 @@ contraste, no a ojo.
 
 ```
   robots.txt      permite el rastreo y declara la ruta del sitemap
-  sitemap.xml     las 18 páginas públicas, con URL absoluta y barra final
-  llms.txt        índice de las mismas 18 páginas, para asistentes de IA
+  sitemap.xml     las 20 páginas públicas, con URL absoluta y barra final
+  llms.txt        índice de las mismas 20 páginas, para asistentes de IA
   llms-full.txt   el contenido de las páginas clave, ya en Markdown
 ```
 
@@ -146,7 +153,7 @@ contraste, no a ojo.
 mano, así que **añadir o retirar una página obliga a actualizarlo**: su error más
 probable es quedarse con una URL que ya no existe, y eso es peor que no tener el
 archivo, porque el asistente la sigue y recibe un 404. `sitemap.xml` y `llms.txt`
-deben contener **exactamente las mismas 18 URLs**, así que la comprobación es una
+deben contener **exactamente las mismas 20 URLs**, así que la comprobación es una
 comparación de conjuntos entre los dos. `404.html` no entra en ninguno: no es una
 página indexable.
 

@@ -1,7 +1,7 @@
 # AGENTS.md — Proinocuidad
 
 Sitio corporativo estático de Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L. (Trujillo, Perú).
-**18 páginas HTML, sin build, sin `package.json`, sin dependencias.** Se sube tal cual al hosting.
+**20 páginas HTML públicas más la página de error, sin build, sin `package.json`, sin dependencias.** Se sube tal cual al hosting.
 
 - Juan, en español. Solo cambios visuales salvo que pida otra cosa.
 - Paleta de marca en variables de `:root` (`assets/css/main.css`): `--azul #101477`, `--rojo #ad343b`, `--gris #5c5f6a`, `--gris-linea #e3e5ee`. No se tocan.
@@ -125,38 +125,44 @@ Errores de medición que ya se han cometido:
 
 ## Git
 
-- Rama `main`, remoto GitHub. **Nunca hacer push sin confirmación explícita.** Hay commits sin pushear.
+- Rama `main`, remoto GitHub. **Nunca hacer push sin confirmación explícita.**
 - Un commit por cambio, y separados los de código de los de OpenSpec.
 - No mezclar el trabajo de Juan con el del agente en un mismo commit: si van juntos porque comparten líneas del mismo archivo, decirlo en el mensaje.
 - Mensajes en español: asunto corto, cuerpo explicando **por qué** (no un listado de cambios), y un bloque `Verificado:` con los hechos medidos.
 
-## Pendientes que morirán al publicar
+## Publicación del sitio estático (2026-10-24, server hora 2026-10-25)
 
-`proinocuidad.com` sigue siendo un WordPress ("Flavita"); el sitio nuevo no está publicado. Antes hay que resolver:
-
-- El botón **Aula Virtual** ahora apunta a `https://proinocuidad.com/aula/login/`
-  (se cambió en el commit del botón, antes de publicar). El *404 es temporal*: existirá
-  de verdad cuando el Moodle esté instalado en `/aula/` (F3, agente de infraestructura).
-- **FormSubmit sin activar**: necesita un envío de prueba a `administracion@proinocuidad.com`.
-- **Dos tokens de GitHub quedaron expuestos en el chat y sin revocar.**
-- **El hosting tiene que servir `404.html` con estado 404.** El repositorio no tiene
-  ninguna configuración de servidor: no hay `.htaccess`, ni `netlify.toml`, ni
-  `vercel.json`, ni `_headers`. Sin eso, un `404.html` puede existir en el repo y no
-  mostrarse nunca, en silencio. Netlify, GitHub Pages y Cloudflare Pages lo sirven por
-  convención; Apache o nginx sin configuración, no. Si toca el segundo caso, hace falta
-  un `.htaccess` con `ErrorDocument 404 /404.html`.
+- El sitio nuevo está **en producción** en la raíz de `proinocuidad.com` (commit
+  `bc72d33`, luego `robots.txt`): 20 URLs a 200, `robots.txt`/`sitemap.xml`/`llms.txt`/
+  `llms-full.txt` en vivo, y 404 real vía `.htaccess` (`ErrorDocument 404 /404.html`).
+- El WordPress "Flavita" se borró **después** de verificado el sitio y de dejar el backup
+  F0 en `server:~/backups/F0-2026-10-24/` (SQL 26.3 MB + tar 755 MiB, MD5 en el
+  `MANIFIESTO.md5` del directorio). El docroot debe quedar siempre como la lista blanca
+  de `tools/publicar.sh`; **`/aula/` con su `.user.ini`, `moodledata/` y la BD
+  `guanbhctsy_moodle` son del lado Moodle: no tocarlas al deploy**
+  (`moodledata` está fuera del docroot; si algún día se clona un Moodle local, ahí sí
+  tocaría una línea de `.gitignore` — por ahora nada del aula vive en este repo).
+- El botón **Aula Virtual** ya apunta a `/aula/login/`: dará 404 hasta que el Moodle
+  esté instalado en `/aula/` (F3, el agente de infraestructura o Juan vía MCP).
+- **FormSubmit ya probado** por Juan: el formulario entrega a
+  `administracion@proinocuidad.com` (2026-10-24).
+- **Flujo futuro del deploy**: commit → push → `tools/publicar.sh` (+ `git_snapshot`
+  del dominio antes, para poder retroceder con `git_restore`).
+- Pendiente **de seguridad**: revocar los dos tokens de GitHub que quedaron expuestos
+  en el chat (siguen sin revocar, repo conectado a deploys reales).
+- Copia local del backup F0: pendiente (Juan la bajará por cPanel).
 
 ## Archivos que se quedan viejos si nadie los actualiza
 
-- **`llms.txt` lista las 18 páginas a mano, igual que `sitemap.xml`.** Añadir o
+- **`llms.txt` lista las 20 páginas a mano, igual que `sitemap.xml`.** Añadir o
   retirar una página obliga a tocar los dos. La comprobación es comparar sus URLs
   como conjuntos: si `sitemap.xml` tiene 19 y `llms.txt` tiene 18, alguien se ha
   olvidado de una. `404.html` no entra en ninguno de los dos.
 - Un `.txt` escrito a mano con una URL muerta es **peor que no tenerlo**: el
   asistente la sigue y recibe un 404. Es el fallo más probable de estos archivos.
 - **El número de páginas vive en dos sitios**: el `sitemap.xml` y lo que dicen los
-  requisitos de `seo-base` y `diseno-responsive`. Ya se corrigieron: ambas
-  declaraban 13 cuando eran 18. Si cambia el número, cambian los tres.
+  requisitos de `seo-base` y `diseno-responsive`. Sin cambios de páginas, los tres
+  se actualizan juntos: hoy declaran 20 (5 fichas de servicio + nota + guías).
 
 ## Datos que se repiten por todo el sitio
 

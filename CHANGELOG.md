@@ -3,6 +3,40 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-24 (Publicación en producción y documentación alineada)
+
+### Added
+
+- **El sitio estático está en producción** en la raíz de `proinocuidad.com`,
+  subido desde GitHub tras borrar el WP viejo (con el backup F0 hecho y
+  verificado en el server): 20 URLs respondiendo 200, `robots.txt` y el
+  `404.html` sirviendo estado 404 vía `.htaccess`. El despliegue queda
+  documentado y repetible en `tools/publicar.sh` (lista blanca de 12 ítems
+  y exclusiones: `openspec/`, `tools/`, docs, logos de pago, `_archivo/`).
+- **Botón Aula Virtual** de todas las páginas reencaminado a
+  `https://proinocuidad.com/aula/login/` (21 páginas x 2 enlaces + generador
+  + `cursos-data.js`), 404 temporal hasta que el Moodle viva en `/aula/` (F3).
+
+### Changed
+
+- **README**: 4 servicios → 5 (con ISO 22000), se añade la página pilar
+  a las secciones y se borra la frase "en el menor tiempo posible"
+  (prohibida por la spec `servicios-detalle`); "trámite" ahora dice que la
+  aprobación depende de la autoridad sanitaria.
+- **STRUCTURE y AGENTS**: árbol del repo con las fichas nuevas, el detalle
+  de la noticia, `publicar.sh` y `.htaccess`; conteo correcto a 20;
+  los "Pendientes que morirán al publicar" se convierten en el estado de
+  publicación (backup F0, `/aula/` intangible, tokens de GitHub sin
+  revocar como pendiente de seguridad, copia local del backup pendiente).
+
+### Verificación
+
+- Sondeo en producción: 8 páginas del sitemap + `robots.txt` +
+  `sitemap.xml` + `llms.txt` + `llms-full.txt` → 200; /404.html y una
+  URL inventada → estado 404; `/aula/.user.ini` intacta tras el deploy.
+  Las 20 páginas completas están verificadas en la copia local con el
+  script de metadatos (0 enlaces internos rotos).
+
 ## 2026-10-25 (Página de detalle para la nota de DIGESA, con `Article`)
 
 ### Added
