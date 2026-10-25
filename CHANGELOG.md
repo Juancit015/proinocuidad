@@ -3,6 +3,25 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-25 (Formulario: reenvío sin recargar ya no se queda en "Cargando…")
+
+### Fixed
+
+- **Segundo envío con voucher estancado en "Cargando…"**: tras un primer
+  envío exitoso, si el usuario volvía a llenar el formulario y lo enviaba
+  SIN recargar la página, el correo sí llegaba a FormSubmit pero el botón
+  quedaba atorado en el estado de carga para siempre. Causa: el estado
+  "hay un envío en camino" (`pendiente`) vivía con `var` dentro del
+  listener de `submit`, que corre por envío con su propio scope; el
+  listener `load` del iframe oculto se registró una sola vez (primer
+  envío) y capturó ESA invocación, cuya binding quedó en `false` tras la
+  primera respuesta. En el reenvío, `pendiente = true` escribía otra
+  binding que el `load` jamás veía y salía sin restaurar. Fix: el estado
+  (`pendienteIframe`, el texto base del botón y `restaurarBoton()`)
+  ahora vive en el scope del `forEach` del formulario, compartido por
+  todos los envíos; la vía AJAX usa la misma restauración. No cambia la
+  mecánica de envío, la validación ni el HTML.
+
 ## 2026-10-25 (Formulario: asteriscos de requerido y mensajito del DNI en su sitio)
 
 ### Fixed
