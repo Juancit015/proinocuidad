@@ -402,6 +402,41 @@
       boton.removeAttribute("aria-busy");
       if (textoBotonBase) boton.innerHTML = textoBotonBase;
     };
+    // --- Cooldown de usabilidad tras cada éxito (el límite real es el
+    // del servidor): 60 s con cuenta regresiva en el botón. localStorage
+    // lo hace sobrevivir a la recarga; manipularlo no sirve de nada
+    // porque en cada POST igual pasa por los límites del endpoint.
+    var CD_SEGUNDOS = 60;
+    var CLAVE_CD = "inscripcion-cooldown";
+    var cdTimer = null;
+    textoBotonBase = textoBotonBase || boton.innerHTML;
+    var arrancarCuenta = function () {
+      if (cdTimer) clearInterval(cdTimer);
+      var tic = function () {
+        var recuerdo = parseInt(localStorage.getItem(CLAVE_CD) || "0", 10);
+        var falta = CD_SEGUNDOS - Math.round((Date.now() - recuerdo) / 1000);
+        if (falta > 0) {
+          boton.disabled = true;
+          boton.innerHTML = "Espera " + falta + "s…";
+        } else {
+          clearInterval(cdTimer);
+          cdTimer = null;
+          localStorage.removeItem(CLAVE_CD);
+          restaurarBoton();
+        }
+      };
+      tic();
+      cdTimer = setInterval(tic, 500);
+    };
+    var iniciarCooldown = function () {
+      localStorage.setItem(CLAVE_CD, String(Date.now()));
+      arrancarCuenta();
+    };
+    if (localStorage.getItem(CLAVE_CD)) {
+      var recuerdo = parseInt(localStorage.getItem(CLAVE_CD) || "0", 10);
+      if (Date.now() - recuerdo < CD_SEGUNDOS * 1000) arrancarCuenta();
+      else localStorage.removeItem(CLAVE_CD);
+    }
     // --- Validación del voucher: solo imagen o PDF, hasta 5 MB ---
     var PESO_MAXIMO = 5 * 1024 * 1024;
     var errorVoucher = form.querySelector('[data-campo-error="voucher"]');
@@ -492,12 +527,28 @@
           form.appendChild(marco);
           marco.addEventListener("load", function () {
             // La carga inicial de about:blank dispara load también: se distingue
-            // porque about:blank es de origen propio (legible) y la respuesta
-            // de FormSubmit es cross-origin (su location lanza SecurityError).
+            // porque about:blank es de origen propio. La respuesta llega del
+            // endpoint (same-origin, legible), así que además del vacía se
+            // lee data-resultado de la página que el endpoint devuelve.
             var vacia = false;
             try { vacia = marco.contentWindow.location.href === "about:blank"; } catch (e) { vacia = false; }
             if (vacia || !pendienteIframe) return;
             pendienteIframe = false;
+            var doc = null;
+            try { doc = marco.contentDocument || marco.contentWindow.document; } catch (e) { doc = null; }
+            var res = doc ? doc.querySelector("[data-resultado]") : null;
+            var exito = res && res.getAttribute("data-resultado") === "exito";
+            if (!exito) {
+              // 429/409/422: el mensaje del servidor en el aviso rojo y el
+              // botón restaurado; SIN reset para conservar los datos y el
+              // voucher ya elegidos.
+              restaurarBoton();
+              mensaje.hidden = false;
+              mensaje.classList.add("form-aviso-error");
+              var malo = res ? doc.querySelector(".mensaje") : null;
+              mensaje.textContent = (malo && malo.textContent) || "No se pudo enviar. Prueba de nuevo o escríbenos directo al WhatsApp.";
+              return;
+            }
             restaurarBoton();
             form.reset();
             if (inputCelular) inputCelular.value = "";
@@ -506,6 +557,7 @@
             mensaje.hidden = false;
             mensaje.classList.remove("form-aviso-error");
             mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
+            iniciarCooldown();
           });
         }
         form.target = marco.name;
@@ -518,10 +570,12 @@
         form.removeAttribute("target");
         return;
       }
-      if (!window.fetch) return; // flujo clásico de FormSubmit
-      var accion = (form.getAttribute("action") || "").replace(
-        "https://formsubmit.co/", "https://formsubmit.co/ajax/");
-      if (accion.indexOf("https://formsubmit.co/ajax/") !== 0) return;
+      if (!window.fetch) return; // flujo clásico de FormSubmit vía endpoint
+      // El action del form ya apunta al endpoint propio (/ajax/envio-
+      // inscripcion.php); si una plantilla vieja trae otro action, mejor
+      // dejar el flujo clásico intacto.
+      var accion = form.getAttribute("action") || "";
+      if (accion.indexOf("envio-inscripcion.php") === -1) return;
       ev.preventDefault();
       textoBotonBase = boton.innerHTML;
       boton.disabled = true;
@@ -532,10 +586,22 @@
         body: new FormData(form),
         headers: { Accept: "application/json" },
       }).then(function (r) {
-        return r.json().then(function (d) { return { r: r, d: d }; });
+        return r.json().then(function (d) { return { r: r, d: d }; }).catch(function () { return { r: r, d: null }; });
       }).then(function (x) {
         var ok = x.r.status === 200 && x.d && (x.d.success === "true" || x.d.success === true);
-        if (!ok) throw new Error("formsubmit rechazó");
+        if (!ok) {
+          // 429 (límite por IP), 409 (DNI ya inscrito) y errores del
+          // servidor traen un mensaje legible: se muestra tal cual y
+          // SIN cooldown (el usuario debe poder reintentar).
+          restaurarBoton();
+          mensaje.hidden = false;
+          mensaje.classList.add("form-aviso-error");
+          mensaje.textContent = (x.d && x.d.message) || "No se pudo enviar. Prueba de nuevo o escríbenos directo al WhatsApp.";
+          if (inputCelular && inputCelular.value.indexOf("+51 ") === 0) {
+            inputCelular.value = inputCelular.value.slice(4).replace(/\s/g, "");
+          }
+          return;
+        }
         form.reset();
         restaurarBoton();
         // Re-actualiza el bloque de comprobante que el reset ocultó
@@ -544,6 +610,7 @@
         mensaje.hidden = false;
         mensaje.classList.remove("form-aviso-error");
         mensaje.textContent = "✓ Tu inscripción se envió. Te escribiremos al correo para completar la matrícula.";
+        iniciarCooldown();
       }).catch(function () {
         restaurarBoton();
         // El valor quedó con "+51 " (pattern-inválido) y el navegador

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Publicar el sitio estático en el hosting (vía SSH NO; se ejecuta en un clon
 # temporal en el server o se replica la lista a mano vía MCP). La lista
-# blanca es el contrato: estos 12 ítems son TODO el sitio público.
+# blanca es el contrato: estos 13 ítems son TODO el sitio público.
 #
 # Uso en el server (desde una sesión efímera /tmp):
 #   git clone --depth 1 https://github.com/Juancit015/proinocuidad.git /tmp/dep
@@ -14,6 +14,7 @@
 #   index.html  404.html  .htaccess  robots.txt  sitemap.xml
 #   llms.txt  llms-full.txt
 #   assets/  servicios/  cursos/  noticias/  nosotros/  inocuidad-alimentaria/
+#   ajax/ (endpoint PHP del formulario: /ajax/envio-inscripcion.php)
 #
 # EXCLUIDOS a propósito (existen en el repo, no en el docroot):
 #   openspec/  tools/  .opencode/  logos-metodos-de-pago/  STRUCTURE.md
@@ -32,7 +33,7 @@ DST="${2:-/home/guanbhctsy/proinocuidad.com}"
 cd "$SRC"
 for item in index.html 404.html .htaccess robots.txt sitemap.xml llms.txt \
             llms-full.txt assets servicios cursos noticias nosotros \
-            inocuidad-alimentaria; do
+            inocuidad-alimentaria ajax; do
   cp -r "$item" "$DST/"
 done
 echo "Deploy de la lista blanca completo hacia $DST"

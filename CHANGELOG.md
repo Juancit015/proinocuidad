@@ -3,6 +3,38 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-25 (Formulario: límites y validación en el servidor, no solo en el navegador)
+
+### Added
+
+- **Endpoint propio `/ajax/envio-inscripcion.php`** (PHP 8.3 vanilla, sin
+  frameworks): el formulario de las 8 fichas deja de enviar directo a
+  FormSubmit; ahora envía a nuestro servidor, que valida, limita y
+  reenvía — FormSubmit sigue siendo quien entrega el correo con el
+  voucher adjunto, así que no cambia nada en la bandeja.
+- **Rate limit por IP**: máx. 3 inscriptos cada 10 minutos y 10 por día
+  por IP → **HTTP 429** con mensaje que indica cuándo reintentar. Solo
+  cuenta cuando FormSubmit confirma el envío; un fallo de su lado no
+  consume el cupo.
+- **Una inscripción por DNI + curso** → **HTTP 409** "Ya registramos una
+  inscripción con este DNI para este curso"; el mismo DNI en otro curso
+  pasa.
+- **Validación server-side del voucher** (al margen del JS del
+  navegador): MIME real con `fileinfo` (solo imágenes y PDF; SVG
+  fuera por XSS en webmail), extensión coherente y peso ≤ 5 MB.
+- **Honeypot en servidor**: si `_honey` llega relleno no sale correo
+  alguno y la respuesta es neutra (antes solo lo miraba el JS).
+- **Cooldown de 60 s en el botón** tras cada envío exitoso, con cuenta
+  regresiva y persistente en `localStorage` (sobrevive a la recarga;
+  solo usabilidad: en cada POST el servidor decide).
+
+### Fixed
+
+- deadlock propio de una primera versión del contador de envíos (un
+  `flock` anidado contra el mismo fichero `.lock` colgaba cada envío
+  exitoso). Detectado y arreglado en pruebas antes de apuntar el
+  formulario.
+
 ## 2026-10-25 (Formulario: reenvío sin recargar ya no se queda en "Cargando…")
 
 ### Fixed

@@ -386,7 +386,7 @@ function formInscripcionBloque(curso) {
 <span class="seccion-tag" aria-hidden="true">${SVG_DOC}</span>
 <h2>Formulario de Inscripción</h2>
 </div>
-<form class="form-inscripcion" action="https://formsubmit.co/formacion_academica@proinocuidad.com" method="POST" enctype="multipart/form-data">
+<form class="form-inscripcion" action="/ajax/envio-inscripcion.php" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="_subject" value="Inscripción web — ${curso.miga}">
 <input type="hidden" name="_template" value="table">
 <input type="hidden" name="_captcha" value="false">
