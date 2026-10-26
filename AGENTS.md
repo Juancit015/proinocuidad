@@ -177,6 +177,63 @@ correcta y el PDF adjunto (correo "Inscripción web — PRUEBA-TÉCNICA
 PHPMailer (N3, ignorar)"); voucher 6 MB → 422 con el mensaje del límite;
 sin voucher → 422 "El voucher es obligatorio".
 
+## Aula virtual (Moodle) — instalada 2026-10-25
+
+**Estado:** Moodle 4.5.15+ LTS (Build 20261021) instalado y en línea en
+`/aula/` (https://proinocuidad.com/aula/, login 200). Idioma español activo,
+logo y favicon de Proinocuidad cargando. Pendiente: crear los 10 cursos con
+sus sesiones/enlaces de Drive y migrar los 50 alumnos.
+
+Datos operativos (sin secretos aquí):
+
+- **Código:** `/home/guanbhctsy/proinocuidad.com/aula/` (NO está en el
+  repo ni en la lista blanca de `tools/publicar.sh`: el deploy no lo toca).
+- **Datos:** `/home/guanbhctsy/moodledata/` (fuera del docroot, permisos 700).
+- **BD:** MariaDB 11.4, `guanbhctsy_moodle`, usuario `guanbhctsy_moodle`;
+  credenciales en `~/.moodle-db-credenciales` (chmod 700). Snapshot previo
+  del dominio: ref `1fb9a75b967f697a4fe6c2ea83c57b70ac4e9307`.
+- **PHP:** 8.3 para el dominio; extensiones necesarias presentes
+  (`mysqli`, `pdo_mysql`, `zip`, `intl`, `soap`, `sodium`, `gd`,
+  `mbstring`). El conflicto `mysqli`/`nd_mysqli` de cPanel se resuelve
+  solo: Moodle usa `mysqli` (nd_mysqli está activo).
+- **Ajustes PHP** (`.user.ini` en `/aula/`): `memory_limit=256M`,
+  `max_execution_time=300`, `max_input_time=300`, `max_input_vars=5000`,
+  `upload_max_filesize=64M`, `post_max_size=64M`, opcache activo.
+- **`.htaccess` en `/aula/`**: `DirectoryIndex index.php` y
+  `Options -Indexes` (Moodle no trae `.htaccess`; sin esto LiteSpeed
+  listaba el directorio).
+- **Admin:** usuario `admin`, email `admin@proinocuidad.com`; la
+  contraseña se entregó a Juan el 2026-10-25 y no se guarda en el repo.
+  Rotarla si se expone.
+
+Idioma español:
+
+- Paquete descargado de
+  `https://download.moodle.org/download.php/direct/langpack/4.5/es.zip`
+  y extraído en `moodledata/lang/es`.
+- Idioma por defecto puesto con
+  `/opt/alt/php83/usr/bin/php admin/cli/cfg.php --name=lang --set=es`,
+  luego `purge_caches.php`.
+
+Logo y favicon (truco no obvio):
+
+- Se guardan en `mdl_files` con componente `core_admin`, fileareas
+  `logo`/`logocompact`/`favicon`, **itemid 0**.
+- El valor en `mdl_config_plugins` (`core_admin`) es la **ruta relativa
+  del archivo** (`/logo-proinocuidad.png`, `/favicon.ico`), NO el itemid.
+  Poner el itemid ahí no funciona porque `empty('0')` es `true` en PHP y
+  `get_logo_url()` devuelve `false`.
+- Fuente del logo: `assets/img/logo-proinocuidad.png` (59 KB) y
+  `assets/img/favicon.ico` (15 KB) del sitio.
+
+Exporte a migrar (en el server y en `/home/juan/aula-exporte/exporte-aula/`):
+
+- `MANIFIESTO.csv`: `wp_id, login, email, nombre, n_cursos, planes`
+  (50 alumnos).
+- `CURSOS/`: 10 cursos, cada uno con `pagina.html` (acordeones por
+  sesión con enlaces a Google Drive) y `ENLACES.txt`.
+- `ALUMNOS/<nombre>/CURSOS_MATRICULADOS.txt` + carpeta por curso.
+
 ## Publicación del sitio estático (2026-10-24, server hora 2026-10-25)
 
 - El sitio nuevo está **en producción** en la raíz de `proinocuidad.com` (commit
