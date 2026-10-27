@@ -13,9 +13,9 @@
 
 ## 3. Documentación y despliegue
 
-- [ ] 3.1 Añadir entrada en `CHANGELOG.md` con el fix y la evidencia medida.
-- [ ] 3.2 Commit del cambio CSS + CHANGELOG (mensaje en español con bloque `Verificado:`).
-- [ ] 3.3 Deploy con `tools/publicar.sh` y verificar `md5sum` del CSS en server y HTTP 200 de `/`.
+- [x] 3.1 Añadir entrada en `CHANGELOG.md` con el fix y la evidencia medida.
+- [x] 3.2 Commit del cambio CSS + CHANGELOG (mensaje en español con bloque `Verificado:`).
+- [x] 3.3 Deploy con `tools/publicar.sh` y verificar `md5sum` del CSS en server y HTTP 200 de `/`.
 
 ## Workflow follow-up
 
