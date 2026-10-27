@@ -973,12 +973,14 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
   background-position: center; background-size: cover; background-repeat: no-repeat;
   color: var(--blanco);
 }
-.cta-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
+.cta-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; align-items: center; }
 .cta-home h2 { color: var(--blanco); font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.25; }
 .cta-home h2 span { color: #ff8f96; }
-.cta-info > p { color: #d7d9f2; margin-top: 10px; max-width: 60ch; }
-.cta-items { display: grid; gap: 12px; margin-top: 22px; }
-.cta-item { display: flex; gap: 14px; align-items: center; color: var(--blanco); text-decoration: none; }
+.cta-info { min-width: 0; }
+.cta-info > p { color: #d7d9f2; margin-top: 10px; max-width: 60ch; overflow-wrap: anywhere; }
+.cta-items { display: grid; gap: 12px; margin-top: 22px; min-width: 0; }
+.cta-item { display: flex; gap: 14px; align-items: center; color: var(--blanco); text-decoration: none; min-width: 0; }
+.cta-item > span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
 .cta-home a:hover, .cta-home a:focus-visible { text-decoration: none; }
 .cta-item strong { display: block; color: var(--blanco); }
 .cta-item > span > span { display: block; color: #d7d9f2; font-size: 0.88rem; }
@@ -1004,7 +1006,7 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 .cta-sub .hero-acciones { justify-content: center; margin-top: 22px; }
 .cta-badge { display: inline-block; padding: 6px 16px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.3); color: #d7d9f2; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
 @media (max-width: 860px) {
-  .cta-grid { grid-template-columns: 1fr; }
+  .cta-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (min-width: 560px) and (max-width: 860px) {
   .cta-card { max-width: 520px; margin-inline: auto; }

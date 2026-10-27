@@ -3,6 +3,19 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-26 (Portada: CTA final sin banda blanca a la derecha en móvil)
+
+### Fixed
+
+- **Banda blanca a la derecha del home en teléfonos estrechos (360px)**: la sección "¿Listo para fortalecer la inocuidad de tu empresa?" generaba ~24px de desplazamiento horizontal en Redmi 13C 5G (360 CSS px). Causa: `.cta-grid` era `1.1fr 0.9fr` sin `minmax(0, …)` y los ítems tenían `min-width: auto`, así que el correo `formacion_academica@proinocuidad.com` (token inpartible) forzaba la columna a 370px dentro de un contenedor de 331px.
+- **Corrección**: columnas a `minmax(0, 1.1fr) minmax(0, 0.9fr)` (y `minmax(0, 1fr)` en móvil), `min-width: 0` en `.cta-info`, `.cta-items` y `.cta-item`, y `overflow-wrap: anywhere` / `word-break: break-word` en el texto del ítem. Solo CSS, sin cambios de contenido.
+
+### Verificado
+
+- Playwright a 360, 390, 412 y 768px: `scrollWidth === clientWidth` (0 de desborde); `cta-info` dentro del contenedor en todos los anchos.
+- Capturas de la sección CTA a 360 y 1280px: sin texto cortado ni banda blanca.
+- Auditoría rápida a 360px: sin nuevos desbordamientos en otras secciones de Inicio (solo los sangrados intencionales de imagen, contenidos por `overflow: hidden` del hero).
+
 ## 2026-10-25 (Formulario: entrega del correo por SMTP directo —PHPMailer + Zoho—, FormSubmit fuera)
 
 ### Changed
