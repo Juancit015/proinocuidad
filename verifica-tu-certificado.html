@@ -261,14 +261,18 @@
     function buscar(q) {
       q = q.trim();
       if (!q) return null;
-      // El fragmento se busca en el DNI SOLO si la query entera es numérica
+      // La vía numérica opera solo si la query entera es numérica
       // (credencial, mismo predicate que validar()); con letras y números
       // mezclados ('34e') el fragmento '34' disparaba coincidencias sin sentido.
       const esCredencial = /^\d+$/.test(q.replace(/[\s.]/g, ''));
+      // Vía numérica por IGUALDAD EXACTA (5ª ronda de Juan, 2026-10-29):
+      // '722399' (6 dígitos) era subcadena de '72239976' y devolvía la ficha
+      // ajena; un DNI distinto debe responder 0 resultados, no parcialmente.
+      const dq = esCredencial ? normalizeDni(q) : '';
       const qName = normalizeName(q);
       const tokens = qName.split(' ').filter(function (t) { return t.length >= 2; });
       const items = DATA.filter(function (r) {
-        if (esCredencial && r.dni_normalizado && r.dni_normalizado.indexOf(normalizeDni(q)) !== -1) return true;
+        if (esCredencial && r.dni_normalizado && r.dni_normalizado === dq) return true;
         if (!esCredencial && tokens.length && r.nombre_normalizado) {
           return tokens.every(function (t) { return r.nombre_normalizado.indexOf(t) !== -1; });
         }

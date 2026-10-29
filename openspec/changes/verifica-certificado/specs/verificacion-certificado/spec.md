@@ -29,7 +29,8 @@ La página SHALL ofrecer una tarjeta de búsqueda centrada con un único campo d
 
 #### Scenario: Búsqueda por DNI
 - **WHEN** el usuario ingresa un DNI o C.E. válido presente en el archivo de datos y envía la búsqueda
-- **THEN** se muestran las tarjetas de todos los certificados cuyo DNI normalizado (solo dígitos) contenga la consulta
+- **THEN** se muestran las tarjetas de todos los certificados cuyo DNI normalizado (solo dígitos) sea **exactamente igual** a la consulta
+- **AND** un número numérico dentro del rango que no coincida de forma exacta con ningún registro no arroja resultados ni una sola ficha, aunque sea prefijo, sufijo o subcadena de un DNI existente (5ª ronda de Juan, 2026-10-29: "722399" no debe devolver la ficha de "72239976")
 
 #### Scenario: Búsqueda por nombre o apellidos
 - **WHEN** el usuario ingresa nombres o apellidos (completos o parciales) y envía la búsqueda
