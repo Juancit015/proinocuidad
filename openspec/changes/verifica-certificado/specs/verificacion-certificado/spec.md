@@ -25,7 +25,7 @@ El sitio SHALL servir una página `verifica-tu-certificado.html` con la plantill
 - **THEN** ambos botones están presentes con el mismo marcado y se muestra el botón de WhatsApp con su texto de invitación
 
 ### Requirement: Búsqueda por DNI o nombre
-La página SHALL ofrecer una tarjeta de búsqueda centrada con un único campo de texto y un botón "Buscar", que busca simultáneamente por DNI/C.E. y por nombre en el archivo de certificados.
+La página SHALL ofrecer una tarjeta de búsqueda centrada con un único campo de texto y un botón "Buscar", que busca por credencial (DNI/C.E.) cuando la consulta es puramente numérica —ignorando espacios y puntos— y por nombres y apellidos en los demás casos, en el archivo de certificados.
 
 #### Scenario: Búsqueda por DNI
 - **WHEN** el usuario ingresa un DNI o C.E. válido presente en el archivo de datos y envía la búsqueda
@@ -34,6 +34,10 @@ La página SHALL ofrecer una tarjeta de búsqueda centrada con un único campo d
 #### Scenario: Búsqueda por nombre o apellidos
 - **WHEN** el usuario ingresa nombres o apellidos (completos o parciales) y envía la búsqueda
 - **THEN** se muestran las tarjetas de los certificados cuyos nombres normalizados (minúsculas, sin tildes, espacios colapsados) contienen todas las palabras de dos o más caracteres de la consulta, en cualquier orden dentro del nombre, insensible a mayúsculas y tildes
+
+#### Scenario: Consulta alfanumérica sin vía por DNI
+- **WHEN** la consulta mezcla letras y números (por ejemplo, "34e")
+- **THEN** el fragmento numérico no se usa para buscar dentro de las credenciales (evita coincidencias parciales sin sentido como tres fichas por "34") y se trata como búsqueda de nombre; si no hay coincidencias, se muestra el mensaje unificado
 
 #### Scenario: Consulta vacía
 - **WHEN** el usuario envía el formulario con el campo vacío o solo espacios
@@ -44,7 +48,7 @@ El formulario SHALL limitar el campo de búsqueda a 40 caracteres (`maxlength="4
 
 #### Scenario: Credencial numérica fuera de rango
 - **WHEN** el usuario envía una consulta numérica de menos de 6 o de más de 15 dígitos (por ejemplo, 20 dígitos)
-- **THEN** se muestra el aviso "Ingresa una credencial de 6 a 15 dígitos (el DNI peruano tiene 8).", no se ejecuta ninguna búsqueda y el foco vuelve al campo
+- **THEN** se muestra el mensaje unificado "No se encontró un certificado con esos datos. Ingresa el DNI completo (8 dígitos), una credencial de 6 a 15 dígitos o los nombres y apellidos." con foco en el campo, sin ejecutar ninguna búsqueda
 
 #### Scenario: Límite de entrada del campo
 - **WHEN** una persona teclea más de 40 caracteres en el campo con el teclado
@@ -63,7 +67,7 @@ El sistema SHALL mostrar cada coincidencia como una tarjeta con código, badge d
 
 #### Scenario: Sin coincidencias
 - **WHEN** ninguna consulta encuentra coincidencias
-- **THEN** se muestra el mensaje "No se encontró un certificado con esos datos." en el aviso bajo el campo de búsqueda — el mismo canal del error de validación —, la zona de resultados queda vacía y la vista no se desplaza hacia el footer
+- **THEN** se muestra el mensaje unificado "No se encontró un certificado con esos datos. Ingresa el DNI completo (8 dígitos), una credencial de 6 a 15 dígitos o los nombres y apellidos." en el aviso bajo el campo de búsqueda — el mismo canal del error de validación —, la zona de resultados queda vacía y la vista no se desplaza hacia el footer
 
 #### Scenario: Fallo al cargar los datos
 - **WHEN** el fetch de `assets/data/certificados.json` falla (red, 404 o JSON inválido)

@@ -236,11 +236,14 @@
 
     // La consulta es una credencial si tras quitar espacios y puntos solo quedan digitos.
     // DNI peruano: 8. C.E. extranjeros en la base: 10 (Colombia) y 15.
+    // Mensaje único para todos los estados sin resultado (unificación de Juan).
+    const SIN_RESULTADO = 'No se encontró un certificado con esos datos. Ingresa el DNI completo (8 dígitos), una credencial de 6 a 15 dígitos o los nombres y apellidos.';
+
     function validar(q) {
       const credencial = q.replace(/[\s.]/g, '');
       if (/^\d+$/.test(credencial)) {
         if (credencial.length < 6 || credencial.length > 15) {
-          return 'Ingresa una credencial de 6 a 15 dígitos (el DNI peruano tiene 8).';
+          return SIN_RESULTADO;
         }
       }
       return '';
@@ -249,15 +252,18 @@
     function buscar(q) {
       q = q.trim();
       if (!q) return null;
-      const qDni = normalizeDni(q);
+      // El fragmento se busca en el DNI SOLO si la query entera es numérica
+      // (credencial, mismo predicate que validar()); con letras y números
+      // mezclados ('34e') el fragmento '34' disparaba coincidencias sin sentido.
+      const esCredencial = /^\d+$/.test(q.replace(/[\s.]/g, ''));
       const qName = normalizeName(q);
       const tokens = qName.split(' ').filter(function (t) { return t.length >= 2; });
       const items = DATA.filter(function (r) {
-        if (qDni && r.dni_normalizado && r.dni_normalizado.indexOf(qDni) !== -1) return true;
-        if (tokens.length && r.nombre_normalizado) {
+        if (esCredencial && r.dni_normalizado && r.dni_normalizado.indexOf(normalizeDni(q)) !== -1) return true;
+        if (!esCredencial && tokens.length && r.nombre_normalizado) {
           return tokens.every(function (t) { return r.nombre_normalizado.indexOf(t) !== -1; });
         }
-        if (qName && !tokens.length && r.nombre_normalizado) {
+        if (!esCredencial && qName && !tokens.length && r.nombre_normalizado) {
           return r.nombre_normalizado.indexOf(qName) !== -1;
         }
         return false;
@@ -384,7 +390,7 @@
         return minDuracion.then(function () {
           if (items === null) { mostrarAviso(''); input.focus(); return; }
           if (!items.length) {
-            mostrarAviso('No se encontró un certificado con esos datos.');
+            mostrarAviso(SIN_RESULTADO);
             return;
           }
           renderResultados(items);
