@@ -43,3 +43,4 @@ Contenido editorial. Un asistente con poco contexto puede saltárselo sin perder
 
 - [Actualidad en inocuidad alimentaria](https://proinocuidad.com/noticias/): Noticias y eventos del sector alimentario y de la regulación sanitaria vigente en Perú.
 - [Inocuidad alimentaria: qué es y cómo se gestiona](https://proinocuidad.com/inocuidad-alimentaria/): Guía básica sobre inocuidad alimentaria, sus programas (BPM, POES, HACCP) y la normativa peruana.
+- [Verifica tu certificado](https://proinocuidad.com/verifica-tu-certificado.html): Búsqueda pública de certificados emitidos por DNI o nombres y apellidos, con los datos del certificado y el enlace de descarga del PDF oficial.

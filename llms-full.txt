@@ -157,3 +157,6 @@ Curso de tres sesiones para planificar, ejecutar y cerrar auditorías internas d
 - Medios de pago: Yape, Plin, BBVA, Culqi, PayPal y Western Union
 
 El RUC 20615307603 aparece en la sección «La empresa», junto a la razón social.
+## Verificación de certificados
+
+Los certificados emitidos por Proinocuidad pueden verificarse en https://proinocuidad.com/verifica-tu-certificado.html. La página permite buscar por DNI o por nombres y apellidos del participante; cada resultado muestra código del certificado, nombre, programa, fechas de inicio y término, horas académicas, DNI/C.E. y el estado (VÁLIDO), con un botón para descargar el PDF oficial alojado en Google Drive.

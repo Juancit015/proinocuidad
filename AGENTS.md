@@ -285,3 +285,13 @@ Exporte a migrar (en el server y en `/home/juan/aula-exporte/exporte-aula/`):
 Aparecen en 93 líneas de los HTML, así que tocarlos a mano es propenso a dejar incoherencias: WhatsApp `+51 981 365 982`, `formacion_academica@proinocuidad.com`, RUC `20615307603`, Yape/Plin `+51 971 625 142`, Lun-Vie 8AM-8PM.
 
 En las fichas, el origen único son las constantes de `tools/generar-fichas.mjs`. El campo `waLargo` de `assets/js/cursos-data.js` tiene que coincidir con la constante del generador, o los mensajes de los botones de la ficha y de los listados no serán iguales.
+
+## Iconografía de UI (2026-10-28, pedida por Juan)
+
+Estilo del sitio: **SVG inline con `viewBox="0 0 24 24"`, `stroke="currentColor"`, sin relleno** (los únicos taxis de marca con relleno son logos como el de WhatsApp). Nada de emojis: un emoji nunca entra a un botón ni a una tarjeta.
+
+- **Botones de acción llevan icono**: Buscar → lupa; Descargar certificado → flecha con bandeja. Las páginas de datos no deben crear botones de texto pelado.
+- **Campos de datos en tarjetas/paneles llevan icono por campo**: persona = nombre, libro = programa, calendario = fechas de inicio/término, reloj = horas académicas, carnet = DNI/C.E., check = estado VÁLIDO. Implementado en `verifica-tu-certificado.html`; reutilizar esos SVG como referencias.
+- **Estados de proceso visibles**: toda acción que espere datos da feedback — el botón `.btn` marca `aria-busy="true"` y la **bolita girando del CSS global** (`.btn[aria-busy="true"]::before`, `giro-envio`, ya existente en `main.css`) aparece junto al texto ("Buscando…"); el botón queda `disabled` y con duración mínima perceptible (420 ms en verificar) para que no parpadee. **No duplicar el spinner con un svg dentro del botón**: en la página de verificar salieron DOS círculos girando (bolita CSS + svg del JS) hasta que se eliminó el svg. Errores de carga con aviso propio, nunca en blanco.
+- **Un svg por punto de uso**, inline en el HTML/JS donde se renderiza; tamaños por CSS (`width/height` en el selector del contenedor), icono y texto alineados con flex/inline-flex.
+- Como siempre: lo que escribas en CSS se verifica con `getComputedStyle` — una regla que no gana la especificidad existe solo en el archivo.
