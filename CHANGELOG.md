@@ -3,22 +3,6 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
-## 2026-10-28 (Página de verificación de certificados)
-
-### Added
-
-- **Nueva página `verifica-tu-certificado.html`**: permite verificar la autenticidad de un certificado emitido por Proinocuidad ingresando el DNI o el nombre del participante. Muestra código, nombre, programa, fechas, horas, estado y un botón "Descargar certificado" que abre el PDF en Google Drive (pestaña nueva).
-- **Búsqueda client-side** sobre `assets/data/certificados.json` (28 registros generados desde `VERIFICA TU CERTIFICADO.xlsx` con `tools/generar-certificados.mjs`). Un solo campo busca por DNI (normalizado, sin puntos/espacios) o por nombre (parcial, insensible a tildes).
-- **Estilos** de tarjeta de búsqueda, tarjeta de resultado, badge de estado (verde "VÁLIDO" / rojo) y botón de descarga (rojo `#ad343b`).
-- Enlace en el footer y actualización de `sitemap.xml`, `llms.txt`, `llms-full.txt` y la lista blanca de `tools/publicar.sh`.
-
-### Verificado
-
-- Playwright a 360, 390, 768, 860, 1024 y 1280px: `scrollWidth === clientWidth` (0 de desborde); tarjeta centrada y resultados legibles.
-- Búsqueda por DNI real (72709363 → 2 resultados), por nombre parcial ("nelly" → 2), por DNI inexistente y nombre inexistente → mensaje "No se encontró un certificado con esos datos."
-- Botón de descarga apunta al enlace correcto de Drive (`target="_blank"`).
-- Generador `tools/generar-certificados.mjs` produce 28 registros idénticos a la versión Python.
-
 ## 2026-10-26 (Portada: CTA final sin banda blanca a la derecha en móvil)
 
 ### Fixed
