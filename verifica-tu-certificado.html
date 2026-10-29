@@ -236,8 +236,8 @@
 
     // La consulta es una credencial si tras quitar espacios y puntos solo quedan digitos.
     // DNI peruano: 8. C.E. extranjeros en la base: 10 (Colombia) y 15.
-    // Mensaje único para todos los estados sin resultado (unificación de Juan).
-    const SIN_RESULTADO = 'No se encontró un certificado con esos datos. Ingresa el DNI completo (8 dígitos), una credencial de 6 a 15 dígitos o los nombres y apellidos.';
+    // Mensaje general y corto para todo estado sin resultado (Juan pidió evitar la receta larga).
+    const SIN_RESULTADO = 'Por favor, verifique que las credenciales ingresadas sean correctas.';
 
     function validar(q) {
       const credencial = q.replace(/[\s.]/g, '');

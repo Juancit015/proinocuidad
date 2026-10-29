@@ -37,7 +37,7 @@ La página SHALL ofrecer una tarjeta de búsqueda centrada con un único campo d
 
 #### Scenario: Consulta alfanumérica sin vía por DNI
 - **WHEN** la consulta mezcla letras y números (por ejemplo, "34e")
-- **THEN** el fragmento numérico no se usa para buscar dentro de las credenciales (evita coincidencias parciales sin sentido como tres fichas por "34") y se trata como búsqueda de nombre; si no hay coincidencias, se muestra el mensaje unificado
+- **THEN** el fragmento numérico no se usa para buscar dentro de las credenciales (evita coincidencias parciales sin sentido como tres fichas por "34") y se trata como búsqueda de nombre; si no hay coincidencias, se muestra el mensaje general
 
 #### Scenario: Consulta vacía
 - **WHEN** el usuario envía el formulario con el campo vacío o solo espacios
@@ -48,7 +48,7 @@ El formulario SHALL limitar el campo de búsqueda a 40 caracteres (`maxlength="4
 
 #### Scenario: Credencial numérica fuera de rango
 - **WHEN** el usuario envía una consulta numérica de menos de 6 o de más de 15 dígitos (por ejemplo, 20 dígitos)
-- **THEN** se muestra el mensaje unificado "No se encontró un certificado con esos datos. Ingresa el DNI completo (8 dígitos), una credencial de 6 a 15 dígitos o los nombres y apellidos." con foco en el campo, sin ejecutar ninguna búsqueda
+- **THEN** se muestra el mensaje general "Por favor, verifique que las credenciales ingresadas sean correctas." con foco en el campo, sin ejecutar ninguna búsqueda
 
 #### Scenario: Límite de entrada del campo
 - **WHEN** una persona teclea más de 40 caracteres en el campo con el teclado
@@ -67,7 +67,7 @@ El sistema SHALL mostrar cada coincidencia como una tarjeta con código, badge d
 
 #### Scenario: Sin coincidencias
 - **WHEN** ninguna consulta encuentra coincidencias
-- **THEN** se muestra el mensaje unificado "No se encontró un certificado con esos datos. Ingresa el DNI completo (8 dígitos), una credencial de 6 a 15 dígitos o los nombres y apellidos." en el aviso bajo el campo de búsqueda — el mismo canal del error de validación —, la zona de resultados queda vacía y la vista no se desplaza hacia el footer
+- **THEN** se muestra el mensaje general "Por favor, verifique que las credenciales ingresadas sean correctas." en el aviso bajo el campo de búsqueda — el mismo canal del error de validación —, la zona de resultados queda vacía y la vista no se desplaza hacia el footer
 
 #### Scenario: Fallo al cargar los datos
 - **WHEN** el fetch de `assets/data/certificados.json` falla (red, 404 o JSON inválido)

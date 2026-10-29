@@ -1949,7 +1949,7 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 }
 .verifica-cargando .verifica-puntos { animation: verifica-parpadeo 1.2s ease-in-out infinite; }
 @keyframes verifica-parpadeo { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
-.verifica-aviso { margin: 10px auto 0; max-width: 560px; min-height: 0; color: #b91c1c; font-size: 0.88rem; font-weight: 700; opacity: 0; transform: translateY(-2px); transition: opacity 0.18s ease; }
+.verifica-aviso { margin: 10px auto 0; max-width: 560px; min-height: 0; color: #b91c1c; font-size: 0.95rem; font-weight: 700; opacity: 0; transform: translateY(-2px); transition: opacity 0.18s ease; }
 .verifica-aviso--visible { opacity: 1; }
 .verifica-badge svg { width: 13px; height: 13px; flex: none; }
 .verifica-tarjeta-head .verifica-badge { display: inline-flex; align-items: center; gap: 6px; }
