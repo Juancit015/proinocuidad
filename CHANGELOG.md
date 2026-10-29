@@ -3,6 +3,22 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-29 (SEO pre-deploy — cierre de metadatos)
+
+### Added
+
+- **Auditoría SEO pre-deploy** (a pedido de Juan, con el CLI de SEO-Skill v0.12.0; el MCP de SE Ranking quedó sin acceso por suscripción vencida el 2026-10-26 → 403): crawl del build local (22 documentos, 0 high; los duplicados detectados son artefactos del servidor local `/` vs `/index.html`) y *health pass* del sitemap de producción (20 URLs, todas 200, 0 high/0 medium). Veredicto: el change `verifica-certificado` no dañó el SEO — sitemap y `llms.txt` completos (21/21) con la página nueva, canonicals intactos, +2 enlaces internos por página (nav + footer).
+- **`og:description` en las 22 URLs** (cierre del hallazgo en 21 URLs del crawl): contenido idéntico al `<meta name="description"` ya existente. En las 8 fichas de curso y el 404 vía plantilla de `tools/generar-fichas.mjs` (con escape de comillas); en las 7 páginas de sección + home + las 5 fichas de servicio (manuales) con la misma línea insertada tras el `og:url`.
+- **JSON-LD en la página de verificación** (era la única URL indexable sin bloque estructurado): `WebPage` con name/description/url, insertado junto a su bloque OG.
+- **`og:image` en `cursos/index.html`** (última página indexable sin la imagen social): misma `proinocuidad-og-1200x630.png` del resto del sitio.
+- `llms-full.txt` cubre 18/21 (hueco preexistente de `noticias`×2 + `inocuidad-alimentaria`): pendiente de documentar, no bloquea deploy.
+
+### Verificado
+
+- Las 22 URLs con `og:description` + `og:image` + JSON-LD (comprobación estática con los 3 atributos en cada una; `verifica` conserva su `og:description` corto distinto, correcto para compartir).
+- Generador idempotente (`cp -r cursos /tmp/cursos-antes && node tools/generar-fichas.mjs && diff -rq` → exit 0); `git diff -U0` en fichas confirma exactamente 1 línea añadida por ficha.
+- Batería Playwright re-verde tras los cambios de head: overflow 0, nav byte-idéntico, descarga directa OK, reglas estrictas 10/10 consultas, `openspec validate` sin advertencias.
+
 ## 2026-10-28 (Página de verificación de certificados — redo)
 
 ### Added

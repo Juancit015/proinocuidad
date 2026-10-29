@@ -738,6 +738,7 @@ function ficha(curso) {
 <meta property="og:title" content="${tituloFicha.replace(/"/g, "&quot;")}">
 <meta property="og:image" content="${img_og}">
 <meta property="og:url" content="${url}">
+<meta property="og:description" content="${(curso.seoDesc || curso.desc).replace(/"/g, "&quot;")}">
 <meta name="description" content="${curso.seoDesc || curso.desc}">
 <link rel="canonical" href="${url}">
 <script type="application/ld+json">
@@ -799,6 +800,7 @@ function pagina404() {
 <meta name="robots" content="noindex, follow">
 <meta property="og:title" content="${titulo}">
 <meta property="og:url" content="${url}">
+<meta property="og:description" content="La página solicitada no existe en Proinocuidad. Vuelve al inicio o escríbenos por WhatsApp.">
 <meta name="description" content="La página solicitada no existe en Proinocuidad. Vuelve al inicio o escríbenos por WhatsApp.">
 <link rel="canonical" href="${url}">
 <link rel="icon" href="${ruta}assets/img/favicon.ico" sizes="any">
