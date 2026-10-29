@@ -31,7 +31,7 @@ set -euo pipefail
 SRC="${1:-.}"
 DST="${2:-/home/guanbhctsy/proinocuidad.com}"
 cd "$SRC"
-for item in index.html 404.html .htaccess robots.txt sitemap.xml llms.txt \
+for item in index.html verifica-tu-certificado.html 404.html .htaccess robots.txt sitemap.xml llms.txt \
             llms-full.txt assets servicios cursos noticias nosotros \
             inocuidad-alimentaria ajax; do
   cp -r "$item" "$DST/"

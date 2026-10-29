@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifica tu certificado | Proinocuidad</title>
+  <meta name="description" content="Verifica la autenticidad de un certificado emitido por Proinocuidad Consultoría y Capacitación Alimentaria. Busca por DNI o nombre y descarga tu certificado.">
+  <meta property="og:title" content="Verifica tu certificado | Proinocuidad">
+  <meta property="og:image" content="https://proinocuidad.com/assets/img/proinocuidad-og-1200x630.png">
+  <link rel="canonical" href="https://proinocuidad.com/verifica-tu-certificado.html">
+  <meta property="og:url" content="https://proinocuidad.com/verifica-tu-certificado.html">
+  <link rel="icon" href="assets/img/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Navegación principal">
+      <a class="brand" href="index.html" aria-label="Proinocuidad — inicio">
+        <img src="assets/img/logo-proinocuidad.png" alt="Logo Proinocuidad">
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-label="Abrir menú" aria-controls="menu-principal">
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+      <ul class="nav-menu" id="menu-principal">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="nosotros/index.html">Nosotros</a></li>
+        <li class="nav-drop">
+          <a href="servicios/index.html" aria-haspopup="true" aria-expanded="false">Servicios</a>
+          <button class="nav-accordion-toggle" type="button" aria-expanded="false" aria-controls="submenu-servicios" aria-label="Mostrar opciones de Servicios"><span aria-hidden="true">+</span></button>
+          <div class="mega-panel mega-panel-compacto" id="submenu-servicios" role="menu">
+            <div class="mega-panel-inner">
+              <a href="servicios/index.html#capacitacion-empresarial"><strong>Capacitación Empresarial</strong><span>Programas in house, cursos y diplomados a medida para la industria alimentaria.</span></a>
+              <a href="servicios/index.html#normativa-sanitaria"><strong>Implementación de normativa sanitaria</strong><span>Certificación de Principios Generales de Higiene y Validación Técnica Oficial del Plan HACCP.</span></a>
+              <a href="servicios/index.html#sistemas-gestion"><strong>Sistemas de gestión de la calidad e inocuidad</strong><span>ISO 9001, ISO 22000, FSSC 22000 y BRCGS FOOD.</span></a>
+              <a href="servicios/index.html#registro-sanitario"><strong>Registro sanitario de alimentos y bebidas</strong><span>Tramitamos el registro sanitario del alimento o bebida.</span></a>
+              <a class="mega-cta" href="servicios/index.html"><strong>Ver todos los servicios</strong><span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-drop">
+          <a href="cursos/index.html" aria-haspopup="true" aria-expanded="false">Cursos</a>
+          <button class="nav-accordion-toggle" type="button" aria-expanded="false" aria-controls="submenu-cursos" aria-label="Mostrar opciones de Cursos"><span aria-hidden="true">+</span></button>
+          <div class="mega-panel mega-panel-compacto" id="submenu-cursos" role="menu">
+            <div class="mega-panel-inner">
+              <a href="cursos/index.html"><strong>Ver todos los cursos</strong><span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </li>
+        <li><a href="noticias/index.html">Noticias</a></li>
+        <li><a class="btn-aula-nav" href="https://proinocuidad.com/aula/login/" target="_blank" rel="noopener">Aula Virtual</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="verifica-titulo">
+      <div class="container">
+        <span class="nombre-empresa">Proinocuidad · La Libertad, Perú</span>
+        <h1 id="verifica-titulo">Verifica tu <span class="slogan-destacado">certificado</span></h1>
+        <p>Comprueba la autenticidad de un certificado emitido por Proinocuidad y descarga tu constancia. Ingresa tu DNI o nombre completo.</p>
+      </div>
+    </section>
+
+    <section class="verifica-busqueda" aria-labelledby="busqueda-titulo">
+      <div class="container">
+        <div class="verifica-card">
+          <h2 id="busqueda-titulo">Verifica tu certificado</h2>
+          <form id="form-verifica" class="verifica-form" novalidate>
+            <label for="q-verifica" class="oculto">DNI o nombre completo</label>
+            <input type="text" id="q-verifica" name="q" placeholder="Ingresa tu DNI o nombre completo" autocomplete="off" required>
+            <button type="submit" class="btn btn-azul verifica-btn">Verificar</button>
+          </form>
+          <p class="verifica-hint">Ingresa tu DNI o tu nombre completo para verificar la autenticidad de tu certificado.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="verifica-resultados" aria-live="polite" aria-labelledby="resultados-titulo">
+      <div class="container">
+        <h2 id="resultados-titulo" class="oculto">Resultados</h2>
+        <div id="resultados" class="verifica-resultados-lista"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <img src="assets/img/logo-proinocuidad.png" alt="Logo Proinocuidad">
+        <p><strong>Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.</strong></p>
+        <p>¡Formamos profesionales, construimos inocuidad!</p>
+        <p>RUC 20615307603 · Trujillo, La Libertad, Perú</p>
+      </div>
+      <div class="footer-contacto">
+        <h4>Contacto</h4>
+        <ul>
+          <li><strong>Contacto:</strong> <a href="https://wa.me/51981365982?text=Hola%2C%20escribo%20desde%20la%20web%20de%20Proinocuidad.%20Deseo%20comunicarme%20con%20ustedes." target="_blank" rel="noopener">+51 981 365 982</a></li>
+          <li><strong>Correo:</strong> <a href="mailto:formacion_academica@proinocuidad.com">formacion_academica@proinocuidad.com</a></li>
+          <li><strong>Horario de atención:</strong> Lunes a viernes de 8 AM a 8 PM</li>
+          <li><strong>Ubicación:</strong> Trujillo, La Libertad, Perú</li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Enlaces</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="nosotros/index.html">Nosotros</a></li>
+          <li><a href="servicios/index.html">Servicios</a></li>
+          <li><a href="cursos/index.html">Cursos</a></li>
+          <li><a href="noticias/index.html">Noticias y eventos</a></li>
+          <li><a href="https://proinocuidad.com/aula/login/" target="_blank" rel="noopener">Aula Virtual</a></li>
+          <li><a href="verifica-tu-certificado.html">Verifica tu certificado</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Síguenos</h4>
+        <div class="redes-sociales">
+          <a href="https://www.facebook.com/share/16XUyQ5JDR/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+          <a href="https://www.youtube.com/@proinocuidad" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+          <a href="https://www.instagram.com/proinocuidad" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <span>© 2026 Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L. Todos los derechos reservados.</span>
+        <span>Comprometidos con la salud pública y la inocuidad alimentaria.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    const DATA_URL = 'assets/data/certificados.json';
+    let DATA = [];
+
+    const form = document.getElementById('form-verifica');
+    const input = document.getElementById('q-verifica');
+    const resultados = document.getElementById('resultados');
+
+    function normalizeDni(v) {
+      return String(v == null ? '' : v).replace(/\D/g, '');
+    }
+    function normalizeName(s) {
+      return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/\s+/g, ' ');
+    }
+
+    function buscar(q) {
+      q = q.trim();
+      if (!q) return [];
+      const qDni = normalizeDni(q);
+      const qName = normalizeName(q);
+      return DATA.filter(function (r) {
+        if (qDni && r.dni_normalizado && r.dni_normalizado.indexOf(qDni) !== -1) return true;
+        if (qName && r.nombre_normalizado && r.nombre_normalizado.indexOf(qName) !== -1) return true;
+        return false;
+      });
+    }
+
+    function fmtFecha(v) {
+      if (!v) return '-';
+      // v expected YYYY-MM-DD
+      const m = String(v).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) return v;
+      return m[3] + '/' + m[2] + '/' + m[1];
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function renderResultados(items) {
+      resultados.innerHTML = '';
+      if (!items.length) {
+        const p = document.createElement('p');
+        p.className = 'verifica-sin-resultado';
+        p.textContent = 'No se encontró un certificado con esos datos.';
+        resultados.appendChild(p);
+        return;
+      }
+      items.forEach(function (r) {
+        const card = document.createElement('article');
+        card.className = 'verifica-tarjeta';
+        const estadoCls = (r.estado || '').toUpperCase().indexOf('V') === 0 ? 'verifica-badge--valido' : 'verifica-badge--otro';
+        card.innerHTML =
+          '<div class="verifica-tarjeta-head">' +
+            '<span class="verifica-codigo">' + escapeHtml(r.codigo) + '</span>' +
+            '<span class="verifica-badge ' + estadoCls + '">' + escapeHtml(r.estado || 'VÁLIDO') + '</span>' +
+          '</div>' +
+          '<h3 class="verifica-nombre">' + escapeHtml(r.nombre) + '</h3>' +
+          '<dl class="verifica-datos">' +
+            '<div><dt>Programa</dt><dd>' + escapeHtml(r.programa) + '</dd></div>' +
+            '<div><dt>Fecha de inicio</dt><dd>' + fmtFecha(r.fecha_inicio) + '</dd></div>' +
+            '<div><dt>Fecha de término</dt><dd>' + fmtFecha(r.fecha_termino) + '</dd></div>' +
+            '<div><dt>Horas académicas</dt><dd>' + escapeHtml(r.horas) + '</dd></div>' +
+            '<div><dt>DNI / C.E.</dt><dd>' + escapeHtml(r.dni_original) + '</dd></div>' +
+          '</dl>' +
+          (r.certificado_url ? '<a class="btn btn-rojo verifica-descarga" href="' + escapeHtml(r.certificado_url) + '" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Descargar certificado</a>' : '');
+        resultados.appendChild(card);
+      });
+    }
+
+    function cargarDatos() {
+      return fetch(DATA_URL)
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          DATA = Array.isArray(data) ? data : [];
+        })
+        .catch(function () {
+          const p = document.createElement('p');
+          p.className = 'verifica-sin-resultado';
+          p.textContent = 'No se pudo cargar la base de certificados. Intenta de nuevo más tarde.';
+          resultados.appendChild(p);
+        });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const q = input.value;
+      if (!q.trim()) { input.focus(); return; }
+      renderResultados(buscar(q));
+      // scroll suave al resultado
+      resultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    cargarDatos();
+  })();
+  </script>
+</body>
+</html>

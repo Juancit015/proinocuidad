@@ -37,6 +37,8 @@ Ocho cursos y un diplomado, todos asíncronos y con certificado digital. El list
 - [Nosotros](https://proinocuidad.com/nosotros/): Razón social, RUC, fecha de fundación, misión, visión y valores.
 - [DIGESA aclara el alcance de la nueva vigencia indeterminada del HACCP](https://proinocuidad.com/noticias/vigencia-indeterminada-haccp/): Nota oficial sobre la vigencia de la Validación Técnica Oficial del Plan HACCP y las obligaciones sanitarias que se mantienen.
 
+- [Verifica tu certificado](https://proinocuidad.com/verifica-tu-certificado.html): Verifica la autenticidad de un certificado emitido por Proinocuidad ingresando el DNI o el nombre del participante.
+
 ## Optional
 
 Contenido editorial. Un asistente con poco contexto puede saltárselo sin perder las respuestas sobre servicios y cursos.
