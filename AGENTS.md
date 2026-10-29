@@ -127,6 +127,7 @@ Errores de medición que ya se han cometido:
 
 - Rama `main`, remoto GitHub. **Nunca hacer push sin confirmación explícita.**
 - **Nunca hacer push sin que el usuario verifique el resultado localmente** (cambios visuales, tests, capturas). El agente NO decide por su cuenta que algo está listo para producción.
+- **Nunca ejecutar `tools/publicar.sh` (deploy al server) ni tocar producción sin consentimiento expreso de Juan**, aunque el push ya esté confirmado: son dos pasos independientes, cada uno se autoriza por separado.
 - Un commit por cambio, y separados los de código de los de OpenSpec.
 - No mezclar el trabajo de Juan con el del agente en un mismo commit: si van juntos porque comparten líneas del mismo archivo, decirlo en el mensaje.
 - Mensajes en español: asunto corto, cuerpo explicando **por qué** (no un listado de cambios), y un bloque `Verificado:` con los hechos medidos.
