@@ -65,4 +65,6 @@ if (!is_dir('/home/guanbhctsy/proinocuidad.com/certificados')) {
 }
 $pdf->Output($outputPath, 'F');
 
-echo json_encode(['success' => true, 'file' => $outputPath, 'url' => 'https://proinocuidad.com/certificados/' . $codigo . '.pdf']);
+// Redirect to the PDF
+header('Location: https://proinocuidad.com/certificados/' . $codigo . '.pdf');
+exit;
