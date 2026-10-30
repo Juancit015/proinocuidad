@@ -258,6 +258,13 @@
       return '';
     }
 
+    // La consulta es una credencial (DNI/C.E.): query numérica pura, sin espacios
+    // ni puntos. Predicate compartido entre la búsqueda y el encabezado
+    // informativo de resultados (misma vía misma etiqueta).
+    function esCredencialQuery(q) {
+      return /^\d+$/.test(String(q).replace(/[\s.]/g, ''));
+    }
+
     function buscar(q) {
       q = q.trim();
       if (!q) return null;
@@ -270,7 +277,7 @@
       // La vía numérica opera solo si la query entera es numérica
       // (credencial, mismo predicate que validar()); con letras y números
       // mezclados ('34e') el fragmento '34' disparaba coincidencias sin sentido.
-      const esCredencial = /^\d+$/.test(q.replace(/[\s.]/g, ''));
+      const esCredencial = esCredencialQuery(q);
       // Vía numérica por IGUALDAD EXACTA (5ª ronda de Juan, 2026-10-29):
       // '722399' (6 dígitos) era subcadena de '72239976' y devolvía la ficha
       // ajena; un DNI distinto debe responder 0 resultados, no parcialmente.
@@ -330,8 +337,20 @@
       resultados.innerHTML = '';
     }
 
-    function renderResultados(items) {
+    function renderResultados(items, viaCredencial) {
       resultados.innerHTML = '';
+      if (items.length > 1) {
+        // Encabezado informativo (persona con varios certificados): distinto del
+        // canal rojo de avisos bajo el input — es información, no error. Con
+        // textContent, nunca html interpolado. La limpieza es gratuita: vive
+        // dentro de la zona que ya se vacía antes de cada búsqueda.
+        const resumen = document.createElement('p');
+        resumen.className = 'verifica-resumen';
+        resumen.setAttribute('role', 'status');
+        resumen.textContent = 'Encontramos ' + items.length + ' certificados ' +
+          (viaCredencial ? 'para tu DNI' : 'para tu consulta');
+        resultados.appendChild(resumen);
+      }
       items.forEach(function (r) {
         const card = document.createElement('article');
         card.className = 'verifica-tarjeta';
@@ -412,7 +431,7 @@
             mostrarAviso(SIN_RESULTADO);
             return;
           }
-          renderResultados(items);
+          renderResultados(items, esCredencialQuery(q));
         }).then(function () {
           // el scroll acompaña solo a las fichas; los mensajes aparecen bajo el input, sin mover la vista
           if (!resultados.querySelector('.verifica-tarjeta')) return;

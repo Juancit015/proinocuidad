@@ -1908,6 +1908,16 @@ html.js-anim .identidad-grid.en-vista > img { animation: entrada-der 700ms ease-
 .verifica-resultados { padding: 12px 0 64px; }
 .verifica-resultados-lista { display: grid; gap: 20px; max-width: 1002px; margin: 0 auto; }
 
+/* Encabezado informativo cuando una persona tiene más de un certificado
+   (vía DNI o por nombre): neutro a propósito — el rojo queda reservado a los
+   avisos de error del canal bajo el buscador. Estático: sin transiciones ni
+   pseudo-elementos, no necesita regla en el bloque prefers-reduced-motion. */
+.verifica-resumen {
+  padding: 12px 20px; border-radius: 10px;
+  background: var(--gris-linea); color: var(--azul);
+  font-weight: 700; font-size: 0.95rem; text-align: center;
+}
+
 .verifica-tarjeta {
   background: var(--blanco); border: 1px solid var(--gris-linea);
   border-radius: 12px; padding: 24px; text-align: left;
