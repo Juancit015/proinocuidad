@@ -3,6 +3,20 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-30 (verifica: aviso informativo multi-certificados)
+
+### Added
+
+- **Encabezado informativo cuando una persona tiene varios certificados**: cuando la búsqueda por DNI o por nombre devuelve más de una tarjeta, la zona de resultados muestra una línea neutra al inicio — "Encontramos N certificados para tu DNI" (o "…para tu consulta") — antes de la pila de tarjetas. Motivo del caso real: el DNI 72709363 (Nelly Flores Perea) tiene el diplomado `SGCIA- 26-002` y el curso `010-2026-03-NFP-CIABPPH` emitidos, y las dos tarjetas se apilaban sin explicación, leyéndose como duplicado. El elemento vive dentro de `#resultados` (se limpia gratis en cada búsqueda, sin lógica extra), con `role="status"`.
+- **Nada cambia en los demás estados**: una sola coincidencia NO muestra el encabezado; la vía por código (`?codigo=` del QR) tampoco; el canal rojo bajo el buscador queda reservado a validación/sin-resultados/fallo de carga, como ya estaba. `certificados.json` y su generador no se tocan.
+- **Decisiones**: predicate de credencial extraído a `esCredencialQuery()` compartido entre búsqueda y etiqueta del encabezado; CSS `.verifica-resumen` estático (fondo `--gris-linea`, texto `--azul`) sin transiciones ni pseudo-elementos — no toca el bloque `prefers-reduced-motion`.
+- OpenSpec: change `aviso-multi-certificados` (delta del requisito "Presentación del resultado" en la spec `verificacion-certificado`).
+
+### Verificado (arnés Playwright, local 8899 — 17/17, exit 0)
+
+- DNI 72709363 → 1 encabezado + 2 tarjetas; DNI único → solo tarjeta; nombre con 2 coincidencias → encabezado "para tu consulta"; `?codigo=SGCIA- 26-002` → tarjeta sin encabezado; sin resultados → aviso rojo intacto y sin encabezado; el resumen no persiste entre búsquedas.
+- A 390 px: `scrollWidth=390` (sin desborde horizontal, sin `overflow-x` oculto) y el encabezado cabe en el viewport (358 px de ancho medido).
+
 ## 2026-10-29 (verifica: DNI por igualdad exacta — ronda 5 de Juan)
 
 ### Fixed
