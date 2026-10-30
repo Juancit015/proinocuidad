@@ -261,6 +261,12 @@
     function buscar(q) {
       q = q.trim();
       if (!q) return null;
+      // Vía por código de certificado (para QR): búsqueda exacta por "codigo".
+      const qCode = q.toUpperCase().replace(/\\s+/g, ' ').trim();
+      const byCode = DATA.filter(function (r) {
+        return r.codigo && String(r.codigo).toUpperCase().replace(/\\s+/g, ' ').trim() === qCode;
+      });
+      if (byCode.length) return byCode;
       // La vía numérica opera solo si la query entera es numérica
       // (credencial, mismo predicate que validar()); con letras y números
       // mezclados ('34e') el fragmento '34' disparaba coincidencias sin sentido.
@@ -417,6 +423,20 @@
         setBoton(false);
       });
     });
+
+    // Auto-búsqueda por ?codigo= (para QR del certificado): al escanear el QR
+    // se abre esta página con el código y se muestra la ficha automáticamente.
+    const params = new URLSearchParams(window.location.search);
+    const codigoParam = params.get('codigo');
+    if (codigoParam) {
+      input.value = codigoParam;
+      const autoBuscar = function () {
+        if (DATA === undefined) { setTimeout(autoBuscar, 100); return; }
+        if (DATA === null) return;
+        form.dispatchEvent(new Event('submit'));
+      };
+      autoBuscar();
+    }
 
     carga = cargarDatos();
   })();
