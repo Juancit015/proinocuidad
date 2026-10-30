@@ -1636,3 +1636,17 @@ Borrado con `git rm -r`, que lo quita del índice y del disco. Sigue siendo recu
   pendiente un flyer de modalidad asíncrona.
 - Pestaña "En vivo": pendiente la ficha oficial del cliente cuando haya una nueva oferta.
 - Dirección exacta de la oficina: se muestra "Próximamente".
+
+## 2026-10-29 (exámenes Moodle + QR certificado)
+
+### Added
+
+- **Banco de preguntas en Moodle**: 150 preguntas importadas en 9 cursos (con 3 distractores cada una), generadas desde los Excel de exámenes del cliente.
+- **Quizzes en Moodle**: 10 cuestionarios creados (diplomado tiene parcial + final), con intentos ilimitados, 45 min, calificación mínima 70%, preguntas vinculadas vía question references.
+- **Soporte `?codigo=` en `verifica-tu-certificado.html`**: la página ahora acepta el parámetro `codigo` en la URL y muestra la ficha del certificado automáticamente (sin búsqueda manual). Permite que el QR del certificado PDF redirija a la página de validación y muestre la info del alumno al escanear.
+
+### Pendiente
+
+- Deploy de `verifica-tu-certificado.html` al servidor (subido vía cPanel).
+- Configurar restricción de acceso en cada quiz (desbloqueo al completar el curso).
+- Instalar plugin de certificado (`mod_customcert` o `mod_certificate`) y plantilla PDF con QR.
