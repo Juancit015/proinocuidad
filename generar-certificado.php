@@ -9,10 +9,15 @@ $fecha = isset($_GET['fecha']) ? $_GET['fecha'] : date('Y-m-d');
 $horas = isset($_GET['horas']) ? $_GET['horas'] : '40';
 $codigo = isset($_GET['codigo']) ? $_GET['codigo'] : 'CODIGO-001';
 
-// Load TCPDF and FPDI directly (without Moodle config)
+// Load TCPDF
 require_once('/home/guanbhctsy/proinocuidad.com/aula/lib/tcpdf/tcpdf.php');
-define('MOODLE_INTERNAL', true);
-require_once('/home/guanbhctsy/proinocuidad.com/aula/lib/pdflib.php');
+
+// Alias pdf -> TCPDF for FPDI compatibility (avoids Moodle dependency)
+if (!class_exists('pdf')) {
+    class_alias('TCPDF', 'pdf');
+}
+
+// Load FPDI
 require_once('/home/guanbhctsy/proinocuidad.com/aula/mod/assign/feedback/editpdf/fpdi/autoload.php');
 
 // Template path
@@ -25,7 +30,6 @@ $tplId = $pdf->importPage(1);
 $pdf->addPage();
 $pdf->useTemplate($tplId);
 
-// --- Ajustar estas coordenadas según la plantilla ---
 // Texto: Nombre del alumno
 $pdf->SetFont('helvetica', 'B', 20);
 $pdf->SetXY(40, 120);
@@ -39,16 +43,16 @@ $pdf->MultiCell(0, 8, $programa, 0, 'C');
 // Texto: Fecha
 $pdf->SetFont('helvetica', '', 12);
 $pdf->SetXY(40, 160);
-$pdf->Cell(0, 10, 'Fecha de término: ' . $fecha, 0, 1, 'C');
+$pdf->Cell(0, 10, 'Fecha de termino: ' . $fecha, 0, 1, 'C');
 
 // Texto: Horas
 $pdf->SetXY(40, 170);
-$pdf->Cell(0, 10, 'Horas académicas: ' . $horas, 0, 1, 'C');
+$pdf->Cell(0, 10, 'Horas academicas: ' . $horas, 0, 1, 'C');
 
-// Texto: Código
+// Texto: Codigo
 $pdf->SetFont('helvetica', '', 10);
 $pdf->SetXY(40, 185);
-$pdf->Cell(0, 10, 'Código: ' . $codigo, 0, 1, 'C');
+$pdf->Cell(0, 10, 'Codigo: ' . $codigo, 0, 1, 'C');
 
 // QR code
 $qrUrl = 'https://proinocuidad.com/verifica-tu-certificado.html?codigo=' . urlencode($codigo);
