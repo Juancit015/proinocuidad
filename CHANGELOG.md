@@ -1645,8 +1645,22 @@ Borrado con `git rm -r`, que lo quita del índice y del disco. Sigue siendo recu
 - **Quizzes en Moodle**: 10 cuestionarios creados (diplomado tiene parcial + final), con intentos ilimitados, 45 min, calificación mínima 70%, preguntas vinculadas vía question references.
 - **Soporte `?codigo=` en `verifica-tu-certificado.html`**: la página ahora acepta el parámetro `codigo` en la URL y muestra la ficha del certificado automáticamente (sin búsqueda manual). Permite que el QR del certificado PDF redirija a la página de validación y muestre la info del alumno al escanear.
 
+### Notas
+
+- Deploy de `verifica-tu-certificado.html` verificado en producción (HTTP 200 en `proinocuidad.com/verifica-tu-certificado.html`).
+- Restricción de acceso configurada en los quizzes: `completion tracking` + `availability` en todos (desbloqueo al completar el curso), aplicado vía `UPDATE {course_modules}` + JSON.
+
 ### Pendiente
 
-- Deploy de `verifica-tu-certificado.html` al servidor (subido vía cPanel).
-- Configurar restricción de acceso en cada quiz (desbloqueo al completar el curso).
-- Instalar plugin de certificado (`mod_customcert` o `mod_certificate`) y plantilla PDF con QR.
+- ~~Instalar plugin de certificado (`mod_customcert` o `mod_certificate`)~~ — **decisión del 2026-10-30**: el editor drag-and-drop del plugin resultó incómodo y se abandona; el certificado se pasa a generar con script propio, ver la entrada del 2026-10-30.
+
+## 2026-10-30 (generador propio de certificados)
+
+### Added
+
+- **`generar-certificado.php`** (raíz del sitio, fuera del whitelist de `publicar.sh`): script PHP propio que genera el certificado PDF del alumno sustituyendo al plugin `mod_customcert`. Recibe `nombre`, `programa`, `fecha`, `horas`, `codigo` por GET, compone el PDF con **TCPDF + FPDI** (TCPDF desde `aula/lib/tcpdf` class-aliased a `pdf`, FPDI desde `aula/mod/assign/feedback/editpdf/fpdi`) sobre la plantilla `PDF-PLANTILLA.pdf`, escribe el QR con `write2DBarcode` apuntando a `verifica-tu-certificado.html?codigo=` y guarda en `certificados/<codigo>.pdf`. Tras generar **redirige al PDF** (no JSON) para que se abra directo en el navegador.
+- Commits del generador: `03b5989` → `9a298d3` → `5e3d887`; copia del servidor sincronizada por download de GitHub, **md5 idéntico en repo y server** (`6c499e6f…`, 2158 B).
+
+### Pendiente
+
+- **Plantilla en blanco**: `PDF-PLANTILLA.pdf` trae los datos de ejemplo horneados (alumno "Javier Eduardo Riquero", curso HACCP, fechas de marzo, calificación), así que el texto del script cae encima súperpuesto, choca con la firma y el pie dice "Powered by TCPDF". Juan va a generar desde su editor la `PDF-PLANTILLA-BLANCO.pdf` (mismo diseño sin textos dinámicos); con ella se rehacen las posiciones exactas de nombre/curso/fechas/horas/QR y se desactiva el pie del TCPDF.
