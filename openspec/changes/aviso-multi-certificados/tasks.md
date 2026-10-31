@@ -14,7 +14,7 @@
 ## 3. Cierre
 
 - [x] 3.1 Servir localmente (`python3 -m http.server 8899`) y hacer la pasada manual de Juan en el puerto 8899 antes de commit/deploy.
-- [ ] 3.2 Commit separado (código de la página + CSS juntos por compartir el mismo aspecto; CHANGELOG por aparte), push solo con confirmación de Juan, deploy con `tools/publicar.sh` solo tras autorización explícita aparte. Verificar: `git status` limpio tras el commit y md5 de `verifica-tu-certificado.html` idéntico repo/server tras el deploy.
+- [x] 3.2 Commit separado (código de la página + CSS juntos por compartir el mismo aspecto; CHANGELOG por aparte), push solo con confirmación de Juan, deploy con `tools/publicar.sh` solo tras autorización explícita aparte. Verificar: `git status` limpio tras el commit y md5 de `verifica-tu-certificado.html` idéntico repo/server tras el deploy.
 
 ## Workflow follow-up
 
