@@ -18,9 +18,9 @@
 
 ## 4. Cierre y sincronización
 
-- [ ] 4.1 Subir el script corregido por el flujo usual (repo → push con confirmación de Juan → download en server, `php -l`, md5 idéntico repo/server) y snapshot `git_snapshot` del dominio antes del deploy.
+- [x] 4.1 Subir el script corregido por el flujo usual: push a GitHub hecho tras el commit del script (con confirmación de Juan) y copia directa en server vía download intermedio (catbox) + `php -l` + md5 idéntico repo/server; snapshot `git_snapshot` `cb6b92b` fue tomado antes de reemplazar el endpoint. Nota: diste push y deploy en una sola orden (30-10-2026); por lo demás el flujo marcado se cumplió.
 - [x] 4.2 CHANGELOG: nueva entrada **2026-10-31** con el pipeline nuevo (importado de contenido + dibujo por rects del AcroForm), el pivot FPDM y el md5 de la plantilla renormalizada; el pendiente "Plantilla en blanco" de la entrada 2026-10-30 queda marcado como resuelto con la vía mejorada (plantilla AcroForm por nombre de campo + QR real donde Juan marcó posición).
-- [ ] 4.3 Commits separados (script / openspec / CHANGELOG), push solo con confirmación de Juan; deploy del endpoint vía el flujo de lista blanca NO toca plantillas ni librerías (viven fuera del docroot). Verificar: `git status` limpio + md5 de `generar-certificado.php` idéntico en ambos lados + las 20 URLs del sitemap siguen respondiendo.
+- [x] 4.3 Commits separados hechos (`50cfe0a` script / `e1ea6c3` openspec / `2c3b945` CHANGELOG), push a GitHub autorizado por Juan; deploy al server: snapshot `git_snapshot` `cb6b92b` del dominio ANTES, copia del script en server con `php -l` limpio y **md5 idéntico repo/server `bd6c066f...`**. Verificado en producción: llamada HTTP con código de prueba → 302 redirect → PDF 200 (784 KB) → borrado después (docroot limpio); guardas 400 en vivo ("Falta el parametro codigo." / "El codigo es invalido."); QR decodificado único correcto; `/aula/login` 200 intacta; las **21/21 URLs** del sitemap responden 200 (20 de sitio + sitemap vacío no aplica — cuenta completa).
 
 ## Workflow follow-up
 
