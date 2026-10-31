@@ -3,6 +3,23 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-10-31 (certificados: emisión sobre plantilla editable AcroForm + QR real)
+
+### Added
+
+- **`generar-certificado.php` reescrito sobre la plantilla editable `CERTIFICADO-EDITABLE.pdf`** (la hoja Canva que Juan transformó en formulario de 15 campos AcroForm en OnlyOffice). El endpoint nuevo importa el contenido limpio de las 2 páginas con TCPDF+FPDI (las anotaciones-formulario no se arrastran: las cajas quedan vacías) y dibuja los 15 valores dentro de los rects que cada campo del AcroForm define por nombre (tabla `CAMPOS` del script: rect, alineación, color, tamaño con autofit por campo — calibrada sobre el render aprobado; las coordenadas quedan congeladas por el md5 de la plantilla: si la plantilla cambia, la emisión se detiene). La app pública y su respuesta no cambian: mismos parámetros (`nombre, programa, fecha, horas, codigo`), redirect a `certificados/<codigo>.pdf`.
+  - Entrada (Get convalida): `codigo` requerido `[A-Za-z0-9_-] ≤ 60` (400 si no), `nota` obligatoria >0 (422 si falta o 0), programa con sílabo no configurado (422 — el único registro inicial es el curso BPM+HACCP), `fecha`/`fecha_inicio` AAAA-MM-DD (400). Opcionales: `fecha_inicio` (default: 7 días antes de `fecha`), `lugar` (default `Trujillo`), `creditos` (default `2`).
+- **QR de verificación real en la página 2** (decisión de Juan; la posición la marcó con un QR de ejemplo pintado en la plantilla, que el script tapa con rect blanco y reemplaza): esquina inferior derecha, debajo de la caja REGISTRO, `write2DBarcode('QRCODE,H', 618, 366, 150, 150)` ≈ 53×53 mm, apuntando a `verifica-tu-certificado.html?codigo=<codigo>` — decodificación probada (UN único QR por página, contenido distinto del de la plantilla) y destino verificado en Chromium.
+- **Campo `registro` una sola línea**: el default de la plantilla partía `002-2026-03-\nJRF-CIABPPH` en dos; el nuevo dibujo centra el código completo con autoshrink — probado con `015-2026-11-PAG-CIABPPH` (cae a ~8 pt, legible, una línea, azul de marca).
+- Infra fuera del docroot: plantilla renormalizada con pypdf a xref único (`~/tmp/CERTIFICADO-EDITABLE.pdf`, md5 `1438241f691bf4dc6154bc475fbbc729`; la de Descargas traía 2 secciones xref que FPDM/TCPDF no tragan) y FPDM instalado en `~/lib/pdf/fpdm-tmw/` (3 parches `{}`→`[]` para PHP 8.3) — **el pipeline final NO usa FPDM**: su aplanado solo existe vía pdftk (ausente) y en modo `native` los valores no sobreviven al importado de FPDI (no arrastra anotaciones). El texto va por TCPDF con las métricas de los rects.
+
+### Verificado (CLI server + poppler + ZXing + Chromium, 2026-10-31)
+
+- `php -l` sin errores; endpoint de prueba por CLI escribe `TEST-ACROFORM.pdf` (784 KB, URL pública 200); el script NO reemplazó aún al endpoint en producción (repo listo, pendiente de push con confirmación de Juan).
+- Render página 1: nombre en negrita con autofit, programa azul de marca, párrafo compuesto ("del 14 al 21 de marzo del 2026…32 horas académicas"), `Calificación: 14`, `Trujillo, marzo del 2026`; tildes correctas (probado `MARÍA ELENA VÁSQUEZ ROJAS`, programa acentuado, cruz de mes "del 23 al 30 de noviembre del 2026").
+- Errores por CLI: sin `codigo` → 400 "Falta el parametro codigo."; `nota=0` → 422; programa 'YOGA' → 422 sin sílabo; código con caracteres raros → 400. Sin rutas internas en ninguno.
+- Los PDFs de prueba se borraron del docroot tras el render.
+
 ## 2026-10-30 (verifica: aviso informativo multi-certificados)
 
 ### Added
@@ -1677,4 +1694,4 @@ Borrado con `git rm -r`, que lo quita del índice y del disco. Sigue siendo recu
 
 ### Pendiente
 
-- **Plantilla en blanco**: `PDF-PLANTILLA.pdf` trae los datos de ejemplo horneados (alumno "Javier Eduardo Riquero", curso HACCP, fechas de marzo, calificación), así que el texto del script cae encima súperpuesto, choca con la firma y el pie dice "Powered by TCPDF". Juan va a generar desde su editor la `PDF-PLANTILLA-BLANCO.pdf` (mismo diseño sin textos dinámicos); con ella se rehacen las posiciones exactas de nombre/curso/fechas/horas/QR y se desactiva el pie del TCPDF.
+- ~~**Plantilla en blanco**~~ — **resuelto el 2026-10-31 con otra vía todavía más limpia**: en vez de una plantilla con los textos ejemplo borrados, Juan convirtió la hoja de Canva en un **formulario editable de 15 campos AcroForm** (`CERTIFICADO-EDITABLE.pdf`, luego renormalizada a xref único), el generador llena **por nombre de campo** (sin posiciones dibujadas a mano) y el QR de verificación va estampado por código donde Juan marcó su posición con un QR de ejemplo. Pipelnea, verificación y detalles en la entrada **2026-10-31**.
