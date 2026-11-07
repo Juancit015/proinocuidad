@@ -6,7 +6,7 @@
  * Responde con redirect a certificados/<codigo>.pdf.
  *
  * Pipeline (PHP puro; el server no tiene pdftk/qpdf/gs ni python útil):
- *   1) TCPDF+FPDI (alias `pdf`) importan las 2 páginas de la plantilla editable:
+ *   1) TCPDF+FPDI (alias `pdf`) importan las 2 o 3 páginas de la plantilla editable:
  *      el contenido llega SIN los campos AcroForm (FPDI no arrastra anotaciones),
  *      o sea las cajas quedan limpias.
  *   2) Los 15 valores se dibujan DENTRO de los rects que definen los campos del
@@ -29,14 +29,14 @@ ini_set('display_errors', 0);
 
 $RUTA_DOCROOT   = '/home/guanbhctsy/proinocuidad.com';
 $RUTA_BASE_URL  = 'https://proinocuidad.com';
-$RUTA_PLANTILLA = '/home/guanbhctsy/tmp/CERTIFICADO-EDITABLE.pdf';
+$RUTA_PLANTILLA = '/home/guanbhctsy/tmp/CERTIFICADO-EDITABLE-3P.pdf';
 $RUTA_TCPDF     = $RUTA_DOCROOT . '/aula/lib/tcpdf/tcpdf.php';
 $RUTA_FPDI      = $RUTA_DOCROOT . '/aula/mod/assign/feedback/editpdf/fpdi/autoload.php';
 
 // md5 de la plantilla editable normalizada (xref único, sin ObjStm; con el QR
 // de ejemplo de posición que el script tapa y reemplaza). Si cambia el fichero,
 // la emisión se detiene: re-verificar coords/mf5 de CAMPOS.
-$PLANTILLA_MD5 = '1438241f691bf4dc6154bc475fbbc729';
+$PLANTILLA_MD5 = '3321ad84b2b92d48de08bad1b2132e4b';
 
 // Tamaño de página de la plantilla en puntos (medido sobre el fichero real).
 $PAGINA_W = 842.25;
@@ -72,20 +72,105 @@ $CAMPOS = array(
     'creditos'     => array('pag' => 2, 'rect' => array(728.0, 444.1, 772.0, 466.1), 'align' => 'C', 'style' => '',  'size' => 14,   'min' => 8,   'lh' => 1.15, 'color' => array(0, 0, 0)),
     'nota'         => array('pag' => 2, 'rect' => array(722.0, 374.1, 778.0, 396.1), 'align' => 'C', 'style' => '',  'size' => 14,   'min' => 8,   'lh' => 1.15, 'color' => array(0, 0, 0)),
     'registro'     => array('pag' => 2, 'rect' => array(688.0, 308.1, 796.0, 334.1), 'align' => 'C', 'style' => '',  'size' => 10.5, 'min' => 5,   'lh' => 1.15, 'color' => array(11, 18, 121)),
+    // Página 3 (continuación del sílabo): solo si el programa tiene más de 3 módulos.
+    // Los rects son los de la página 2; la plantilla de 3 páginas duplica la tabla.
+    'modulo4'      => array('pag' => 3, 'rect' => array(46.0,  404.1, 209.0, 454.1), 'align' => 'C', 'style' => '',  'size' => 11.5, 'min' => 7,   'lh' => 1.3,  'color' => array(0, 0, 0)),
+    'modulo5'      => array('pag' => 3, 'rect' => array(62.0,  258.1, 193.0, 311.1), 'align' => 'C', 'style' => '',  'size' => 11.5, 'min' => 7,   'lh' => 1.3,  'color' => array(0, 0, 0)),
+    'modulo6'      => array('pag' => 3, 'rect' => array(47.0,  128.1, 209.0, 163.1), 'align' => 'C', 'style' => '',  'size' => 11.5, 'min' => 7,   'lh' => 1.3,  'color' => array(0, 0, 0)),
+    'contenido4'   => array('pag' => 3, 'rect' => array(235.0, 352.1, 548.0, 492.1), 'align' => 'L', 'style' => '',  'size' => 11,   'min' => 6.5, 'lh' => 1.35, 'color' => array(0, 0, 0)),
+    'contenido5'   => array('pag' => 3, 'rect' => array(235.0, 212.1, 548.0, 342.1), 'align' => 'L', 'style' => '',  'size' => 11,   'min' => 6.5, 'lh' => 1.35, 'color' => array(0, 0, 0)),
+    'contenido6'   => array('pag' => 3, 'rect' => array(235.0,  74.1, 548.0, 202.1), 'align' => 'L', 'style' => '',  'size' => 11,   'min' => 6.5, 'lh' => 1.35, 'color' => array(0, 0, 0)),
 );
 
-// Sílabo por programa (página 2). Único registro inicial: curso BPM + HACCP,
-// letra por letra de la plantilla. Los demás programas se agregan cuando llegue
-// su sílabo confirmado (design.md, decisión 7).
+// Sílabo por programa. Se elige por los tokens de 'coincide': todos tienen que
+// aparecer (sin acentos, en mayúsculas) en el nombre del programa. El orden
+// importa solo cuando dos entradas podrían encajar en el mismo nombre.
+// Un programa con modulo4..6 usa además la página 3 del reverso.
 $PROGRAMAS = array(
-    'bpm-haccp' => array(
-        'coincide' => array('BPM', 'HACCP'),
-        'modulo1'    => "Módulo I:\nIntroducción a la inocuidad alimentaria, peligros y BPM",
-        'modulo2'    => "Módulo II: Higiene y Saneamiento, POES y POE",
-        'modulo3'    => "Módulo III:\nSistema HACCP y auditoría",
-        'contenido1' => "• Introducción a la inocuidad alimentaria\n• Peligros en los alimentos\n• Buenas Prácticas de Manufactura\n• Proyecto y construcción de las instalaciones\n• Control de operaciones\n• Higiene y salud del personal",
-        'contenido2' => "• Procedimientos Operativos Estandarizados de Saneamiento (POES)\n• Higiene y saneamiento\n• Procedimientos Operativos Estandarizados (POE)",
-        'contenido3' => "• Generalidades Sistema HACCP\n• 7 principios y 12 pasos\n• Auditoría del Sistema HACCP",
+    // Diplomado (6 módulos: usa también la página 3)
+    'diplomado' => array(
+        'coincide' => array('GESTION', 'CALIDAD', 'INOCUIDAD'),
+        // La plantilla trae grabado "CURSO ESPECIALIZADO"; el diplomado usa
+        // otra línea. Se tapa con blanco y se redibuja (ver composición).
+        'tipo' => 'DIPLOMADO ESPECIALIZADO',
+        'modulo1' => "Módulo I:\nContexto nacional e internacional",
+        'modulo2' => "Módulo II:\nProgramas prerrequisitos",
+        'modulo3' => "Módulo III:\nSistema HACCP",
+        'modulo4' => "Módulo IV:\nISO 9001 e ISO 22000",
+        'modulo5' => "Módulo V:\nBRCGS Food Safety V.9",
+        'modulo6' => "Módulo VI:\nAuditoría de sistemas integrados",
+        'contenido1' => "• Inocuidad global y cadenas de suministro\n• ETAS y su impacto en salud pública\n• DIGESA, SANIPES, SENASA y COMPIAL\n• Regulación nacional vs. Codex\n• Exigencias para exportación: FDA y UE\n• Principios Generales de Higiene CAC/RCP 1-1969",
+        'contenido2' => "• BPM como cimiento de ISO 22000 y BRCGS\n• Infraestructura y diseño higiénico\n• Higiene del personal y capacitación\n• MIP: manejo integrado de plagas\n• Mantenimiento, calibración y agua\n• Prevención de la contaminación cruzada",
+        'contenido3' => "• Los 7 principios del HACCP\n• 5 pasos preliminares\n• Análisis de peligros\n• Árbol de decisiones y PCC\n• Límites críticos y vigilancia\n• Verificación y registros",
+        'contenido4' => "• Enfoque por procesos\n• Pensamiento basado en riesgos\n• PPR operativos vs. PCC\n• Comunicación en la cadena alimentaria\n• Tendencias 2026",
+        'contenido5' => "• Alcance GFSI/BRCGS\n• Requisitos y no conformidades\n• Liderazgo y cultura de inocuidad\n• Plan de seguridad y proveedores\n• Operaciones y control de alérgenos\n• Food Defense y Food Fraud",
+        'contenido6' => "• Principios de la auditoría ISO 19011\n• Competencias del auditor\n• Programa y plan de auditoría\n• Muestreo y evidencias\n• No conformidades e informe\n• Acciones correctivas y seguimiento",
+    ),
+    // Cursos 4 y 6 (mismo temario, dos productos distintos)
+    'bpm-poes-haccp' => array(
+        'coincide' => array('POES', 'POE', 'HACCP'),
+        'modulo1' => "Módulo I:\nInocuidad, peligros y BPM",
+        'modulo2' => "Módulo II:\nHigiene y Saneamiento, POES y POE",
+        'modulo3' => "Módulo III:\nSistema HACCP y auditoría",
+        'contenido1' => "• Introducción a la inocuidad alimentaria\n• Peligros en los alimentos\n• Proyecto y construcción de instalaciones\n• Control de operaciones\n• Higiene y salud del personal",
+        'contenido2' => "• POES 1 a 8: agua, superficies, personal\n• Limpieza y desinfección\n• Plan de higiene y saneamiento\n• Verificación y validación\n• POE: reclamos, trazabilidad, mantenimiento\n• Etiquetado e información al consumidor",
+        'contenido3' => "• Generalidades del Sistema HACCP\n• 7 principios y 12 pasos\n• Análisis de peligros y medidas de control\n• Determinación de PCC y límites críticos\n• Documentación y registros\n• Auditoría del Sistema HACCP",
+    ),
+    // Curso 10: HACCP según FSSC 22000
+    'haccp-fssc' => array(
+        'coincide' => array('FSSC'),
+        'modulo1' => "Módulo I:\nFundamentos, ISO 22000 y FSSC 22000",
+        'modulo2' => "Módulo II:\nHACCP según ISO 22000 y Codex",
+        'contenido1' => "• Generalidades del Sistema HACCP\n• ISO 22000:2018 y pensamiento basado en riesgos\n• Programas prerrequisitos ISO/TS 22002-1\n• FSSC 22000 V6: resumen del esquema\n• Edificios, servicios, equipos y limpieza\n• Control de plagas e higiene personal",
+        'contenido2' => "• Definiciones ISO 22000\n• Los 12 pasos del HACCP\n• Análisis de peligros y medidas de control\n• Determinación de PCC y PPR operativos\n• Vigilancia de PCC y PPRO\n• Talleres prácticos",
+    ),
+    // Curso 5: HACCP DIGESA/SENASA
+    'haccp-digesa' => array(
+        'coincide' => array('HACCP', 'DIGESA'),
+        'modulo1' => "Módulo I:\nFundamentos y marco normativo peruano",
+        'modulo2' => "Módulo II:\nDiseño e implementación del HACCP",
+        'modulo3' => "Módulo III:\nValidación, certificación y auditoría",
+        'contenido1' => "• Inocuidad vs. calidad\n• Los 7 principios del HACCP\n• Rol de DIGESA y SENASA\n• Codex Alimentarius e ISO 22000\n• PPR: BPM, POES y trazabilidad",
+        'contenido2' => "• Etapas preliminares y equipo HACCP\n• Descripción del producto y uso esperado\n• Diagrama de flujo y confirmación in situ\n• Análisis de peligros y medidas de control\n• Determinación de PCC: árbol de decisiones\n• Límites críticos, vigilancia y acciones correctivas",
+        'contenido3' => "• Validación vs. verificación\n• Auditorías internas y externas\n• Manejo de no conformidades\n• Certificación DIGESA y SENASA\n• Mejora continua y cultura de inocuidad",
+    ),
+    // Curso 11: auditor interno HACCP
+    'auditor-haccp' => array(
+        'coincide' => array('AUDITOR', 'INTERNO'),
+        'modulo1' => "Módulo I:\nHACCP e introducción a la auditoría",
+        'modulo2' => "Módulo II:\nPlaneación y ejecución de la auditoría",
+        'modulo3' => "Módulo III:\nHallazgos, informe y seguimiento",
+        'contenido1' => "• ¿Qué es el HACCP?\n• Programas prerrequisitos\n• Repaso de 7 principios y 12 pasos\n• Objetivo y tipos de auditoría\n• Principios y competencias del auditor\n• Etapas de la auditoría (PHVA)",
+        'contenido2' => "• Gestión del programa de auditoría\n• Riesgos y oportunidades del programa\n• Selección del equipo auditor\n• Plan de auditoría y listas de verificación\n• Reunión de apertura y comunicación\n• Revisión documentaria y entrevistas",
+        'contenido3' => "• Verificación in situ y auditoría de PPR\n• Auditoría de los PCC\n• Generación y clasificación de hallazgos\n• Elementos de una no conformidad\n• Reunión de cierre e informe\n• Seguimiento y acciones correctivas",
+    ),
+    // Curso 2: BPM y prerrequisitos Codex 2022 / ISO 22002-1
+    'bpm-codex' => array(
+        'coincide' => array('BPM', 'PRERREQUISITOS'),
+        'modulo1' => "Módulo I:\nIntroducción a las BPM y prerrequisitos",
+        'modulo2' => "Módulo II:\nProgramas prerrequisitos · Parte II",
+        'modulo3' => "Módulo III:\nProgramas prerrequisitos · Parte III",
+        'contenido1' => "• Definiciones, contaminantes y peligros\n• Tipos de peligros y control\n• PPR: exterior y diseño de procesos\n• Estructura de instalaciones\n• Instalaciones para el personal y servicios",
+        'contenido2' => "• Equipos, mantenimiento y calibración\n• Control de contaminación química y física\n• Gestión de plagas y proveedores\n• Recepción, almacenamiento y transporte\n• Trazabilidad y retiro de producto\n• Gestión de alérgenos",
+        'contenido3' => "• Personal: formación, higiene y salud\n• Indumentaria y normas de higiene\n• Control de las operaciones\n• Limpieza y saneamiento\n• Actualización Codex 2022 (CXC 1-1969)",
+    ),
+    // Curso 8: legislación sanitaria
+    'legislacion' => array(
+        'coincide' => array('LEGISLACION'),
+        'modulo1' => "Módulo I:\nAspectos generales y marco nacional",
+        'modulo2' => "Módulo II:\nNormativa internacional y talleres",
+        'contenido1' => "• Ley de Inocuidad (DL 1062-2008) y reglamento\n• Reglamento sanitario DS 007-98\n• Modificatoria DS 004-2014\n• Alimentos de alto riesgo (RM 624-2015)\n• Norma HACCP (RM 449-2006)\n• Criterios microbiológicos y agua",
+        'contenido2' => "• Codex Alimentarius\n• Regulación sanitaria de Estados Unidos\n• Normativas voluntarias\n• Rastreabilidad (RM 106-2023)\n• Talleres prácticos",
+    ),
+    // Curso 9: higiene y saneamiento (temario único en 3 bloques)
+    'higiene-saneamiento' => array(
+        'coincide' => array('PROGRAMAS', 'HIGIENE'),
+        'modulo1' => "Módulo I:\nFundamentos y control del agua",
+        'modulo2' => "Módulo II:\nProgramas operativos",
+        'modulo3' => "Módulo III:\nVerificación y documentación",
+        'contenido1' => "• Terminología y aspectos regulatorios\n• Importancia de la higiene y saneamiento\n• Control de abastecimiento y suministro de agua\n• Programa y monitoreo de agua",
+        'contenido2' => "• Limpieza y desinfección\n• Higiene y salud del personal\n• Gestión de plagas\n• Manejo y disposición de residuos\n• Control de productos químicos",
+        'contenido3' => "• Validación de los programas\n• Vigilancia y verificación\n• Gestión documentaria\n• Principales entregables\n• Talleres prácticos",
     ),
 );
 
@@ -233,7 +318,7 @@ $fechaIni = date('Y-m-d', $tsIni);
 
 // Mapa de programa: normalizar sin acentos en MAYUSCULAS y buscar un registro
 // cuyos tokens 'coincide' aparezcan todos en el nombre del programa.
-$norm = mb_strtoupper(strtr($pPrograma, array('Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ü' => 'U')));
+$norm = strtr(mb_strtoupper($pPrograma), array('Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ü' => 'U'));
 $silabo = null;
 foreach ($PROGRAMAS as $pr) {
     $ok = true;
@@ -285,21 +370,24 @@ $valores = array(
     'parrafo'      => $parrafo,
     'calificacion' => 'Calificación: ' . $pNota,
     'lugar_fecha'  => $pLugar . ', ' . mes_es($mesFin) . ' del ' . $anioFin,
-    // Página 2 (sílabo)
-    'modulo1'      => $silabo['modulo1'],
-    'modulo2'      => $silabo['modulo2'],
-    'modulo3'      => $silabo['modulo3'],
-    'contenido1'   => $silabo['contenido1'],
-    'contenido2'   => $silabo['contenido2'],
-    'contenido3'   => $silabo['contenido3'],
+    // Página 2 (sílabo): se añaden abajo solo los módulos que el programa tenga.
     'horas'        => $pHoras,
     'creditos'     => $pCred,
     'nota'         => $pNota,
     'registro'     => $pCodigo,
 );
 
+// Módulos del reverso: solo los que el programa tenga. Un curso de 2 módulos
+// deja la fila 3 vacía; uno de 6 usa además la página 3.
+foreach (array('modulo1', 'modulo2', 'modulo3', 'contenido1', 'contenido2', 'contenido3',
+               'modulo4', 'modulo5', 'modulo6', 'contenido4', 'contenido5', 'contenido6') as $k) {
+    if (!empty($silabo[$k])) {
+        $valores[$k] = $silabo[$k];
+    }
+}
+
 /* ------------------------------------------------------------------ */
-/* Composición: 2 páginas importadas + campos dibujados + QR           */
+/* Composición: 2 o 3 páginas importadas + campos dibujados + QR       */
 /* ------------------------------------------------------------------ */
 
 try {
@@ -313,20 +401,49 @@ try {
     $pdf->setSourceFile($RUTA_PLANTILLA);
     $tpl1 = $pdf->importPage(1, '/CropBox');
     $tpl2 = $pdf->importPage(2, '/CropBox');
+    $tpl3 = !empty($valores['modulo4']) ? $pdf->importPage(3, '/CropBox') : null;
 
     $pdf->addPage('L', array($PAGINA_W, $PAGINA_H));
     $pdf->useTemplate($tpl1);
+
+    // La plantilla trae grabada la línea "CURSO ESPECIALIZADO" (AmazingSlab 27,
+    // #091172). Si el programa pide otra (el diplomado), se tapa el texto fijo
+    // con blanco y se redibuja en la misma posición y color. Se hace antes de
+    // los campos para que el nombre del programa quede encima.
+    $tipoCurso = isset($silabo['tipo']) ? $silabo['tipo'] : 'CURSO ESPECIALIZADO';
+    if ($tipoCurso !== 'CURSO ESPECIALIZADO') {
+        $pdf->SetFillColor(255, 255, 255);
+        $pdf->rect(378.0, 264.0, 246.0, 30.0, 'F');
+        $pdf->SetFont('times', 'B', 27);
+        $pdf->SetTextColor(9, 17, 114);
+        $pdf->SetXY(378.0, 262.0);
+        $pdf->Cell(246.0, 32.0, $tipoCurso, 0, 0, 'C');
+    }
+
     foreach ($CAMPOS as $nombreCampo => $def) {
-        if ($def['pag'] !== 1) { continue; }
+        if ($def['pag'] !== 1 || !isset($valores[$nombreCampo])) { continue; }
         dibuja_campo($pdf, $def, $valores[$nombreCampo], $PAGINA_H);
     }
 
     $pdf->addPage('L', array($PAGINA_W, $PAGINA_H));
     $pdf->useTemplate($tpl2);
     foreach ($CAMPOS as $nombreCampo => $def) {
-        if ($def['pag'] !== 2) { continue; }
+        if ($def['pag'] !== 2 || !isset($valores[$nombreCampo])) { continue; }
         dibuja_campo($pdf, $def, $valores[$nombreCampo], $PAGINA_H);
     }
+
+    // Página 3: continuación del sílabo (módulos IV–VI), sin QR ni panel.
+    if ($tpl3 !== null) {
+        $pdf->addPage('L', array($PAGINA_W, $PAGINA_H));
+        $pdf->useTemplate($tpl3);
+        foreach ($CAMPOS as $nombreCampo => $def) {
+            if ($def['pag'] !== 3 || !isset($valores[$nombreCampo])) { continue; }
+            dibuja_campo($pdf, $def, $valores[$nombreCampo], $PAGINA_H);
+        }
+    }
+
+    // El QR vive siempre en la página 2, aunque el sílabo continúe en la 3.
+    $pdf->setPage(2);
 
     // Tapa blanca sobre toda la huella del QR de ejemplo (design.md, decisión 4)
     $pdf->SetFillColor(255, 255, 255);
