@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/certificados/db" VERSION="2026103100" COMMENT="Tabla de cola de emision automatica de certificados">
+  <TABLES>
+    <TABLE NAME="local_certificados_cola" COMMENT="Pendientes de emision disparados por course_completed">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Curso del aula"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Alumno"/>
+        <FIELD NAME="timecompleted" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="course_completions.timecompleted"/>
+        <FIELD NAME="estado" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="pendiente" SEQUENCE="false" COMMENT="pendiente|emitida|saltada|fallada|duplicado"/>
+        <FIELD NAME="motivo" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Razon del salto o de la falla"/>
+        <FIELD NAME="codigo" TYPE="char" LENGTH="60" NOTNULL="false" SEQUENCE="false" COMMENT="Codigo de registro emitido"/>
+        <FIELD NAME="intentos" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Reintentos de la tarea"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="uk_course_user" UNIQUE="true" FIELDS="courseid, userid"/>
+        <INDEX NAME="ix_estado" UNIQUE="false" FIELDS="estado"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
