@@ -185,7 +185,10 @@ function json_error(int $status, string $msg): void {
 function mes_es(string $n): string {
     $meses = array(1 => 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
                    'julio', 'agosto', 'Setiembre', 'octubre', 'noviembre', 'diciembre');
-    return $meses[(int)$n];
+    $i = (int)$n;
+    // Sin la guarda, un mes fuera de rango devolvía un warning y null dentro
+    // del párrafo del certificado.
+    return isset($meses[$i]) ? $meses[$i] : '';
 }
 
 /**
@@ -219,7 +222,23 @@ function lineas_ajustadas(TCPDF $pdf, string $texto, float $w): array {
                 $cur = $prueba;
             } else {
                 if ($cur !== '') { $salida[] = $cur; }
-                $cur = $palabra;
+                if ($pdf->GetStringWidth($palabra) > $w) {
+                    // Una palabra más ancha que el rect no se partía nunca: el
+                    // tamaño bajaba hasta el mínimo y se dibujaba igual, fuera
+                    // del rect. Se corta por caracteres.
+                    $trozo = '';
+                    foreach (preg_split('//u', $palabra, -1, PREG_SPLIT_NO_EMPTY) as $ch) {
+                        if ($pdf->GetStringWidth($trozo . $ch) <= $w) {
+                            $trozo .= $ch;
+                        } else {
+                            if ($trozo !== '') { $salida[] = $trozo; }
+                            $trozo = $ch;
+                        }
+                    }
+                    $cur = $trozo;
+                } else {
+                    $cur = $palabra;
+                }
             }
         }
         if ($cur !== '') { $salida[] = $cur; }
@@ -282,15 +301,32 @@ function max_strlen_linea(TCPDF $pdf, array $lineas): float {
 /* Parámetros y validación (guardas)                                   */
 /* ------------------------------------------------------------------ */
 
-$pNombre   = isset($_GET['nombre'])   ? trim($_GET['nombre'])   : '';
-$pPrograma = isset($_GET['programa']) ? trim($_GET['programa']) : '';
-$pFecha    = isset($_GET['fecha'])    ? trim($_GET['fecha'])    : '';
-$pHoras    = isset($_GET['horas'])    ? trim($_GET['horas'])    : '';
-$pCodigo   = isset($_GET['codigo'])   ? trim($_GET['codigo'])   : '';
-$pIni      = isset($_GET['fecha_inicio']) ? trim($_GET['fecha_inicio']) : '';
-$pLugar    = isset($_GET['lugar'])    ? trim($_GET['lugar'])    : 'Trujillo';
-$pNota     = isset($_GET['nota'])     ? trim($_GET['nota'])     : '';
-$pCred     = isset($_GET['creditos']) ? trim($_GET['creditos']) : '2';
+// Un parámetro repetido (?nombre[]=x) llega como array y revienta trim() con un
+// fatal sin JSON. Se exige escalar y se acota la longitud: el PDF no puede
+// crecer sin límite porque alguien mande un nombre de 10.000 caracteres.
+$limites = array(
+    'nombre' => 120, 'programa' => 300, 'fecha' => 10, 'fecha_inicio' => 10,
+    'horas' => 6, 'codigo' => 60, 'creditos' => 4, 'nota' => 6, 'lugar' => 80,
+);
+$param = function (string $k, string $def = '') use ($limites): string {
+    if (!isset($_GET[$k])) { return $def; }
+    if (!is_string($_GET[$k])) { json_error(400, 'Parametro invalido: ' . $k . '.'); }
+    $v = trim($_GET[$k]);
+    if (isset($limites[$k]) && mb_strlen($v) > $limites[$k]) {
+        json_error(400, 'Parametro demasiado largo: ' . $k . '.');
+    }
+    return $v;
+};
+
+$pNombre   = $param('nombre');
+$pPrograma = $param('programa');
+$pFecha    = $param('fecha');
+$pHoras    = $param('horas');
+$pCodigo   = $param('codigo');
+$pIni      = $param('fecha_inicio');
+$pLugar    = $param('lugar', 'Trujillo');
+$pNota     = $param('nota');
+$pCred     = $param('creditos', '2');
 
 foreach (array('nombre' => $pNombre, 'programa' => $pPrograma, 'fecha' => $pFecha, 'horas' => $pHoras, 'codigo' => $pCodigo) as $k => $v) {
     if ($v === '') {
@@ -306,7 +342,10 @@ if ($pNota === '' || floatval($pNota) <= 0) {
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $pFecha) || !checkdate((int)substr($pFecha, 5, 2), (int)substr($pFecha, 8, 2), (int)substr($pFecha, 0, 4))) {
     json_error(400, 'La fecha es invalida (formato AAAA-MM-DD).');
 }
-if ($pIni !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $pIni)) {
+if ($pIni !== '' && (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $pIni)
+        || !checkdate((int)substr($pIni, 5, 2), (int)substr($pIni, 8, 2), (int)substr($pIni, 0, 4)))) {
+    // Solo se comprobaba el formato: "2026-13-40" pasaba y mktime lo
+    // normalizaba a otra fecha, que acababa impresa en el párrafo.
     json_error(400, 'La fecha de inicio es invalida (formato AAAA-MM-DD).');
 }
 
@@ -353,6 +392,10 @@ if (md5_file($RUTA_PLANTILLA) !== $PLANTILLA_MD5) {
     json_error(500, 'Error interno generando el certificado.');
 }
 
+if (!is_file($RUTA_TCPDF) || !is_file($RUTA_FPDI)) {
+    error_log('[certificados] Faltan las librerias TCPDF/FPDI en ' . $RUTA_TCPDF . ' / ' . $RUTA_FPDI);
+    json_error(500, 'Error interno generando el certificado.');
+}
 require_once($RUTA_TCPDF);
 require_once($RUTA_FPDI);
 if (!class_exists('pdf')) {
@@ -472,9 +515,26 @@ if (!is_dir($dirSalida)) {
 }
 
 $salida = $dirSalida . '/' . $pCodigo . '.pdf';
+
+// Un certificado ya emitido no se regenera. Sin esta guarda, cualquiera que
+// conozca un código (los códigos son públicos en certificados.json) podía
+// pedir el mismo código con otro nombre y pisar el PDF legítimo.
+if (is_file($salida)) {
+    json_error(409, 'El certificado ya existe.');
+}
+
+// Escritura atómica: TCPDF escribe a un temporal y el rename publica el PDF
+// entero. Antes se escribía directo al destino, así que dos peticiones con el
+// mismo código podían dejar un archivo a medias.
+$tmp = $salida . '.tmp' . getmypid();
 try {
-    $pdf->Output($salida, 'F');
+    $pdf->Output($tmp, 'F');
+    if (!is_file($tmp) || filesize($tmp) <= 0 || !rename($tmp, $salida)) {
+        @unlink($tmp);
+        throw new RuntimeException('no se pudo publicar el PDF');
+    }
 } catch (Throwable $e) {
+    @unlink($tmp);
     error_log('[certificados] Escritura del PDF fallo: ' . $e->getMessage() . ' (codigo ' . $pCodigo . ')');
     json_error(500, 'Error interno generando el certificado.');
 }
