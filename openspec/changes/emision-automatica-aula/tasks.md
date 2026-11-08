@@ -26,7 +26,7 @@
 
 ## 5. Auditoría posterior al cierre (2026-11-07)
 
-- [x] 5.1 Generador: parámetros escalares y con longitud máxima, `checkdate()` en `fecha_inicio`, guarda en `mes_es()`, corte de palabras más anchas que el rect, `is_file()` de TCPDF/FPDI, **409** si el PDF existe y escritura atómica (temporal + `rename`).
+- [x] 5.1 Generador: parámetros escalares y con longitud máxima, `checkdate()` en `fecha_inicio`, guarda en `mes_es()`, corte de palabras más anchas que el rect, `is_file()` de TCPDF/FPDI, **409** si el PDF existe (comprobado antes de componer y bajo `flock`) y escritura atómica (temporal + `rename`).
 - [x] 5.2 Plugin: `normalizar()` con mapa de tildes, `leer(true)` que no sobrescribe un JSON corrupto, duplicado comprobado **dentro** del lock, código persistido antes del HTTP, **409** con PDF válido tratado como "solo falta la ficha", estado `duplicado` para la colisión, `mio.php` resolviendo por código de cola e iniciales sin partículas.
 - [x] 5.3 Datos: 12 códigos de `certificados.json` normalizados (sin `\r\n` ni espacios) y campo de perfil `dni` con `param2=20` (antes `0`, que guardaba vacío cualquier DNI escrito desde el formulario).
 - [x] 5.4 Redeploy verificado por md5 repo = server y E2E con un nombre con tildes y partículas ("Andrés de la Cruz Muñoz"): código, ficha, PDF, QR, `mio.php`, búsqueda por código/DNI/nombre, idempotencia y recuperación. Artefactos borrados (28 fichas, 10 PDFs, cola vacía).
