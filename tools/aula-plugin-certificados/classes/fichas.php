@@ -21,9 +21,21 @@ class fichas {
         return rtrim((string)get_config('local_certificados', 'rutasitio'), '/') . '/certificados';
     }
 
-    /** Normaliza un nombre igual que la página de verificación. */
+    /**
+     * Normaliza un nombre igual que la página de verificación.
+     *
+     * La página usa NFD + borrado de diacríticos. En PHP ese borrado no toca
+     * las vocales precompuestas (í = U+00ED), así que "Díaz" se quedaba con
+     * tilde y la búsqueda por "diaz" no encontraba la ficha. El mapa cubre el
+     * español y no depende de intl.
+     */
     public static function normalizar(string $s): string {
         $s = \core_text::strtolower(trim($s));
+        $s = strtr($s, array(
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+            'ü' => 'u', 'ñ' => 'n', 'à' => 'a', 'è' => 'e', 'ì' => 'i',
+            'ò' => 'o', 'ù' => 'u', 'â' => 'a', 'ê' => 'e', 'ô' => 'o',
+        ));
         $s = preg_replace('/[\x{0300}-\x{036f}]/u', '', $s);
         return preg_replace('/\s+/u', ' ', $s);
     }
@@ -31,19 +43,32 @@ class fichas {
     /**
      * Lee las fichas.
      *
+     * Con $estricto, un archivo que existe pero no se puede decodificar lanza
+     * en vez de devolver []. Sin eso, agregar() reescribía el JSON con una
+     * sola ficha y borraba las demás.
+     *
      * @return array
      */
-    public static function leer(): array {
+    public static function leer(bool $estricto = false): array {
         $ruta = self::ruta();
         if (!is_file($ruta)) {
             return [];
         }
         $crudo = file_get_contents($ruta);
         if ($crudo === false || $crudo === '') {
+            if ($estricto && is_file($ruta)) {
+                throw new \moodle_exception('motivo_json', 'local_certificados', '', 'certificados.json vacio o ilegible');
+            }
             return [];
         }
         $datos = json_decode($crudo, true);
-        return is_array($datos) ? $datos : [];
+        if (!is_array($datos)) {
+            if ($estricto) {
+                throw new \moodle_exception('motivo_json', 'local_certificados', '', 'certificados.json no es JSON valido');
+            }
+            return [];
+        }
+        return $datos;
     }
 
     /**
@@ -66,11 +91,31 @@ class fichas {
         flock($lock, LOCK_EX);
 
         try {
-            $datos = self::leer();
+            // Estricto: un JSON corrupto no se puede sobrescribir con una
+            // sola ficha, porque eso borraría todas las anteriores.
+            $datos = self::leer(true);
+
+            // El duplicado se comprueba DENTRO del lock: el chequeo previo de
+            // emisor::emitir() queda fuera y dos procesos concurrentes podían
+            // pasar los dos y escribir dos fichas de la misma persona.
+            $sufijo = '';
+            if (preg_match('/-([^-]+)$/', (string)($ficha['codigo'] ?? ''), $m)) {
+                $sufijo = $m[1];
+            }
 
             foreach ($datos as $f) {
                 if (isset($f['codigo']) && $f['codigo'] === $ficha['codigo']) {
                     throw new \moodle_exception('motivo_codigo_usado', 'local_certificados', '', $ficha['codigo']);
+                }
+                if (($f['nombre_normalizado'] ?? '') !== ($ficha['nombre_normalizado'] ?? '')) {
+                    continue;
+                }
+                if (($f['programa'] ?? '') === ($ficha['programa'] ?? '')) {
+                    throw new \moodle_exception('motivo_duplicado', 'local_certificados', '', $ficha['nombre_normalizado']);
+                }
+                if ($sufijo !== ''
+                    && preg_match('/-\s*' . preg_quote($sufijo, '/') . '\s*$/', (string)($f['codigo'] ?? ''))) {
+                    throw new \moodle_exception('motivo_duplicado', 'local_certificados', '', $ficha['nombre_normalizado']);
                 }
             }
 

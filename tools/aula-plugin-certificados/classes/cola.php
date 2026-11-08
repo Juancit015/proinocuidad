@@ -69,6 +69,18 @@ class cola {
     }
 
     /**
+     * Guarda el código calculado antes de llamar al endpoint.
+     *
+     * Si el proceso muere después de que el endpoint escriba el PDF, el
+     * reintento reutiliza este código en vez de pedir otro y dejar el primero
+     * huérfano en certificados/.
+     */
+    public static function guardar_codigo(int $id, string $codigo): void {
+        global $DB;
+        $DB->set_field('local_certificados_cola', 'codigo', $codigo, ['id' => $id]);
+    }
+
+    /**
      * Marca el resultado de un pendiente.
      */
     public static function marcar(int $id, string $estado, ?string $motivo = null, ?string $codigo = null, bool $sumarIntento = false): void {

@@ -3,6 +3,7 @@
 // Una URL por curso: /aula/local/certificados/mio.php?course=<id>
 require_once('../../config.php');
 
+use local_certificados\cola;
 use local_certificados\emisor;
 use local_certificados\fichas;
 
@@ -28,10 +29,28 @@ if (!$completado || empty($completado->timecompleted)) {
 }
 
 $map = emisor::mapeo()[$courseid] ?? null;
-$nombreNorm = fichas::normalizar(fullname($USER));
 $ficha = null;
 
-if ($map) {
+// Primero la fila de cola: guarda el código exacto emitido para este
+// (curso, alumno), así que no depende de que el nombre del JSON coincida
+// letra a letra con el fullname() actual del perfil.
+$fila = $DB->get_record('local_certificados_cola', [
+    'courseid' => $courseid,
+    'userid'   => $USER->id,
+    'estado'   => cola::EMITIDA,
+]);
+if ($fila && !empty($fila->codigo)) {
+    foreach (fichas::leer() as $f) {
+        if (($f['codigo'] ?? '') === $fila->codigo && !empty($f['certificado_url'])) {
+            $ficha = $f;
+            break;
+        }
+    }
+}
+
+// Fichas manuales anteriores al plugin: no tienen fila de cola.
+if (!$ficha && $map) {
+    $nombreNorm = fichas::normalizar(fullname($USER));
     foreach (fichas::leer() as $f) {
         if (($f['nombre_normalizado'] ?? '') === $nombreNorm
             && ($f['programa'] ?? '') === (string)$map['programa']
