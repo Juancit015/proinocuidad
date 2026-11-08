@@ -128,9 +128,11 @@ idénticos.
   actividad sobre el quiz, con `gradepass=14`). Sin ese criterio los cursos no
   se completaban nunca y el observer no se disparaba jamás.
 
-md5 desplegados: generador `9c9eaa231ddec16c3c0e97abba0286b6`,
-`classes/emisor.php` `0f9c9b0c153a568b7da9c215a4b75f7d`,
-`classes/fichas.php` `3455eaa0333330f0c2b38ca49720b9d7`.
+md5 desplegados el 2026-11-06: generador
+`9c9eaa231ddec16c3c0e97abba0286b6`, `classes/emisor.php`
+`0f9c9b0c153a568b7da9c215a4b75f7d`, `classes/fichas.php`
+`3455eaa0333330f0c2b38ca49720b9d7`. La auditoría del 2026-11-07 cambió
+esos md5; ver el eslabón 8.
 
 **La página 2 del PDF (resuelto):**
 
@@ -204,6 +206,106 @@ el curso 2:
 Los artefactos de la prueba (PDF, ficha y usuario) se borraron al terminar.
 La muestra quedó en `~/Descargas/certificados-prueba/016-2026-11-PAF-BPMISO.pdf`.
 
+### Eslabón 8 — Auditoría de la entrega ✅ cerrado (2026-11-07)
+
+Cuatro auditorías en paralelo con subagentes `opencode/beam-free#high`
+(generador, plugin, coherencia de datos y sitio en vivo), orquestadas por el
+agente principal. Todo lo que reportaron se verificó antes de tocarlo; los
+falsos positivos se descartaron (por ejemplo, el sitemap y `llms.txt` sí
+coinciden en 21 URLs, y los 9 programas caen en el sílabo correcto).
+
+**Generador** (`generar-certificado.php`):
+
+- Un parámetro repetido (`?nombre[]=x`) mataba `trim()` sin devolver JSON;
+  ahora se exige escalar y se limita la longitud (nombre 120, programa 300…).
+- `fecha_inicio` solo se validaba con regex: `2026-13-40` pasaba y `mktime`
+  la convertía en otra fecha. Ahora se comprueba con `checkdate()`.
+- Un mes fuera de rango devolvía `null` dentro del párrafo; `mes_es()` tiene
+  guarda.
+- Una palabra más ancha que el rect no se partía nunca; ahora se corta por
+  caracteres.
+- `require_once` de TCPDF/FPDI sin comprobar el archivo: ahora `is_file()` y
+  500 con log.
+- **El PDF ya no se sobrescribe**: si el código existe, responde **409**.
+  Se escribe a un temporal y se publica con `rename` atómico.
+
+**Plugin** (`local_certificados`):
+
+- `fichas::normalizar()` no quitaba tildes precompuestas (`Díaz` → `díaz`),
+  mientras la página usa NFD. Toda ficha nueva con acentos era invisible al
+  buscar por nombre sin tildes. Ahora hay mapa `á é í ó ú ü ñ`.
+- `fichas::leer()` devolvía `[]` con un JSON corrupto y `agregar()` lo
+  reescribía con una sola ficha. Ahora `leer(true)` lanza y no borra nada.
+- El duplicado se comprobaba **fuera** del lock; dos procesos podían escribir
+  dos fichas. Ahora se comprueba dentro del lock de `agregar()`.
+- El código se calculaba dentro de la petición y no se guardaba hasta el
+  final: si el proceso moría después del PDF, el reintento pedía otro código
+  y dejaba un PDF huérfano. Ahora se persiste en la fila **antes** del HTTP.
+- Un **409** con el PDF ya en disco se trata como "solo falta la ficha": no
+  se vuelve a llamar al endpoint y se valida el PDF (`%PDF-` + `%%EOF`) antes
+  de darlo por bueno.
+- El duplicado detectado dentro del lock ya no cae en `fallada`: estado
+  `duplicado`.
+- `mio.php` resuelve primero el código de la fila de cola
+  (`courseid`+`userid`+`emitida`); el nombre del JSON queda como respaldo para
+  fichas manuales.
+- `iniciales()` ignora partículas (`de`, `del`, `la`, `los`, `y`…): "Andrés
+  de la Cruz Muñoz" da `ACM`, no `ADL`.
+- Un `mapeo_cursos` inválido se registra con `debugging()` en vez de parecer
+  "todos los cursos sin mapeo".
+
+**Datos:**
+
+- 12 códigos de `assets/data/certificados.json` tenían `\r\n` o un espacio
+  (`SGCIA- 26-001`). Se normalizaron a `SGCIA-26-001` y
+  `001-2026-03-CLC-CIABPPH`. El QR de los certificados viejos ya encuentra su
+  ficha. Verificado con los cuatro códigos antes rotos.
+- **Campo de perfil `dni`**: tenía `param2 = 0` (longitud máxima). Moodle
+  guardaba **vacío** cualquier DNI escrito desde el formulario
+  (`core_text::substr($dni, 0, 0)`). Corregido a `param2 = 20`. Los 47 valores
+  existentes se habían cargado por importación y no estaban afectados.
+
+**Despliegue del 2026-11-07** (repo = server, md5 idénticos):
+
+| Archivo | md5 |
+|---|---|
+| `generar-certificado.php` | `3533c4e58172a988fbd805426c853fcd` |
+| `classes/emisor.php` | `8406171ed14c5f7a54f6b16b473d2252` |
+| `classes/fichas.php` | `e1c3c8bf4bd7b86637cd45c9181f42bd` |
+| `classes/cola.php` | `07d79f5121f3300f9d9ac5ea4b7e0828` |
+| `mio.php` | `64b84803885ec7489b7d732f45bc2800` |
+
+Snapshot previo del dominio: ref `5ab2e5d4247844cacf5e6dee9201fe4ec5828fb6`.
+
+**Prueba E2E del 2026-11-07** con usuario descartable
+`pruebaauditoria1107` ("Andrés de la Cruz Muñoz", DNI `88888888`, nota 16 en
+el curso 2):
+
+1. Código `016-2026-11-ACM-BPMISO` (iniciales `ACM`: las partículas no
+   cuentan).
+2. Ficha con `nombre_normalizado = "andres de la cruz munoz"` y DNI
+   `88888888`.
+3. PDF de 2 páginas, 40 h, 2 créditos, nota 16.00, fechas 31/10 → 07/11/2026.
+   El DNI **no** aparece impreso.
+4. QR decodificado con `jsQR`: apunta a
+   `verifica-tu-certificado.html?codigo=016-2026-11-ACM-BPMISO`.
+5. `mio.php?course=2` con sesión → 303 al PDF (200,
+   `application/pdf`, 782 429 B); sin sesión → 303 al login.
+6. La página encuentra la ficha por código, por DNI y por nombre, **con y sin
+   tildes**; un código inexistente muestra el aviso y no una pantalla en
+   blanco. A 390 px no hay scroll horizontal.
+7. Idempotencia: reejecutar la tarea con la fila `emitida` no crea otra ficha
+   (1 consulta). Recuperación: borrar la ficha y dejar la fila `pendiente`
+   con su código reutiliza el PDF (0,019 s, sin HTTP). Con la ficha presente
+   la fila pasa a `duplicado`.
+8. Los artefactos se borraron: 28 fichas, 10 PDFs en `certificados/`, cola
+   vacía y usuario eliminado.
+
+**Riesgo operativo del 409:** si alguien borra un PDF ya emitido, el endpoint
+no lo regenera y la ficha queda con un enlace roto. La recuperación es
+manual: borrar la ficha del JSON y volver a poner la fila en `pendiente` con
+su código. Es el precio de que nadie pueda pisar un certificado ajeno.
+
 ---
 
 ## 3. Lo que falta, en orden
@@ -220,8 +322,30 @@ La muestra quedó en `~/Descargas/certificados-prueba/016-2026-11-PAF-BPMISO.pdf
 | 8 | ~~Añadir el botón "Descargar certificado" por curso~~ (9 cursos) | hecho |
 | 9 | ~~Testeo de punta a punta~~ (eslabón 7) | hecho |
 | 10 | **Curso 3**: sílabo y entrada en el mapeo cuando Juan traiga el temario | Juan |
-| 11 | Decidir si las 5 tareas "SUBIR TALLER" del curso 7 se borran | Juan |
+| 11 | ~~Decidir si las 5 tareas "SUBIR TALLER" del curso 7 se borran~~ (2026-11-07: **se quedan**) | resuelto |
 | 12 | Revocar los dos tokens de GitHub expuestos en el chat | Juan |
+| 13 | Decidir el código correcto de Lorena Pilar Cáceres Junes (hoy comparte `004-2026-05-JCH-CHICP`) | Juan |
+| 14 | Decidir el código de la ficha de Manuel Renan Aliaga Abanto (hoy vacío) | Juan |
+
+### Nota pendiente — curso 3
+
+**Decisión de Juan (2026-11-07): esperar el temario.** El curso 3 (BPM según
+Codex Alimentarius) tiene páginas y examen en el aula, pero no emite
+certificado: no existe su ficha en el sitio de donde extraer el sílabo, y sin
+sílabo el reverso del PDF saldría con los módulos de otro programa.
+
+Cuando llegue el temario hay que hacer, en este orden:
+
+1. Abrir un **change de OpenSpec** con el temario (3 módulos + contenidos, o
+   más si los tiene). No se toca el generador sin ese change.
+2. Agregar la entrada en `$PROGRAMAS` de `generar-certificado.php`, con sus
+   tokens `coincide`. Ojo: los tokens se comparan sin acentos y en mayúsculas
+   contra el nombre del programa, y el orden importa si dos entradas podrían
+   encajar en el mismo nombre.
+3. Agregar la fila al `mapeo_cursos` del aula (`courseid` 3, sufijo, horas,
+   créditos, `gradecmid` del examen del curso 3).
+4. Repetir el ensayo del eslabón 7 con un usuario descartable antes de darlo
+   por bueno.
 
 ---
 
@@ -233,10 +357,17 @@ La muestra quedó en `~/Descargas/certificados-prueba/016-2026-11-PAF-BPMISO.pdf
   aparte.
 - **Opciones de examen:** los distractores actuales son genéricos.
 - **5 tareas "SUBIR TALLER"** del curso 7 (creadas a mano el 28/10, sin
-  descripción, vencidas, 0 envíos): **ocultas**. Pendiente decidir si se
-  borran.
-- **`certificados.json`:** hay códigos con saltos de línea y una ficha sin
-  código (preexistente, anterior a este trabajo).
+  descripción, vencidas, 0 envíos): **ocultas y se quedan**. Juan decidió el
+  2026-11-07 no borrarlas: los 50 alumnos actuales ya terminaron, pero la
+  actividad es la que van a usar los alumnos nuevos del diplomado. No son
+  residuo de una prueba; el estado "oculta" es lo que evita que estorben a
+  quien ya terminó.
+- **`certificados.json`:** los 12 códigos con `\r\n` o con espacio se
+  normalizaron el 2026-11-07 (el QR de los certificados viejos ya encuentra su
+  ficha). Quedan dos casos que necesitan decisión de Juan: el código
+  `004-2026-05-JCH-CHICP` está **repetido** (Jeyson Anthony Congo Huaromo y
+  Lorena Pilar Cáceres Junes; el de ella debería ser `007-…`, pero no se puede
+  inventar) y la ficha de Manuel Renan Aliaga Abanto **no tiene código**.
 - **Tokens de GitHub** expuestos en el chat: siguen sin revocar.
 
 ---
@@ -330,6 +461,13 @@ Claudia Rubio, la cuenta de invitado y la de administración quedan vacías.
 Amerson Florido se llenará cuando se cree su cuenta. El DNI no se imprime en
 el PDF: solo sirve para la búsqueda en `verifica-tu-certificado.html`.
 
+**Corregido el 2026-11-07:** el campo tenía `param2 = 0` (longitud máxima),
+así que `profile_save_data()` truncaba a vacío cualquier DNI escrito desde el
+formulario (`core_text::substr($dni, 0, 0)`). Los 47 valores existentes se
+habían cargado por importación directa y no estaban afectados, pero un alumno
+nuevo habría quedado sin DNI. `param2` quedó en `20` y se probó guardando y
+leyendo el DNI `88888888` en un usuario descartable.
+
 ## 8. Bitácora
 
 | Fecha | Hecho |
@@ -344,3 +482,5 @@ el PDF: solo sirve para la búsqueda en `verifica-tu-certificado.html`.
 | 2026-11-06 | Botón "Descargar certificado" en los 9 cursos |
 | 2026-11-06 | Timezone del aula a `America/Lima` (estaba en `Europe/London`) |
 | 2026-11-06 | Eslabón 7 cerrado: prueba de punta a punta con usuario descartable |
+| 2026-11-07 | Auditoría con 4 subagentes: correcciones del generador y del plugin, códigos del JSON normalizados y campo `dni` reparado |
+| 2026-11-07 | Eslabón 8 cerrado: redeploy verificado por md5 y E2E con tildes, partículas y DNI |
