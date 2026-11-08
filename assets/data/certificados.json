@@ -136,8 +136,8 @@
     "dni_original": "27042319",
     "dni_normalizado": "27042319",
     "programa": "CURSO \"IMPLEMENTACIÓN Y AUDITORÍA DE LAS BPM, POES, POE, PLAN HACCP\"",
-    "fecha_inicio": "2026-03-17",
-    "fecha_termino": "2026-03-21",
+    "fecha_inicio": "2026-02-11",
+    "fecha_termino": "2026-02-13",
     "horas": "32",
     "estado": "VÁLIDO",
     "certificado_url": "https://drive.google.com/file/d/1wmJqM-PB8AhALLePip97gKgg7w1d87fq/view?usp=sharing"
@@ -325,7 +325,7 @@
     "certificado_url": "https://drive.google.com/file/d/14o8MlLg0KveNrlGAWF0fpnCJzCAsVYqf/view?usp=sharing"
   },
   {
-    "codigo": "004-2026-05-JCH-CHICP",
+    "codigo": "007-2026-05-LCJ-CHICP",
     "nombre": "Lorena Pilar Cáceres Junes",
     "nombre_normalizado": "lorena pilar caceres junes",
     "dni_original": "21534204",

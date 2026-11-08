@@ -328,8 +328,8 @@ su código. Es el precio de que nadie pueda pisar un certificado ajeno.
 | 10 | **Curso 3**: sílabo y entrada en el mapeo cuando Juan traiga el temario | Juan |
 | 11 | ~~Decidir si las 5 tareas "SUBIR TALLER" del curso 7 se borran~~ (2026-11-07: **se quedan**) | resuelto |
 | 12 | Revocar los dos tokens de GitHub expuestos en el chat | Juan |
-| 13 | Decidir el código correcto de Lorena Pilar Cáceres Junes (hoy comparte `004-2026-05-JCH-CHICP`) | Juan |
-| 14 | Decidir el código de la ficha de Manuel Renan Aliaga Abanto (hoy vacío) | Juan |
+| 13 | ~~Decidir el código correcto de Lorena Pilar Cáceres Junes~~ (2026-11-08: `007-2026-05-LCJ-CHICP`) | resuelto |
+| 14 | ~~Decidir el código de la ficha de Manuel Renan Aliaga Abanto~~ (2026-11-08: se deja vacío; las fechas pasan a `2026-02-11 → 2026-02-13`) | resuelto |
 
 ### Nota pendiente — curso 3
 
@@ -368,10 +368,25 @@ Cuando llegue el temario hay que hacer, en este orden:
   quien ya terminó.
 - **`certificados.json`:** los 12 códigos con `\r\n` o con espacio se
   normalizaron el 2026-11-07 (el QR de los certificados viejos ya encuentra su
-  ficha). Quedan dos casos que necesitan decisión de Juan: el código
-  `004-2026-05-JCH-CHICP` está **repetido** (Jeyson Anthony Congo Huaromo y
-  Lorena Pilar Cáceres Junes; el de ella debería ser `007-…`, pero no se puede
-  inventar) y la ficha de Manuel Renan Aliaga Abanto **no tiene código**.
+  ficha). **Resuelto el 2026-11-08:** el código de Lorena Pilar Cáceres Junes
+  pasó de `004-2026-05-JCH-CHICP` (duplicado con Jeyson) a
+  `007-2026-05-LCJ-CHICP`, y las fechas de Manuel Renan Aliaga Abanto (código
+  vacío) pasaron a `2026-02-11 → 2026-02-13` (las de su PDF). Su código sigue
+  vacío a propósito: su PDF Canva no trae registro ni QR a la página.
+- **Detección de duplicados (`fichas::existe`):** se enseñó a reconocer el
+  formato viejo `SUFIJO-...` (diplomado `SGCIA-26-00x`) y las fichas sin código
+  (Manuel). Antes, 4 de las 28 fichas antiguas no se detectaban y el plugin
+  habría emitido un segundo certificado para esas personas. Verificado en
+  producción con los 4 casos.
+- **Emisión masiva (eslabón 9):** bloqueada por falta de datos. De los 111
+  pares alumno-curso reales, 27 tienen certificado y 84 no tienen nota ni fechas
+  en ningún archivo. Los cursos 2, 8, 9, 10 y 11 no tienen ni un certificado
+  emitido (75 pares entre ellos: 18+9+26+11+11), y faltan 9 más en los
+  cursos 4, 5 y 6 (5+2+2). Las 28 fichas existentes se leyeron de sus PDFs en
+  Drive: notas de 14 a 20 (13 con 20,
+  4 con 19, 6 con 18, 2 con 17, 1 con 16, 2 con 14). Solo falta que el cliente
+  entregue las notas y fechas de los 84 restantes (los PDFs que ya les entregó,
+  o un Excel).
 - **Tokens de GitHub** expuestos en el chat: siguen sin revocar.
 
 ---
@@ -446,7 +461,7 @@ matrículas:
 |---|---|
 | Alumnos con DNI de 8 dígitos | 45 |
 | Documento extranjero (no 8 dígitos) | 2 |
-| Sin DNI (Claudia Rubio, no está en el Excel) | 1 |
+| Cuentas de servicio sin DNI (ver abajo) | 3 |
 | En el Excel pero no en el aula (Amerson Florido) | 1 |
 
 Los dos documentos extranjeros:
@@ -472,6 +487,31 @@ habían cargado por importación directa y no estaban afectados, pero un alumno
 nuevo habría quedado sin DNI. `param2` quedó en `20` y se probó guardando y
 leyendo el DNI `88888888` en un usuario descartable.
 
+### Cuentas de servicio sin DNI (a propósito)
+
+Tres cuentas del aula **no tienen DNI y no es un dato faltante**: no son
+alumnos, son cuentas de servicio/administración. Confirmado por Juan el
+2026-11-08.
+
+| Cuenta | Usuario | Qué es |
+|---|---|---|
+| `Alumno Invitado` | `alumno` (`alumno@gmail.com`) | cuenta de invitado/pruebas del aula |
+| `Proinocuidad -` | `administracion@proinocuidad.com` | cuenta institucional de la empresa |
+| `Claudia Rubio` | `clau.rubioj@gmail.com` | cuenta de administración/soporte |
+
+Consecuencias que hay que respetar:
+
+- **No cuentan como alumnos.** Las 50 cuentas con rol `student` del aula son
+  **47 alumnos reales** + estas 3. Eso cuadra con los 47 DNI cargados
+  (45 peruanos de 8 dígitos + 2 documentos extranjeros).
+- **No entran en la emisión masiva** ni en los conteos de avance. Están
+  inscritas en 11 pares alumno-curso en total, que no son matrículas reales.
+- Si alguna vez se emitiera un certificado para ellas, la ficha quedaría sin
+  `dni_original` y la página solo la encontraría por nombre (el DNI es el
+  único campo de búsqueda que no imprime el PDF).
+- El plugin ya las tolera: una ficha sin DNI se genera y se busca igual por
+  nombre normalizado; lo que no habría es la segunda vía de búsqueda.
+
 ## 8. Bitácora
 
 | Fecha | Hecho |
@@ -488,3 +528,5 @@ leyendo el DNI `88888888` en un usuario descartable.
 | 2026-11-06 | Eslabón 7 cerrado: prueba de punta a punta con usuario descartable |
 | 2026-11-07 | Auditoría con 4 subagentes: correcciones del generador y del plugin, códigos del JSON normalizados y campo `dni` reparado |
 | 2026-11-07 | Eslabón 8 cerrado: redeploy verificado por md5 y E2E con tildes, partículas y DNI |
+| 2026-11-08 | Documentadas las 3 cuentas de servicio sin DNI (`Alumno Invitado`, `Proinocuidad -`, Claudia Rubio): son 47 alumnos reales, no 50 |
+| 2026-11-08 | Arreglado el detector de duplicados (`fichas::existe`): formato viejo `SUFIJO-...` y fichas sin código; código de Lorena a `007-2026-05-LCJ-CHICP`; fechas de Manuel a `2026-02-11 → 2026-02-13`. Verificado en producción |

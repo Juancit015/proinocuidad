@@ -152,15 +152,27 @@ class fichas {
      * (`NNN-AAAA-MM-INI-SUFIJO`), que identifica el curso.
      */
     public static function existe(string $nombreNormalizado, string $programa, string $sufijo = ''): bool {
+        $suf = strtoupper(trim($sufijo));
         foreach (self::leer() as $f) {
             if (($f['nombre_normalizado'] ?? '') !== $nombreNormalizado) {
                 continue;
             }
+            // 1. programa idéntico (formato nuevo)
             if (($f['programa'] ?? '') === $programa) {
                 return true;
             }
-            if ($sufijo !== ''
-                && preg_match('/-\s*' . preg_quote($sufijo, '/') . '\s*$/', (string)($f['codigo'] ?? ''))) {
+            $codigo = strtoupper(preg_replace('/\s+/', '', (string)($f['codigo'] ?? '')));
+            if ($suf === '' || $codigo === '') {
+                // Sin sufijo de curso o sin código emitido (caso Manuel):
+                // la ficha es de esta persona; no reemitir.
+                return true;
+            }
+            // 2. código nuevo: ...-SUFIJO
+            if (substr($codigo, -strlen('-' . $suf)) === '-' . $suf) {
+                return true;
+            }
+            // 3. código viejo: SUFIJO-... (diplomado SGCIA-26-00x)
+            if (strpos($codigo, $suf . '-') === 0) {
                 return true;
             }
         }
