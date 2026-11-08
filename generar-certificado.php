@@ -430,6 +430,34 @@ foreach (array('modulo1', 'modulo2', 'modulo3', 'contenido1', 'contenido2', 'con
 }
 
 /* ------------------------------------------------------------------ */
+/* Reserva del código: lock y 409 antes de componer                    */
+/* ------------------------------------------------------------------ */
+
+$dirSalida = $RUTA_DOCROOT . '/certificados';
+if (!is_dir($dirSalida)) {
+    @mkdir($dirSalida, 0755, true);
+}
+$salida = $dirSalida . '/' . $pCodigo . '.pdf';
+
+// La comprobación y la publicación tienen que ser atómicas. Sin el lock, dos
+// peticiones con el mismo código pasaban las dos el is_file (aún no había
+// archivo), componían y la segunda pisaba el PDF de la primera: el 409 no
+// protegía nada bajo concurrencia.
+$lock = @fopen($dirSalida . '/.lock', 'c');
+if (!$lock || !flock($lock, LOCK_EX)) {
+    error_log('[certificados] No se pudo bloquear la salida (codigo ' . $pCodigo . ')');
+    json_error(500, 'Error interno generando el certificado.');
+}
+
+// Un certificado ya emitido no se regenera. Sin esta guarda, cualquiera que
+// conozca un código (los códigos son públicos en certificados.json) podía
+// pedir el mismo código con otro nombre y pisar el PDF legítimo. Va antes de
+// componer para que un código existente no gaste TCPDF.
+if (is_file($salida)) {
+    json_error(409, 'El certificado ya existe.');
+}
+
+/* ------------------------------------------------------------------ */
 /* Composición: 2 o 3 páginas importadas + campos dibujados + QR       */
 /* ------------------------------------------------------------------ */
 
@@ -509,20 +537,6 @@ try {
 /* Publicar certificados/<codigo>.pdf y redirigir                      */
 /* ------------------------------------------------------------------ */
 
-$dirSalida = $RUTA_DOCROOT . '/certificados';
-if (!is_dir($dirSalida)) {
-    @mkdir($dirSalida, 0755, true);
-}
-
-$salida = $dirSalida . '/' . $pCodigo . '.pdf';
-
-// Un certificado ya emitido no se regenera. Sin esta guarda, cualquiera que
-// conozca un código (los códigos son públicos en certificados.json) podía
-// pedir el mismo código con otro nombre y pisar el PDF legítimo.
-if (is_file($salida)) {
-    json_error(409, 'El certificado ya existe.');
-}
-
 // Escritura atómica: TCPDF escribe a un temporal y el rename publica el PDF
 // entero. Antes se escribía directo al destino, así que dos peticiones con el
 // mismo código podían dejar un archivo a medias.
@@ -538,6 +552,10 @@ try {
     error_log('[certificados] Escritura del PDF fallo: ' . $e->getMessage() . ' (codigo ' . $pCodigo . ')');
     json_error(500, 'Error interno generando el certificado.');
 }
+
+flock($lock, LOCK_UN);
+fclose($lock);
+
 if (!is_file($salida)) {
     error_log('[certificados] No se escribio el PDF final (codigo ' . $pCodigo . ')');
     json_error(500, 'Error interno generando el certificado.');
