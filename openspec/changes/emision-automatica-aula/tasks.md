@@ -24,6 +24,13 @@
 - [x] 4.1 Documentación del aula en `docs/aula-virtual.md` (documento dedicado, separado del CHANGELOG del sitio): eslabones 6 y 7 cerrados, tabla de tareas, hechos técnicos nuevos y bitácora. El sílabo aprobado vive en `docs/silabos-certificado.md`.
 - [ ] 4.2 Commits separados (plugin / openspec / docs) y push SOLO con confirmación de Juan. Deploy ya verificado en 3.x; el aula emite sola mediante la tarea programada activa (cada 5 min) y la siguiente corrida queda pendiente solo de completados reales.
 
+## 5. Auditoría posterior al cierre (2026-11-07)
+
+- [x] 5.1 Generador: parámetros escalares y con longitud máxima, `checkdate()` en `fecha_inicio`, guarda en `mes_es()`, corte de palabras más anchas que el rect, `is_file()` de TCPDF/FPDI, **409** si el PDF existe y escritura atómica (temporal + `rename`).
+- [x] 5.2 Plugin: `normalizar()` con mapa de tildes, `leer(true)` que no sobrescribe un JSON corrupto, duplicado comprobado **dentro** del lock, código persistido antes del HTTP, **409** con PDF válido tratado como "solo falta la ficha", estado `duplicado` para la colisión, `mio.php` resolviendo por código de cola e iniciales sin partículas.
+- [x] 5.3 Datos: 12 códigos de `certificados.json` normalizados (sin `\r\n` ni espacios) y campo de perfil `dni` con `param2=20` (antes `0`, que guardaba vacío cualquier DNI escrito desde el formulario).
+- [x] 5.4 Redeploy verificado por md5 repo = server y E2E con un nombre con tildes y partículas ("Andrés de la Cruz Muñoz"): código, ficha, PDF, QR, `mio.php`, búsqueda por código/DNI/nombre, idempotencia y recuperación. Artefactos borrados (28 fichas, 10 PDFs, cola vacía).
+
 ## Desvíos respecto al plan original
 
 - El mapeo no quedó con un curso sino con **9** (todos menos el 3).
@@ -31,3 +38,4 @@
 - Nota mínima: **14**, no 10.5. La nota del curso 7 sale del **Examen Final** (cmid 25), no de la nota total del curso (escala 500).
 - El duplicado compara además el **sufijo del código**, porque 26 alumnos ya tienen ficha con redacciones viejas del programa.
 - Aparecieron cuatro bugs reales corregidos en el camino: `arg_separator.output='&amp;'` en `http_build_query()`, `gradelib.php` no cargado en cron, falta de criterios de finalización de curso y `enrol_try_internal_enrol()` que falla en silencio.
+- La auditoría del 2026-11-07 (4 subagentes `beam-free#high`) destapó y corrigió además: parámetros de tipo/longitud, `checkdate`, 409 contra sobrescritura, escritura atómica, tildes en `fichas::normalizar()`, lectura estricta del JSON, duplicado dentro del lock, código persistido antes del HTTP y recuperación de un PDF ya existente. También un `param2=0` en el campo de perfil `dni` que guardaba vacío todo DNI escrito desde el formulario.
