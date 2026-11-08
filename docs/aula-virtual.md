@@ -227,7 +227,10 @@ coinciden en 21 URLs, y los 9 programas caen en el sílabo correcto).
 - `require_once` de TCPDF/FPDI sin comprobar el archivo: ahora `is_file()` y
   500 con log.
 - **El PDF ya no se sobrescribe**: si el código existe, responde **409**.
-  Se escribe a un temporal y se publica con `rename` atómico.
+  Se escribe a un temporal y se publica con `rename` atómico. La guarda se
+  evalúa **antes de componer** y va bajo un `flock` sobre
+  `certificados/.lock` que se mantiene hasta el `rename`: dos peticiones
+  simultáneas con el mismo código dan una 302 y una 409, nunca dos PDFs.
 
 **Plugin** (`local_certificados`):
 
@@ -269,7 +272,7 @@ coinciden en 21 URLs, y los 9 programas caen en el sílabo correcto).
 
 | Archivo | md5 |
 |---|---|
-| `generar-certificado.php` | `3533c4e58172a988fbd805426c853fcd` |
+| `generar-certificado.php` | `7f49a49869b4601b399b3fcb74cf38c7` |
 | `classes/emisor.php` | `8406171ed14c5f7a54f6b16b473d2252` |
 | `classes/fichas.php` | `e1c3c8bf4bd7b86637cd45c9181f42bd` |
 | `classes/cola.php` | `07d79f5121f3300f9d9ac5ea4b7e0828` |
@@ -297,7 +300,8 @@ el curso 2):
 7. Idempotencia: reejecutar la tarea con la fila `emitida` no crea otra ficha
    (1 consulta). Recuperación: borrar la ficha y dejar la fila `pendiente`
    con su código reutiliza el PDF (0,019 s, sin HTTP). Con la ficha presente
-   la fila pasa a `duplicado`.
+   la fila pasa a `duplicado`. Carrera: dos peticiones simultáneas con el
+   mismo código nuevo → una 302 y una 409, y un solo PDF.
 8. Los artefactos se borraron: 28 fichas, 10 PDFs en `certificados/`, cola
    vacía y usuario eliminado.
 
