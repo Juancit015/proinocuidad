@@ -660,7 +660,7 @@ RUC: <strong>20615307603</strong>
 </div>
 </li>
 <li><a href="${ruta}noticias/index.html">Noticias</a></li>
-<li><a href="${ruta}verifica-tu-certificado.html">Verifica tu certificado</a></li>
+<li><a class="btn-verifica-nav" href="${ruta}verifica-tu-certificado.html"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3z"/><path d="m9 12 2 2 4-4"/></svg>Verifica tu certificado</a></li>
 <li><a class="btn-aula-nav" href="https://proinocuidad.com/aula/login/" target="_blank" rel="noopener">${SVG_BTN_AULA}Aula Virtual</a></li>
 </ul>
 </nav>

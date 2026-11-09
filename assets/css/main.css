@@ -148,10 +148,12 @@ section { padding: 64px 0; }
 .btn:not(.redes-sociales a),
 .pestanas button,
 .btn-aula-nav,
+.btn-verifica-nav,
 .mega-panel .mega-cta,
 button[type="submit"],
 input[type="submit"] { border-radius: 4px; }
 .nav-menu .btn-aula-nav { border-radius: 4px !important; }
+.nav-menu .btn-verifica-nav { border-radius: 4px !important; }
 
 /* ---------- Topbar + navegación ---------- */
 /* La barra superior queda pegada en escritorio y acompaña el scroll, con la
@@ -219,15 +221,15 @@ input[type="submit"] { border-radius: 4px; }
   text-decoration: none; transition: var(--transicion);
 }
 @media (min-width: 861px) and (hover: hover) {
-  .nav-menu > li > a:not(.btn-aula-nav) { position: relative; }
-  .nav-menu > li > a:not(.btn-aula-nav)::after {
+  .nav-menu > li > a:not(.btn-aula-nav):not(.btn-verifica-nav) { position: relative; }
+  .nav-menu > li > a:not(.btn-aula-nav):not(.btn-verifica-nav)::after {
     content: ""; position: absolute; left: 14px; bottom: 4px;
     width: 0; height: 2px; border-radius: 2px;
     background: var(--rojo); transition: width 0.3s ease;
   }
-  .nav-menu > li > a:not(.btn-aula-nav):hover,
+  .nav-menu > li > a:not(.btn-aula-nav):not(.btn-verifica-nav):hover,
   .nav-drop:focus-within > a { color: var(--azul); text-decoration: none; }
-  .nav-menu > li > a:not(.btn-aula-nav):hover::after,
+  .nav-menu > li > a:not(.btn-aula-nav):not(.btn-verifica-nav):hover::after,
   .nav-drop:focus-within > a::after { width: calc(100% - 28px); }
 }
 .btn-aula-nav {
@@ -238,6 +240,17 @@ input[type="submit"] { border-radius: 4px; }
 .nav-menu .btn-aula-nav { display: inline-flex; align-items: center; gap: 8px; }
 .btn-aula-nav svg { width: 18px; height: 18px; flex: none; }
 .btn-aula-nav:hover { background: var(--rojo) !important; color: #fff !important; }
+
+/* Botón destacado de "Verifica tu certificado" en el nav: píldora roja de
+   marca, diferenciada del azul de "Aula Virtual", con icono de verificación. */
+.btn-verifica-nav {
+  background: var(--rojo); color: var(--blanco) !important;
+  border-radius: 999px !important;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.nav-menu .btn-verifica-nav { display: inline-flex; align-items: center; gap: 8px; }
+.btn-verifica-nav svg { width: 18px; height: 18px; flex: none; }
+.btn-verifica-nav:hover { background: #8a252b !important; color: #fff !important; }
 
 /* Mega-menú (panel flotante al hover, patrón referencial) */
 .mega-panel {
@@ -672,7 +685,7 @@ section:has(> .identidad-grid) { overflow-x: clip; }
     display: flex; align-items: center; min-height: 40px; padding: 4px 12px;
     border-radius: 10px; font-size: 1rem;
   }
-  .nav-menu > li > a:not(.btn-aula-nav)::after { display: none; }
+  .nav-menu > li > a:not(.btn-aula-nav):not(.btn-verifica-nav)::after { display: none; }
   .nav-menu > .nav-drop { display: grid; grid-template-columns: minmax(0, 1fr) 46px; }
   .nav-menu .nav-drop > a { grid-column: 1; grid-row: 1; min-width: 0; }
   .nav-accordion-toggle {
@@ -688,6 +701,7 @@ section:has(> .identidad-grid) { overflow-x: clip; }
   }
   .nav-menu .nav-drop > a::after { display: none; }
   .nav-menu .btn-aula-nav { justify-content: center; min-height: 52px; margin-top: 8px; }
+  .nav-menu .btn-verifica-nav { justify-content: center; min-height: 52px; margin-top: 8px; }
   .mega-panel {
     position: static; display: grid; grid-column: 1 / -1;
     grid-template-rows: 0fr; width: 100%; transform: none;
