@@ -37,7 +37,7 @@ $RUTA_FPDI      = $RUTA_DOCROOT . '/aula/mod/assign/feedback/editpdf/fpdi/autolo
 // md5 de la plantilla editable normalizada (xref único, sin ObjStm; con el QR
 // de ejemplo de posición que el script tapa y reemplaza). Si cambia el fichero,
 // la emisión se detiene: re-verificar coords/mf5 de CAMPOS.
-$PLANTILLA_MD5 = '3321ad84b2b92d48de08bad1b2132e4b';
+$PLANTILLA_MD5 = 'e05f0dc0be180fcdbab53ab1dcf6f04c';
 
 // Tamaño de página de la plantilla en puntos (medido sobre el fichero real).
 $PAGINA_W = 842.25;
