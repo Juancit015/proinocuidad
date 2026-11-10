@@ -70,7 +70,7 @@ $CAMPOS = array(
     'contenido3'   => array('pag' => 2, 'rect' => array(235.0,  74.1, 548.0, 202.1), 'align' => 'L', 'style' => '',  'size' => 11,   'min' => 6.5, 'lh' => 1.35, 'color' => array(0, 0, 0)),
     'horas'        => array('pag' => 2, 'rect' => array(728.0, 514.1, 772.0, 536.1), 'align' => 'C', 'style' => '',  'size' => 14,   'min' => 8,   'lh' => 1.15, 'color' => array(0, 0, 0)),
     'creditos'     => array('pag' => 2, 'rect' => array(728.0, 444.1, 772.0, 466.1), 'align' => 'C', 'style' => '',  'size' => 14,   'min' => 8,   'lh' => 1.15, 'color' => array(0, 0, 0)),
-    'registro'     => array('pag' => 2, 'rect' => array(688.0, 308.1, 796.0, 334.1), 'align' => 'C', 'style' => '',  'size' => 8.5, 'min' => 5,   'lh' => 1.15, 'color' => array(11, 18, 121)),
+    'registro'     => array('pag' => 2, 'rect' => array(696.0, 365.5, 804.0, 391.5), 'align' => 'C', 'style' => '',  'size' => 8,    'min' => 5,   'lh' => 1.15, 'color' => array(11, 18, 121)),
     // Página 3 (continuación del sílabo): solo si el programa tiene más de 3 módulos.
     // Los rects son los de la página 2; la plantilla de 3 páginas duplica la tabla.
     'modulo4'      => array('pag' => 3, 'rect' => array(46.0,  404.1, 209.0, 454.1), 'align' => 'C', 'style' => '',  'size' => 11.5, 'min' => 7,   'lh' => 1.3,  'color' => array(0, 0, 0)),
