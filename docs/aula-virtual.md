@@ -624,7 +624,7 @@ vez la misma URL con `&v=<timestamp>`; el guardia `v=` y una marca en
   y tarjeta. 0 excepciones en consola.
 - md5 repo = servidor: página `3301df74bb02ab7af941c8aec1465658`, `main.js`
   `a60dca10d5bd6bbde23223e8dfa23dfc`, `.htaccess`
-  `95b1c27634e270d919e3b59de2609c7e`.
+  `4df44782f90add8b66401452da5ed053`.
 
 **Pendiente**: confirmar en el teléfono de Juan. Si vuelve a fallar con la
 página ya fresca, la siguiente vía es renderizar la ficha en el servidor (PHP)

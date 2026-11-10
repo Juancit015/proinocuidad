@@ -19,7 +19,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
 - QR decodificado del PDF del certificado `016-2026-11-AJJ-BPMISO` (`jsQR` sobre render de `pdftoppm`): `https://proinocuidad.com/verifica-tu-certificado.html?codigo=016-2026-11-AJJ-BPMISO`.
 - Código válido → tarjeta persistente (la URL no cambia ni recarga); código inválido → aviso "Por favor, verifique…"; JSON bloqueado (red offline) → aviso de error y botón restablecido; copia sin marca de versión → un solo redirect con `&v=` y tarjeta. 0 excepciones sin manejar en consola.
-- Producción responde con `cache-control: no-cache, must-revalidate` en la página, `main.js` y `certificados.json`; md5 repo = servidor (página `3301df74…`, `main.js` `a60dca10…`, `.htaccess` `95b1c276…`).
+- Producción responde con `cache-control: no-cache, must-revalidate` en la página, `main.js` y `certificados.json`; md5 repo = servidor (página `3301df74…`, `main.js` `a60dca10…`, `.htaccess` `4df44782…`).
 
 ## 2026-10-31 (certificados: emisión sobre plantilla editable AcroForm + QR real)
 
