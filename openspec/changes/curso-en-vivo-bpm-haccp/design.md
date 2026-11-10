@@ -98,15 +98,18 @@ El JPEG de 1080×1080 se convierte a WebP en dos versiones:
 
 - `flyer-curso-09-bpm-haccp-en-vivo.webp` (1080×1080, 140 KB): sidebar de la ficha,
   donde la imagen se muestra completa.
-- `flyer-curso-09-bpm-haccp-en-vivo-card.webp` (1200×675, 84 KB): tarjeta del listado,
-  que recorta a 16:10. Se compone con el flyer completo (675×675) centrado sobre una
-  copia ampliada y desenfocada del mismo flyer. Así se lee todo el póster y la tarjeta
-  no muestra texto cortado.
+- `flyer-curso-09-bpm-haccp-en-vivo-card.webp` (1080×675, 102 KB): tarjeta del listado,
+  que recorta a 16:10. Es un recorte real del flyer desde «Curso Especializado» hasta
+  las etiquetas de los iconos: llena todo el marco, sin bandas, y conserva título,
+  fechas, iconos y etiquetas. El recorte mide 690 px de alto y se reduce a 675
+  (compresión vertical del 2,2 %, imperceptible) para que entren el encabezado y las
+  etiquetas completas.
 
-Se probó primero un recorte 16:10 directo; cortaba por la mitad las etiquetas de
-«CERTIFICADO CON QR», «AULA VIRTUAL» e «INCLUYE MANUALES» y se descartó.
-Alternativa descartada: `object-fit: contain` con fondo plano; dejaba franjas
-laterales duras y rompía la alineación visual con las otras 8 tarjetas.
+Se probó antes una composición 16:9 con el póster cuadrado centrado sobre una copia
+desenfocada del flyer; cubría el marco con bandas visibles y se descartó porque la
+portada no llenaba la tarjeta. Alternativa descartada: `object-fit: contain` con fondo
+plano; dejaba franjas laterales duras y rompía la alineación visual con las otras 8
+tarjetas.
 
 El hero de la ficha usa `ficha-bpm.avif` (foto de planta ya existente): el póster
 cuadrado con texto no se lee bajo el degradado azul del `.ficha-head`.

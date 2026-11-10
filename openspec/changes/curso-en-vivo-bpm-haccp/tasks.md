@@ -2,7 +2,7 @@
 
 ## 1. Flyer y datos del curso
 
-- [x] 1.1 Generar `assets/img/flyer-curso-09-bpm-haccp-en-vivo.webp` (1080×1080, sidebar) y `assets/img/flyer-curso-09-bpm-haccp-en-vivo-card.webp` (1200×675, flyer completo sobre fondo desenfocado del mismo flyer) desde el JPEG de WhatsApp. Verificar con `identify` que las dimensiones son exactas y que cada archivo pesa menos de 250 KB.
+- [x] 1.1 Generar `assets/img/flyer-curso-09-bpm-haccp-en-vivo.webp` (1080×1080, sidebar) y `assets/img/flyer-curso-09-bpm-haccp-en-vivo-card.webp` (1080×675, recorte 16:10 que llena el marco de la tarjeta) desde el JPEG de WhatsApp. Verificar con `identify` que las dimensiones son exactas y que cada archivo pesa menos de 250 KB.
 - [x] 1.2 Añadir la cohorte a `window.PROINO_CURSOS` en `assets/js/cursos-data.js` con `modalidad: "En vivo (Zoom)"`, `fechas: "8, 9 y 10 de diciembre"`, `horario`, `inversionNacional` S/ 60 / `inversionExtranjero` US$ 17, `prontoPago` (S/ 45 / US$ 15 hasta el 4 de diciembre de 2026), `flyer` de tarjeta y `enHome: false`. Verificar con `node -e` que el array evalúa y devuelve 9 entradas con la modalidad correcta.
 - [x] 1.3 Actualizar `STRUCTURE.md`: 9 fichas, 9 entradas en `cursos-data.js`, marcador `#lista-envivo`, nomenclatura `flyer-curso-09-*` y slug nuevo. Verificar que ninguna mención a «8 fichas» o «8 cursos» queda sin contexto (grep).
 
