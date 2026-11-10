@@ -536,7 +536,56 @@ Consecuencias que hay que respetar:
 - El plugin ya las tolera: una ficha sin DNI se genera y se busca igual por
   nombre normalizado; lo que no habría es la segunda vía de búsqueda.
 
+## 9. Resumen de cambios recientes (2026-11-09 / 2026-11-10)
+
+Trabajo cerrado por el agente en esta sesión (commits en `main`, pusheados):
+
+1. `ff7fe25` — `destacar-verifica-certificado-nav`: botón rojo
+   `.btn-verifica-nav` en el nav (escudo) en 13 páginas + generador;
+   archivado OpenSpec `b62ac18`; deployado a producción (snapshot `a2894be0`).
+2. `f32e903` + `f0e961d` — `eliminar-nota-certificado`: retiro de
+   `calificacion`/`nota` del generador y del plugin; emisor ya no exige nota;
+   plantilla sin cambios; commit archivado. Deployado (generador md5
+   `0348f2c8`, emisor `8bee105e`).
+3. `cfc528d` — duplicados/Lorena/Manuel: `existe()` reconoce formato viejo
+   `SUFIJO-...` y fichas sin código; Lorena = `007-2026-05-LCJ-CHICP`,
+   Manuel sin código. Deployado (`fichas.php` md5 `3eb55927`).
+4. `e8c40a1` (previo) + docs — form SMTP directo PHPMailer (Zoho) en
+   producción; FormSubmit abandonado.
+5. Emisión masiva: 83/83 emitidas (0 pendientes/falladas/duplicadas); total
+   111 fichas; `certificados.json` sincronizado (md5 `06c4b517`).
+6. `acdec6c` — plantilla Canva nueva (`CERTIFICADO-EDITABLE-3paginas-v2.pdf`,
+   md5 `e05f0dc0be180fcdbab53ab1dcf6f04c`) sin "CALIFICACIÓN"; actualizado
+   `$PLANTILLA_MD5`; 83 PDFs regenerados; OpenSpec `eliminar-cuadro-calificacion`
+   archivado (`2026-11-09-eliminar-cuadro-calificacion`).
+7. `868ef2b` — rect del registro ampliado a 820px (fuente 10.5) para que el
+   código no se partiera; los 83 PDFs regenerados.
+8. `6440d88` — reubicación del campo registro a la celda real de la plantilla
+   nueva: rect `array(696.0, 365.5, 804.0, 391.5)`, fuente 8, código de 22
+   caracteres en una sola línea dentro del cuadro. Verificado por coordenadas
+   (`pdftotext -bbox-layout`) y visualmente (render 150 dpi, QR decodificado
+   con `pyzbar` → URL correcta). 83/83 regenerados, 0 falladas; históricos
+   intactos.
+
+Verificación visual: Chromium (Playwright) 1280/390 px para el nav; los PDFs
+se verificaron con `pdftotext`, `pdftoppm` + inspección de imagen y
+`pyzbar` para el QR. Los scripts temporales del server se limpiaron.
+
+Pendiente para Juan (no se tocó):
+- Tokens de GitHub expuestos sin revocar.
+- Curso 3 sin temario (no emite hasta que se traiga).
+- Fechas reales de los 83 si llegan (se regeneran).
+- No ejecutar `tools/publicar.sh` (deploy) sin autorización expresa.
+
 ## 8. Bitácora
+
+| Fecha | Evento |
+|---|---|
+| 2026-11-10 | Rect del registro corregido a la celda real de la plantilla nueva (rect 696-804, fuente 8). 83 PDFs regenerados con código de registro en una sola línea. Verificado visualmente y con QR |
+| 2026-11-10 | Plantilla del certificado actualizada en Canva: etiqueta "CALIFICACIÓN" eliminada; 83 PDFs regenerados con plantilla nueva (sin etiqueta, sin nota). QR verificado por decodificación |
+| 2026-11-10 | Nota retirada del certificado: generador y plugin actualizados; 83 alumnos marcados completados con fecha actual y emitidos (códigos 016..098). Total fichas: 111 |
+| 2026-11-09 | Plantilla nueva subida (md5 `e05f0dc0…`); `$PLANTILLA_MD5` actualizado; generador sincronizado repo=server |
+| 2026-11-09 | Botón "Verifica tu certificado" en nav desplegado a producción |
 
 | Fecha | Hecho |
 |---|---|
