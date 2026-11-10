@@ -57,6 +57,15 @@ function tarjetaCursos(c, P) {
     '" alt="Flyer del curso ' +
     sinComillas(c.titulo) +
     '" loading="lazy"></div>';
+  const chipTercero = c.fechas ? c.fechas : "Curso " + c.num;
+  const certificacion =
+    c.certificacionTexto ||
+    c.horas + " horas académicas con certificado digital con QR.";
+  const prontoPago = c.prontoPago
+    ? '<div class="card-pronto-pago" style="font-size: 0.82rem; color: var(--gris); border-left: 3px solid var(--rojo); padding-left: 10px;"><strong style="color: var(--rojo);">Pronto pago:</strong> ' +
+      c.prontoPago +
+      "</div>"
+    : "";
   return (
     '<article class="card card-curso">' +
     imgBloque +
@@ -65,8 +74,8 @@ function tarjetaCursos(c, P) {
     chipModalidad(c) +
     "</li><li>" +
     c.sesiones +
-    "</li><li>Curso " +
-    c.num +
+    "</li><li>" +
+    chipTercero +
     '</li><li class="precio">' +
     c.inversionNacional +
     " (" +
@@ -76,8 +85,9 @@ function tarjetaCursos(c, P) {
     c.titulo +
     "</h3>" +
     "<p><strong>Certificación:</strong> " +
-    c.horas +
-    " horas académicas con certificado digital con QR.</p>" +
+    certificacion +
+    "</p>" +
+    prontoPago +
     '<div class="card-acciones">' +
     '<a class="btn btn-rojo btn-sm" href="' +
     c.slug +
@@ -140,24 +150,54 @@ function cargarCursos() {
   return new Function("return (" + m[1] + ");")();
 }
 
-function reemplazar(archivo, htmlTarjetas) {
+/* Aviso de la pestaña En vivo cuando no hay cohortes publicadas. */
+function avisoSinCohortes() {
+  return (
+    '<div class="proximamente" style="grid-column: 1 / -1;">' +
+    '<span class="marca-en-vivo">EN VIVO</span>' +
+    "<h3>No hay cursos en vivo por el momento</h3>" +
+    "<p>Mantente atento: cuando haya nuevas cohortes en vivo las publicaremos aquí. " +
+    "Mientras tanto, revisa la oferta en la pestaña Asíncronos.</p>" +
+    "</div>"
+  );
+}
+
+function reemplazar(archivo, htmlTarjetas, etiqueta) {
+  const nombre = etiqueta || "generar-listados";
   const ruta = join(RAIZ, archivo);
   const s = readFileSync(ruta, "utf8");
-  const ini = "<!-- generar-listados:inicio -->";
-  const fin = "<!-- generar-listados:fin -->";
+  const ini = `<!-- ${nombre}:inicio -->`;
+  const fin = `<!-- ${nombre}:fin -->`;
   const i = s.indexOf(ini);
   const j = s.indexOf(fin);
   if (i === -1 || j === -1 || j < i)
-    throw new Error("Marcadores no encontrados en " + archivo);
+    throw new Error(`Marcadores ${nombre} no encontrados en ` + archivo);
   const antes = s.slice(0, i + ini.length);
   const despues = s.slice(j);
   writeFileSync(ruta, antes + htmlTarjetas + despues);
 }
 
 const cursos = cargarCursos();
-reemplazar("cursos/index.html", cursos.map((c) => tarjetaCursos(c, "../")).join(""));
-const destacados = cursos.filter((c) => c.enHome);
+const asincronos = cursos.filter((c) => c.modalidad.startsWith("Asíncrono"));
+const envivo = cursos.filter((c) => c.modalidad.startsWith("En vivo"));
+reemplazar(
+  "cursos/index.html",
+  asincronos.map((c) => tarjetaCursos(c, "../")).join(""),
+  "generar-listados"
+);
+reemplazar(
+  "cursos/index.html",
+  envivo.length ? envivo.map((c) => tarjetaCursos(c, "../")).join("") : avisoSinCohortes(),
+  "generar-listados-envivo"
+);
+const destacados = cursos.filter((c) => c.enHome && c.modalidad.startsWith("Asíncrono"));
 reemplazar("index.html", destacados.map((c) => tarjetaHome(c)).join(""));
 console.log(
-  "listados generados: " + cursos.length + " en cursos, " + destacados.length + " en inicio"
+  "listados generados: " +
+    asincronos.length +
+    " asíncronos, " +
+    envivo.length +
+    " en vivo, " +
+    destacados.length +
+    " en inicio"
 );

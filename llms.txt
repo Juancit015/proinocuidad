@@ -2,7 +2,7 @@
 
 > Empresa de consultoría y capacitación en inocuidad alimentaria en Trujillo, Perú. Dicta cursos y diplomados sobre BPM, HACCP, FSSC 22000 y normativa sanitaria, y asesora en la certificación y el registro sanitario de alimentos.
 
-Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L. (RUC 20615307603) es una empresa de La Libertad, Perú, fundada el 29 de octubre de 2023. Trabaja en dos líneas: capacitación (cursos y diplomados) y consultoría (implementación de sistemas de gestión y trámites sanitarios). Todos sus cursos se imparten en modalidad asíncrona y emiten certificado digital con código QR.
+Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L. (RUC 20615307603) es una empresa de La Libertad, Perú, fundada el 29 de octubre de 2023. Trabaja en dos líneas: capacitación (cursos y diplomados) y consultoría (implementación de sistemas de gestión y trámites sanitarios). La oferta combina cursos asíncronos (grabados) y cohortes en vivo por Zoom; los certificados son digitales con código QR.
 
 Contacto: WhatsApp +51 981 365 982, correo formacion_academica@proinocuidad.com, de lunes a viernes de 8 AM a 8 PM, en Trujillo (La Libertad, Perú).
 
@@ -19,9 +19,9 @@ Consultoría para empresas del sector alimentario. Cada página describe el serv
 
 ## Cursos
 
-Ocho cursos y un diplomado, todos asíncronos y con certificado digital. El listado muestra la modalidad y las horas de cada uno.
+Ocho cursos y un diplomado en modalidad asíncrona, y una cohorte en vivo por Zoom, con certificado digital. El listado muestra la modalidad y las horas de cada uno.
 
-- [Cursos y diplomados de inocuidad alimentaria](https://proinocuidad.com/cursos/): Listado de los ocho cursos y del diplomado, con horas, modalidad e inversión. Entrada al detalle de cada programa.
+- [Cursos y diplomados de inocuidad alimentaria](https://proinocuidad.com/cursos/): Listado de los ocho cursos, del diplomado y de la cohorte en vivo, con horas, modalidad e inversión. Entrada al detalle de cada programa.
 - [Diplomado en Gestión de la Calidad e Inocuidad en la Industria Alimentaria](https://proinocuidad.com/cursos/diplomado-gestion-calidad-e-inocuidad/): Diplomado de seis sesiones sobre gestión de la calidad e inocuidad: HACCP, ISO 9001, ISO 22000 y BRCGS.
 - [Legislación Sanitaria de Alimentos Nacional e Internacional](https://proinocuidad.com/cursos/legislacion-sanitaria-alimentos/): Tres sesiones sobre la normativa sanitaria de alimentos en Perú y el marco internacional.
 - [Implementación y Auditoría de BPM, POES, POE y Plan HACCP](https://proinocuidad.com/cursos/implementacion-auditoria-bpm-poes-poe-plan-haccp/): Tres sesiones sobre BPM, higiene y saneamiento, POES, POE y plan HACCP.
@@ -30,6 +30,7 @@ Ocho cursos y un diplomado, todos asíncronos y con certificado digital. El list
 - [Programas de Higiene y Saneamiento en la Industria Alimentaria](https://proinocuidad.com/cursos/programas-higiene-saneamiento/): Tres sesiones sobre agua, limpieza, plagas y residuos en la industria alimentaria.
 - [Sistema HACCP según FSSC 22000 y Codex Alimentarius Revisión 2022](https://proinocuidad.com/cursos/sistema-haccp-fssc-22000-codex-2022/): Tres sesiones sobre el sistema HACCP según FSSC 22000 y el Codex Alimentarius revisión 2022.
 - [Formación de Auditor Interno del Sistema HACCP](https://proinocuidad.com/cursos/formacion-auditor-interno-haccp/): Tres sesiones para planificar, ejecutar y cerrar auditorías internas según ISO 19011.
+- [Curso en vivo: BPM, Programas Prerrequisito y HACCP](https://proinocuidad.com/cursos/bpm-haccp-en-vivo/): Tres sesiones por Zoom del 8 al 10 de diciembre de 2026, de 7:30 a 10:00 PM (hora Perú), con certificado digital opcional de 40 horas.
 
 ## Información
 

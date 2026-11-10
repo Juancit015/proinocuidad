@@ -1,6 +1,7 @@
 /**
- * Datos de los 8 cursos asíncronos de Proinocuidad.
- * Fuente única: documento oficial "_archivo/pagina web.pdf" (PDF).
+ * Datos de los 8 cursos asíncronos y de la cohorte en vivo de Proinocuidad.
+ * Fuente única: documento oficial "_archivo/pagina web.pdf" (PDF) para los asíncronos;
+ * temario de diciembre 2026 para la cohorte en vivo.
  * - Certificación en horas académicas SEGÚN EL PDF (384 / 40).
  *   El formulario activo del cliente indica otras horas (240/32); el cliente lo corregirá.
  * - Archivos flyer: assets/img/flyer-curso-NN-<slug>.webp
@@ -135,6 +136,26 @@ window.PROINO_CURSOS = [
     flyer: "assets/img/flyer-curso-08-auditor-interno-haccp.webp",
     urlCulqi: "#", // TODO(dueño): enlace Culqi
     enHome: true
+  },
+  {
+    num: 9,
+    slug: "bpm-haccp-en-vivo",
+    titulo: "Curso Especializado: \u201CBuenas Prácticas de Manufactura, Programas Prerrequisito y HACCP: Implementación, Verificación y Auditoría\u201D",
+    waLargo: "el Curso Especializado en Vivo de BPM, Programas Prerrequisito y HACCP",
+    etiqueta: "CURSO EN VIVO",
+    modalidad: "En vivo (Zoom)",
+    sesiones: "3 sesiones",
+    fechas: "8, 9 y 10 de diciembre",
+    horario: "7:30 - 10:00 PM (hora Per\u00FA)",
+    horas: 40,
+    inversionNacional: "S/ 60",
+    inversionNacionalNota: "no incluye IGV",
+    inversionExtranjero: "US$ 17",
+    prontoPago: "S/ 45 / US$ 15 hasta el 4 de diciembre",
+    certificacionTexto: "40 horas académicas con certificado digital opcional con QR.",
+    flyer: "assets/img/flyer-curso-09-bpm-haccp-en-vivo-card.webp",
+    urlCulqi: "#", // TODO(dueño): enlace Culqi
+    enHome: false
   }
 ];
 

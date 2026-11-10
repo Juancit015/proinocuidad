@@ -56,7 +56,7 @@ Implementación de sistemas de gestión con BRCGS Food Safety. Incluye documenta
 
 *Contenido de: https://proinocuidad.com/cursos/*
 
-Los ocho cursos y el diplomado se imparten en modalidad asíncrona (grabada) y emiten certificado digital con código QR. La inversión se publica en soles (S/) y en dólares (US$).
+Los ocho cursos y el diplomado se imparten en modalidad asíncrona (grabada) y emiten certificado digital con código QR. La cohorte en vivo se dicta por Zoom en tres sesiones. La inversión se publica en soles (S/) y en dólares (US$).
 
 ### Diplomado de Especialización: Gestión de la Calidad e Inocuidad en la Industria Alimentaria
 
@@ -145,6 +145,18 @@ Curso de tres sesiones para planificar, ejecutar y cerrar auditorías internas d
 - Modalidad: asíncrona (grabada)
 - Certificado: digital con código QR
 - Inversión: S/ 45 · US$ 15
+
+### Curso en Vivo: BPM, Programas Prerrequisito y HACCP — Implementación, Verificación y Auditoría
+
+*Contenido de: https://proinocuidad.com/cursos/bpm-haccp-en-vivo/*
+
+Curso especializado en vivo por Zoom, del 8 al 10 de diciembre de 2026, de 7:30 a 10:00 PM (hora Perú): BPM, programas prerrequisito y HACCP, con talleres de identificación de peligros, POES y PCC.
+
+- Duración: 40 horas académicas
+- Modalidad: en vivo por Zoom, con acceso permanente al aula virtual Moodle
+- Certificado: digital con código QR, opcional y sin costo adicional
+- Inversión: S/ 60 (no incluye IGV) · US$ 17
+- Pronto pago: S/ 45 · US$ 15 hasta el 4 de diciembre de 2026
 
 ## Contacto
 

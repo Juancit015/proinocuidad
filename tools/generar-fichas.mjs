@@ -136,11 +136,13 @@ function statCard(svg, etiqueta, valor) {
 }
 
 function statsGrid(curso) {
+  const modalidad = curso.modalidadStat || "100% Asíncrono (Grabado)";
+  const certificacion = curso.certificacionStat || "Con Código QR Oficial";
   return `<div class="ficha-stats-grid">
 ${statCard(SVG_RELOJ, "Duración", `${curso.horas} Horas Académicas`)}
 ${statCard(SVG_LIBRO, "Estructura", curso.estructura)}
-${statCard(SVG_MONITOR, "Modalidad", "100% Asíncrono (Grabado)")}
-${statCard(SVG_ESCUDO, "Certificación", "Con Código QR Oficial")}
+${statCard(SVG_MONITOR, "Modalidad", modalidad)}
+${statCard(SVG_ESCUDO, "Certificación", certificacion)}
 </div>`;
 }
 
@@ -161,15 +163,30 @@ function beneficioItem(svg, titulo, texto) {
 </div>`;
 }
 
+const BENEFICIOS_ASINCRONO = [
+  [SVG_CUBO, "Aula Virtual Permanente", "Accede las 24 horas del día, los 7 días de la semana, sin límites ni caducidad de acceso."],
+  [SVG_DOC, "Material y Recursos de Aplicación", "Libros, plantillas editables de registros, manuales y casos prácticos reales para tu trabajo."],
+  [SVG_RELOJ, "A Tu Propio Ritmo", "Avanza según tu disponibilidad de tiempo y compatibiliza tus estudios con tus labores profesionales."],
+  [SVG_CALENDARIO, "Certificado Verificable con QR", null],
+];
+
 function beneficiosBloque(curso) {
+  const items = curso.beneficios || BENEFICIOS_ASINCRONO;
   return seccion(
     SVG_ESTRELLA,
     "¿Por qué especializarte con nosotros?",
     `<div class="beneficios-grid">
-${beneficioItem(SVG_CUBO, "Aula Virtual Permanente", "Accede las 24 horas del día, los 7 días de la semana, sin límites ni caducidad de acceso.")}
-${beneficioItem(SVG_DOC, "Material y Recursos de Aplicación", "Libros, plantillas editables de registros, manuales y casos prácticos reales para tu trabajo.")}
-${beneficioItem(SVG_RELOJ, "A Tu Propio Ritmo", "Avanza según tu disponibilidad de tiempo y compatibiliza tus estudios con tus labores profesionales.")}
-${beneficioItem(SVG_CALENDARIO, "Certificado Verificable con QR", `Respaldo institucional de ${curso.horas} horas académicas para postular a mejores oportunidades laborales.`)}
+${items
+  .map(([svg, titulo, texto]) =>
+    beneficioItem(
+      svg,
+      titulo,
+      texto === null
+        ? `Respaldo institucional de ${curso.horas} horas académicas para postular a mejores oportunidades laborales.`
+        : texto
+    )
+  )
+  .join("\n")}
 </div>`
   );
 }
@@ -236,7 +253,17 @@ ${curso.modulos.map(temarioModulo).join("\n\n")}`
   );
 }
 
+const PASOS_ASINCRONO = [
+  { titulo: "Estudia a tu ritmo", texto: "Mira las sesiones grabadas de alta definición y descarga las diapositivas y manuales." },
+  { titulo: "Aplica lo aprendido", texto: "Revisa casos de estudio reales de plantas alimentarias y plantillas de trabajo." },
+  { titulo: "Certifícate", texto: "Rinde tu evaluación final en la plataforma virtual y recibe tu certificado digital oficial con QR." },
+];
+
+const NOTA_ASINCRONA = `<span><strong>Requisitos de Aprobación:</strong> Para obtener el <em>Certificado de Aprobación</em> se requiere una calificación mínima de <strong>14 puntos</strong> en la evaluación final. En caso contrario, se expedirá el <em>Certificado de Participación</em> por las horas académicas correspondientes.</span>`;
+
 function metodologiaBloque(curso) {
+  const pasos = curso.metodologiaPasos || PASOS_ASINCRONO;
+  const nota = curso.metodologiaNota || NOTA_ASINCRONA;
   return seccion(
     SVG_INFO,
     "Metodología de Aprendizaje",
@@ -244,27 +271,21 @@ function metodologiaBloque(curso) {
 ${curso.metodologiaIntro}
 </p>
 <div class="metodologia-steps">
-<div class="step-card">
-<div class="step-numero">1</div>
-<h4>Estudia a tu ritmo</h4>
-<p>Mira las sesiones grabadas de alta definición y descarga las diapositivas y manuales.</p>
-</div>
-<div class="step-card">
-<div class="step-numero">2</div>
-<h4>Aplica lo aprendido</h4>
-<p>Revisa casos de estudio reales de plantas alimentarias y plantillas de trabajo.</p>
-</div>
-<div class="step-card">
-<div class="step-numero">3</div>
-<h4>Certifícate</h4>
-<p>Rinde tu evaluación final en la plataforma virtual y recibe tu certificado digital oficial con QR.</p>
-</div>
+${pasos
+  .map(
+    (paso, i) => `<div class="step-card">
+<div class="step-numero">${i + 1}</div>
+<h4>${paso.titulo}</h4>
+<p>${paso.texto}</p>
+</div>`
+  )
+  .join("\n")}
 </div>
 <div style="margin-top: 20px; padding: 14px 18px; background: var(--fondo); border-radius: var(--radio-sm); font-size: 0.88rem; color: var(--gris); display: flex; align-items: flex-start; gap: 10px;">
 <span style="color: var(--azul); flex-shrink: 0; margin-top: 2px;">
 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
 </span>
-<span><strong>Requisitos de Aprobación:</strong> Para obtener el <em>Certificado de Aprobación</em> se requiere una calificación mínima de <strong>14 puntos</strong> en la evaluación final. En caso contrario, se expedirá el <em>Certificado de Participación</em> por las horas académicas correspondientes.</span>
+${nota}
 </div>`
   );
 }
@@ -466,7 +487,7 @@ El envío de este formulario representa la conformidad con los datos registrados
 
 function sidebar(curso, ruta) {
   const esDiplomado = curso.tipo === "diplomado";
-  const etiqueta = esDiplomado ? "Diplomado Oficial" : "Curso Oficial";
+  const etiqueta = curso.etiquetaFlyer || (esDiplomado ? "Diplomado Oficial" : "Curso Oficial");
   const incluyeTitulo = esDiplomado ? "Este Diplomado incluye:" : "Este Curso incluye:";
   const waInfo = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hola, deseo más información y matricularme en ${curso.waLargo}`)}`;
   const waFactura = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hola, tengo consultas sobre la facturación del ${curso.waCorto}`)}`;
@@ -476,13 +497,25 @@ ${SVG_CHECK_GRANDE}
 <span>${t}</span>
 </li>`)
     .join("\n");
+  const cohorte = curso.fechas
+    ? `<div class="cohorte-datos" style="background: var(--fondo); border-radius: var(--radio-sm); padding: 10px 12px; margin-bottom: 12px; font-size: 0.84rem; color: var(--gris);">
+<strong style="display: block; color: var(--azul); font-size: 0.95rem;">${curso.fechas}</strong>
+${[curso.horario, curso.modalidadStat].filter(Boolean).join(" · ")}
+</div>`
+    : "";
+  const prontoPago = curso.prontoPago
+    ? `<div class="pronto-pago" style="margin-top: 10px; border-left: 3px solid var(--rojo); padding: 6px 10px; font-size: 0.82rem; color: var(--gris);">
+<strong style="color: var(--rojo);">Pronto pago hasta el ${curso.prontoPago.hasta}:</strong>
+S/ ${curso.prontoPago.pen} · US$ ${curso.prontoPago.usd}
+</div>`
+    : "";
   return `<aside class="ficha-sidebar">
 <div class="card-matricula">
 <div class="card-matricula-flyer">
 <img src="${ruta}assets/img/${curso.flyer}" alt="Flyer ${curso.waCorto} Proinocuidad">
 <span class="flyer-tag">${etiqueta}</span>
 </div>
-<div class="card-matricula-body">
+<div class="card-matricula-body">${cohorte ? `\n${cohorte}` : ""}
 <div class="precios-wrapper">
 <div class="precio-fila">
 <div class="precio-etiqueta">
@@ -497,7 +530,7 @@ Internacional
 <small>PayPal / Western Union</small>
 </div>
 <div class="precio-numero" style="color: var(--azul);">US$ ${curso.usd}</div>
-</div>
+</div>${prontoPago ? `\n${prontoPago}` : ""}
 </div>
 <div class="matricula-cta-group">
 <a class="btn btn-rojo" href="#form-inscripcion">
@@ -587,7 +620,7 @@ function jsonLdCurso(curso) {
       name: "Proinocuidad Consultoría y Capacitación Alimentaria E.I.R.L.",
       url: "https://proinocuidad.com/",
     },
-    courseMode: "Asíncrono (grabado)",
+    courseMode: curso.courseMode || "Asíncrono (grabado)",
     timeRequired: `PT${curso.horas}H`,
     offers: [
       { "@type": "Offer", price: String(curso.pen), priceCurrency: "PEN" },
@@ -1837,7 +1870,194 @@ const AUDITOR = {
   ],
 };
 
-const FICHAS = [DIPLOMADO, LEGISLACION, BPM_POES, DIGESA, BPM_CODEX, PHS, FSSC, AUDITOR];
+const EN_VIVO = {
+  tipo: "curso",
+  slug: "bpm-haccp-en-vivo",
+  horas: 40,
+  pen: 60,
+  usd: 17,
+  estructura: "3 Sesiones · 8 al 10 dic",
+  flyer: "flyer-curso-09-bpm-haccp-en-vivo.webp",
+  waCorto: "el Curso en Vivo de BPM, Prerrequisitos y HACCP",
+  waLargo: "el Curso Especializado en Vivo de BPM, Programas Prerrequisito y HACCP",
+  etiquetaFlyer: "Curso en Vivo",
+  modalidadStat: "En vivo (Zoom)",
+  certificacionStat: "Opcional con QR",
+  courseMode: "En vivo (Zoom)",
+  fechas: "8, 9 y 10 de diciembre",
+  horario: "7:30 - 10:00 PM (hora Perú)",
+  prontoPago: { pen: 45, usd: 15, hasta: "4 de diciembre de 2026" },
+  title: "Curso en vivo: BPM, Prerrequisitos y HACCP | Proinocuidad",
+  seoTitle: "Curso en vivo BPM, Prerrequisitos y HACCP | Proinocuidad",
+  seoDesc:
+    "Curso en vivo por Zoom del 8 al 10 de diciembre: BPM, programas prerrequisito y HACCP, 40 horas académicas y certificado digital opcional con QR.",
+  desc:
+    "Curso en vivo por Zoom del 8 al 10 de diciembre: BPM, programas prerrequisito y HACCP, 40 horas académicas y certificado digital opcional con QR.",
+  fondo: "ficha-bpm.avif",
+  miga: "Curso en vivo",
+  descripcion:
+    "Curso especializado en vivo por Zoom, del 8 al 10 de diciembre de 2026, de 7:30 a 10:00 PM (hora Perú): BPM, programas prerrequisito y HACCP, con talleres de identificación de peligros, POES y PCC.",
+  h1: "Curso Especializado: “Buenas Prácticas de Manufactura, Programas Prerrequisito y HACCP: Implementación, Verificación y Auditoría”",
+  faq: [
+    {
+      q: "¿El curso es en vivo o grabado?",
+      a: "Es en vivo por Zoom: 8, 9 y 10 de diciembre de 2026, de 7:30 a 10:00 PM (hora Perú). El acceso al aula virtual Moodle queda disponible de forma permanente.",
+    },
+    {
+      q: "¿Qué incluye la matrícula?",
+      a: "Acceso permanente al aula virtual Moodle, manuales, procedimientos y registros BPM, PHS y HACCP, check list de auditoría HACCP, libros y guías.",
+    },
+    {
+      q: "¿El certificado es obligatorio?",
+      a: "No. El certificado digital con código QR por 40 horas académicas es opcional, no tiene costo adicional y se solicita al finalizar el curso.",
+    },
+    {
+      q: "¿Hay precio de pronto pago?",
+      a: "Sí: S/ 45 o US$ 15 hasta el 4 de diciembre de 2026. Después de esa fecha la inversión es de S/ 60 (no incluye IGV) o US$ 17.",
+    },
+  ],
+  objetivoTitulo: "Objetivo:",
+  objetivo:
+    "Desarrollar la capacidad de interpretar y aplicar el marco normativo sanitario vigente, tanto a nivel nacional como internacional, para gestionar procesos de producción, etiquetado y comercialización de alimentos que garanticen la inocuidad, protejan la salud del consumidor y aseguren la competitividad en mercados globales.",
+  publico:
+    "Profesionales, técnicos y estudiantes de últimos ciclos vinculados a la industria alimentaria: responsables de calidad e inocuidad, supervisores de producción, personal de control de calidad, consultores, auditores internos, docentes y emprendedores del sector alimentos y bebidas.",
+  temarioIntro: "Contenidos del curso:",
+  modulos: [
+    {
+      badge: "MÓDULO I",
+      titulo: "Introducción a la inocuidad alimentaria, peligros y BPM",
+      abierto: true,
+      html: `<li>Introducción a la inocuidad alimentaria</li>
+<li>Peligros en los alimentos</li>
+<li>Taller de búsqueda de normas en Codex Alimentarius</li>
+<li>Taller de identificación de peligros</li>
+<li><strong>Buenas Prácticas de Manufactura</strong>
+<ul>
+<li>Proyecto y construcción de las instalaciones</li>
+<li>Control de operaciones</li>
+<li>Higiene y salud del personal</li>
+<li>Taller de distribución esquemática de planta</li>
+</ul>
+</li>`,
+    },
+    {
+      badge: "MÓDULO II",
+      titulo: "Higiene y Saneamiento, POES y POE",
+      abierto: false,
+      html: `<li><strong>Procedimientos Operativos Estandarizados de Saneamiento (POES)</strong>
+<ul>
+<li>POES 1: Seguridad y agua potable</li>
+<li>POES 2: Superficies en contacto con alimentos</li>
+<li>POES 3: Prevención de la contaminación cruzada</li>
+<li>POES 4: Higiene del personal</li>
+<li>POES 5: Adulteración de los alimentos</li>
+<li>POES 6: Etiquetado apropiado, almacenamiento y uso de compuestos tóxicos</li>
+<li>POES 7: Control de salud de los empleados</li>
+<li>POES 8: Exclusión de plagas</li>
+<li>Taller práctico de identificación de POES</li>
+</ul>
+</li>
+<li><strong>Higiene y saneamiento</strong>
+<ul>
+<li>Definiciones</li>
+<li>Tipos y métodos de limpieza</li>
+<li>Agentes de limpieza y desinfectantes</li>
+<li>Tipos de desinfectantes</li>
+<li>Plan de higiene y saneamiento</li>
+<li>Verificación y validación de limpieza y desinfección</li>
+<li>Taller práctico de elaboración de procedimiento</li>
+</ul>
+</li>
+<li><strong>Procedimientos Operativos Estandarizados (POE)</strong>
+<ul>
+<li>POE 1: Manejo de reclamos de clientes</li>
+<li>POE 2: Trazabilidad</li>
+<li>POE 3: Recuperación de productos</li>
+<li>POE 4: Mantenimiento preventivo</li>
+<li>POE 5: Calibración de instrumentos</li>
+<li>POE 6: Capacitación</li>
+<li>POE 7: Control de proveedores</li>
+<li>POE 8: Control de transporte</li>
+<li>POE 9: Control de documentos</li>
+</ul>
+</li>
+<li>Etiquetado e información al consumidor</li>`,
+    },
+    {
+      badge: "MÓDULO III",
+      titulo: "Sistema HACCP y auditoría",
+      abierto: false,
+      html: `<li><strong>Generalidades del Sistema HACCP</strong>
+<ul>
+<li>7 principios y 12 pasos</li>
+<li>Paso 01: Formación del equipo encargado del HACCP</li>
+<li>Paso 02: Descripción del producto</li>
+<li>Paso 03: Identificación del uso final</li>
+<li>Paso 04: Elaboración del diagrama de flujo</li>
+<li>Paso 05: Confirmación in situ</li>
+<li>Paso 06: Análisis de peligros y medidas de control</li>
+<li>Paso 07: Determinación de los puntos críticos de control</li>
+<li>Paso 08: Límites críticos para cada PCC</li>
+<li>Paso 09: Sistema de vigilancia para cada PCC</li>
+<li>Paso 10: Medidas correctoras</li>
+<li>Paso 11: Procedimientos de comprobación</li>
+<li>Paso 12: Sistema de documentación y registro</li>
+</ul>
+</li>
+<li>Taller de identificación y evaluación de peligros</li>
+<li>Taller de identificación de PCC</li>`,
+    },
+  ],
+  beneficios: [
+    [
+      SVG_CUBO,
+      "Aula Virtual Permanente",
+      "Acceso permanente al aula virtual Moodle con los materiales y recursos del curso.",
+    ],
+    [
+      SVG_MONITOR,
+      "Clases en Vivo por Zoom",
+      "Tres sesiones con el docente: 8, 9 y 10 de diciembre, de 7:30 a 10:00 PM (hora Perú).",
+    ],
+    [
+      SVG_DOC,
+      "Materiales BPM, PHS y HACCP",
+      "Manuales, procedimientos, registros, check list de auditoría HACCP, libros y guías.",
+    ],
+    [
+      SVG_CALENDARIO,
+      "Certificado Opcional con QR",
+      "Certificado digital por 40 horas académicas, sin costo adicional y verificable con QR.",
+    ],
+  ],
+  metodologiaIntro:
+    "El curso se dicta en vivo por Zoom en tres sesiones, con acceso permanente al aula virtual Moodle para descargar los materiales:",
+  metodologiaPasos: [
+    {
+      titulo: "Conéctate a la clase en vivo",
+      texto: "Tres sesiones por Zoom con el docente, del 8 al 10 de diciembre, de 7:30 a 10:00 PM (hora Perú).",
+    },
+    {
+      titulo: "Practica en los talleres",
+      texto: "Identificación de peligros y PCC, distribución esquemática de planta, POES y elaboración de procedimientos.",
+    },
+    {
+      titulo: "Certifícate",
+      texto: "Solicita tu certificado digital opcional con QR por las 40 horas académicas del curso.",
+    },
+  ],
+  metodologiaNota:
+    "<span><strong>Certificado opcional:</strong> el certificado digital con QR por 40 horas académicas es opcional y no tiene costo adicional; se solicita al finalizar el curso.</span>",
+  incluye: [
+    "Acceso permanente al aula virtual Moodle",
+    "3 sesiones en vivo por Zoom (8, 9 y 10 de diciembre)",
+    "Manuales, procedimientos y registros BPM, PHS y HACCP",
+    "Check list de auditoría HACCP, libros y guías",
+    "Certificado digital opcional con QR (40 horas)",
+  ],
+};
+
+const FICHAS = [DIPLOMADO, LEGISLACION, BPM_POES, DIGESA, BPM_CODEX, PHS, FSSC, AUDITOR, EN_VIVO];
 
 for (const f of FICHAS) {
   const dir = join(RAIZ, "cursos", f.slug);

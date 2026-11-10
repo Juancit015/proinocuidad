@@ -19,16 +19,16 @@ Proniciudad/
 │   └── vigencia-indeterminada-haccp/index.html  # Detalle de la nota DIGESA (JSON-LD Article)
 ├── cursos/
 │   ├── index.html                 # Listado con pestañas Asíncronos / En vivo
-│   └── <slug>/index.html          # Ficha de detalle de cada curso (8 fichas)
+│   └── <slug>/index.html          # Ficha de detalle de cada curso (8 asíncronas + 1 en vivo)
 ├── assets/
 │   ├── css/main.css               # Único stylesheet del sitio (variables de la paleta institucional, media query propia para la franja 560–860px del menú móvil)
 │   ├── js/main.js                 # Menú móvil (acordeón, Escape, cierre al tocar el velo) + mega-menú
-│   ├── js/cursos-data.js          # Datos de los 8 cursos + constantes de contacto del sitio
+│   ├── js/cursos-data.js          # Datos de los 8 cursos asíncronos y la cohorte en vivo + constantes de contacto
 │   ├── fonts/                     # Outfit (woff2 variable, subconjunto latin)
 │   └── img/                       # Imágenes optimizadas (logo, favicon, flyers, fotos, QR)
 │       └── pagos/                 # Logos de medios de pago (yape, plin, bbva, western-union, paypal)
 ├── tools/
-│   ├── generar-fichas.mjs         # Generador de las 8 fichas Y de la página 404 (emite también la navbar)
+│   ├── generar-fichas.mjs         # Generador de las fichas Y de la página 404 (emite también la navbar)
 │   └── publicar.sh                # Deploy al hosting: lista blanca de 12 ítems + checklist
 ├── openspec/                      # Especificaciones y cambios del proyecto (ver sección OpenSpec)
 │   ├── pagina web.pdf             # Documento oficial: fuente única de verdad del contenido
@@ -42,7 +42,7 @@ Proniciudad/
 |---|---|
 | Textos y secciones de la Página Inicial | `index.html` |
 | Tarjetas de cursos destacados del Home | `assets/js/cursos-data.js` (campo `enHome`) |
-| Listado de cursos y pestañas | `cursos/index.html` (render desde `cursos-data.js`) |
+| Listado de cursos y pestañas | `cursos/index.html` (tres bloques generados desde `cursos-data.js`: `#lista-cursos`, `#lista-envivo` y `#cursos-destacados`) |
 | Ficha de cada curso (temario, objetivo, inversión…) | `cursos/<slug>/index.html`; para regenerar: `tools/generar-fichas.mjs` |
 | Foto de "¿Quiénes somos?" (grupo frente a la casona amarilla) | `assets/img/nosotros.webp`, referenciada en `index.html` y `nosotros/index.html` |
 | Datos de contacto del sitio (email, WhatsApp, horario, comunidad) | constante `PROINO_SITIO` en `assets/js/cursos-data.js` **y** el footer repetido en cada página |
@@ -78,7 +78,7 @@ Los 113 enlaces a WhatsApp llevan el mensaje en el propio `href`
 Registro Sanitario DIGESA.
 
 **Dónde se edita cada uno.** El contacto directo y el flotante están como constantes
-`waContacto` y `waFlotante` en `tools/generar-fichas.mjs` (afectan a las 8 fichas) y
+`waContacto` y `waFlotante` en `tools/generar-fichas.mjs` (afectan a todas las fichas) y
 además repetidos en los 10 HTML escritos a mano, porque `cursos/index.html` conserva su
 propia cabecera y pie. Si cambias uno, cambia los dos sitios. La tarjeta de curso usa
 `waCurso(c)` en `tools/generar-listados.mjs` y el nombre viene del campo `waLargo` de
@@ -95,7 +95,8 @@ de fichas y no deben tocarse sin pedirlo.
 `diplomado-gestion-calidad-e-inocuidad` · `legislacion-sanitaria-alimentos` ·
 `implementacion-auditoria-bpm-poes-poe-plan-haccp` · `haccp-implementacion-certificacion-digesa-senasca` ·
 `bpm-prerrequisitos-codex-2022-iso-22002-1` · `programas-higiene-saneamiento` ·
-`sistema-haccp-fssc-22000-codex-2022` · `formacion-auditor-interno-haccp`
+`sistema-haccp-fssc-22000-codex-2022` · `formacion-auditor-interno-haccp` ·
+`bpm-haccp-en-vivo`
 
 ## Regenerar las fichas de cursos
 
@@ -103,7 +104,7 @@ de fichas y no deben tocarse sin pedirlo.
 node tools/generar-fichas.mjs
 ```
 
-El generador reescribe los 8 archivos `cursos/<slug>/index.html` a partir del contenido
+El generador reescribe los archivos `cursos/<slug>/index.html` a partir del contenido
 definido dentro del propio script. Regenerar **sobrescribe** los HTML de las fichas:
 si una ficha se editó a mano, el cambio se pierde al regenerar — editar el script o la ficha, no ambos.
 
@@ -144,8 +145,8 @@ contraste, no a ojo.
 
 ```
   robots.txt      permite el rastreo y declara la ruta del sitemap
-  sitemap.xml     las 20 páginas públicas, con URL absoluta y barra final
-  llms.txt        índice de las mismas 20 páginas, para asistentes de IA
+  sitemap.xml     las 22 páginas públicas, con URL absoluta y barra final
+  llms.txt        índice de las mismas 22 páginas, para asistentes de IA
   llms-full.txt   el contenido de las páginas clave, ya en Markdown
 ```
 
@@ -153,7 +154,7 @@ contraste, no a ojo.
 mano, así que **añadir o retirar una página obliga a actualizarlo**: su error más
 probable es quedarse con una URL que ya no existe, y eso es peor que no tener el
 archivo, porque el asistente la sigue y recibe un 404. `sitemap.xml` y `llms.txt`
-deben contener **exactamente las mismas 20 URLs**, así que la comprobación es una
+deben contener **exactamente las mismas 22 URLs**, así que la comprobación es una
 comparación de conjuntos entre los dos. `404.html` no entra en ninguno: no es una
 página indexable.
 
@@ -165,6 +166,9 @@ descartada escrita en el change archivado.
 ## Assets: convenciones
 
 - Flyers de curso: `assets/img/flyer-curso-NN-<slug>.webp` (derivados de `_archivo/FOTOS-(1)/FOTOS/FLYER CURSOS/`).
+- La cohorte en vivo usa dos derivados del mismo flyer: `flyer-curso-09-bpm-haccp-en-vivo.webp`
+  (cuadrado, sidebar de la ficha) y `flyer-curso-09-bpm-haccp-en-vivo-card.webp` (1200×675 con
+  fondo desenfocado, tarjeta del listado, que recorta a 16:10).
 - Fotos reales: `capacitacion-laredo-auditorio.jpg`, `capacitacion-laredo-aula.jpg`,
   `conferencia-razzeto-zoom.jpg`, `capacitacion-cevicheria-dsumare.jpg`, `consultoria-planta.jpg`,
   `inspeccion-calidad.jpg`, `registro-sanitario-alimentos.webp`, `qr-pago-bbva.webp`.
@@ -203,14 +207,14 @@ Los cambios de la sesión 2026-10-15 pendientes de publicar son 3 (ver `CHANGELO
 2. **Fichas sin banda derecha** (`ficha-sin-desborde-general`, archivado):
    `assets/css/main.css` (fix honeypot `.campo-honey` + contención en escritorio).
 3. **País como desplegable** (`formulario-select-pais`, implementado 6/6, pendiente de archivar):
-   `tools/generar-fichas.mjs` + las 8 fichas regeneradas + `assets/css/main.css`
+   `tools/generar-fichas.mjs` + las fichas regeneradas + `assets/css/main.css`
    (regla `.form-inscripcion select`).
 
 ### Qué subir (mínimo)
 
 - `index.html`
 - `assets/css/main.css`
-- `cursos/*/index.html` (las 8 fichas)
+- `cursos/*/index.html` (todas las fichas)
 - `CHANGELOG.md` (opcional, informativo)
 
 ### Qué NO subir

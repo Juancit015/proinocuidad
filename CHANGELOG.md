@@ -3,6 +3,29 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-11-10 (curso en vivo: BPM, Programas Prerrequisito y HACCP, 8 al 10 de diciembre)
+
+### Added
+
+- **Ficha del curso en vivo `cursos/bpm-haccp-en-vivo/`**: plantilla completa de curso con la cohorte del 8, 9 y 10 de diciembre de 2026, de 7:30 a 10:00 PM (hora Perú), dictada por Zoom. Incluye temario de tres módulos (BPM, POES/POE, HACCP y auditoría), formulario de inscripción con el curso precargado, JSON-LD `Course` con `courseMode: "En vivo (Zoom)"`, 40 horas académicas y ofertas de S/ 60 (no incluye IGV) y US$ 17. Pronto pago de S/ 45 / US$ 15 hasta el 4 de diciembre; el precio regular se mantiene publicado.
+- **Certificado digital opcional, sin costo adicional**, con código QR por las 40 horas, solicitado al finalizar el curso. La ficha no publica nota mínima ni examen final, a diferencia de las fichas asíncronas.
+- **Pestaña «En vivo» del listado** (`#lista-envivo` en `cursos/index.html`): tarjeta generada desde `cursos-data.js` con modalidad, fechas, precio y pronto pago. Si no hay cohortes, el generador emite un aviso que ocupa la rejilla completa en lugar de una sección vacía.
+- **Flyer en dos derivados WebP**: cuadrado 1080×1080 para el sidebar de la ficha y 1200×675 para la tarjeta (flyer completo sobre fondo desenfocado del mismo flyer; el recorte 16:10 directo cortaba las etiquetas de los iconos).
+
+### Changed
+
+- **`tools/generar-fichas.mjs` parametrizado sin alterar las 8 fichas existentes**: modalidad, certificación, beneficios, pasos de metodología, nota de aprobación, datos de cohorte, pronto pago, etiqueta del flyer y `courseMode` del JSON-LD salen del objeto del curso; los valores por defecto reproducen byte a byte las fichas asíncronas.
+- **`tools/generar-listados.mjs` separa por modalidad**: `#lista-cursos` recibe solo los 8 cursos asíncronos, `#lista-envivo` la cohorte en vivo y `#cursos-destacados` los 4 con `enHome`; el bloque asíncrono queda idéntico.
+- **`sitemap.xml`, `llms.txt`, `llms-full.txt` y `STRUCTURE.md` pasan a 22 páginas públicas** (se añade la ficha en vivo; el conteo anterior de 20 ya omitía `verifica-tu-certificado.html`). Se corrigen las frases que describían toda la oferta como asíncrona.
+- OpenSpec: change `curso-en-vivo-bpm-haccp` con deltas de `cursos`, `seo-base`, `diseno-responsive`, `iconografia`, `pagina-404` y `verificacion-certificado`.
+
+### Verificado (Playwright Chromium, servidor local 8899)
+
+- Pestaña «En vivo» con la tarjeta y sus chips (modalidad, 3 sesiones, fechas, S/ 60 no incluye IGV); clic en «Más información» lleva a la ficha; imagen del flyer cargada. 0 excepciones de consola a 390 y 1280 px.
+- Ficha sin desbordamiento horizontal: `scrollWidth == innerWidth` a 360, 390, 768, 860, 1024 y 1280 px; ningún elemento rebasa el viewport. Botones del sidebar a ancho completo (307 px a 390) y formulario visible con el curso precargado.
+- Ambos generadores salen con código 0 y la segunda pasada no cambia un byte (`md5sum` y `git status` idénticos); las 8 fichas asíncronas siguen sin diff.
+- Las 22 URLs del sitemap responden 200 en local y coinciden exactamente con las de `llms.txt`.
+
 ## 2026-11-10 (verifica: el QR del certificado muestra la ficha, sin recargas ni caché vieja)
 
 ### Fixed
