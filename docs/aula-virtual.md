@@ -387,6 +387,10 @@ Cuando llegue el temario hay que hacer, en este orden:
   4 con 19, 6 con 18, 2 con 17, 1 con 16, 2 con 14). Solo falta que el cliente
   entregue las notas y fechas de los 84 restantes (los PDFs que ya les entregó,
   o un Excel).
+- **Registro del certificado (2026-11-10):** el código de registro (ej.
+  `016-2026-11-AJJ-BPMISO`) se partía en dos líneas porque el rect del
+  campo era demasiado angosto (796px). Se amplió a 820px y se verificó por
+  muestra que el código completo cabe en una sola línea.
 - **Plantilla del certificado (2026-11-10):** Juan editó la plantilla en Canva
   y eliminó la etiqueta "CALIFICACIÓN" (y la nota) del diseño, exportando
   `CERTIFICADO-EDITABLE-3paginas-v2.pdf` (md5 `e05f0dc0be180fcdbab53ab1dcf6f04c`).
