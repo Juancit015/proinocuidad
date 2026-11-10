@@ -3,6 +3,24 @@
 Todos los cambios notables del sitio web de Proinocuidad se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
+## 2026-11-10 (verifica: el QR del certificado muestra la ficha, sin recargas ni caché vieja)
+
+### Fixed
+
+- **La búsqueda automática por `?codigo=` (QR del certificado) ya no pierde el resultado**: `autoBuscar` espera a la promesa de carga de `certificados.json` (con timeout de seguridad de 8 s) en lugar de sondear `DATA === undefined`; si el JSON falla, muestra el aviso de error y restablece el botón. El listener `submit` no llama a `buscar()` mientras `DATA` no sea un array, y todo el flujo va envuelto en `try/catch`, de modo que ningún fallo deja el spinner activo sin tarjeta ni aviso.
+- **Sin submit sintético ni clic programático**: la búsqueda se extrajo a `ejecutarBusqueda(q)` y la auto-búsqueda la invoca directamente. Antes se disparaba `form.dispatchEvent(new Event('submit'))` (un evento no cancelable: `preventDefault()` no surtía efecto y el formulario hacía un GET completo `?q=…`, recargando la página) o `btn.click()`; en navegadores móviles el resultado era una recarga que borraba la ficha recién pintada.
+
+### Changed
+
+- **`Cache-Control: no-cache, must-revalidate` para todo `.html`, `.css` y `.js`, y para `assets/data/certificados.json`** (antes solo `index.html`, `main.js` y `main.css`). El servidor no enviaba cabeceras para la página de verificación ni para el JSON: el navegador podía seguir ejecutando una copia vieja de la página (la que recargaba) y sirviendo un JSON anterior a la emisión de los 83 certificados.
+- **Autorrescate de copias cacheadas en `assets/js/main.js`**: si la página de verificación no trae `<meta name="verifica-version">` (copia anterior a este cambio), se recarga una sola vez la misma URL con `&v=<timestamp>` para cambiar la clave de caché; el guardia `v=` y una marca en `sessionStorage` evitan bucles. El HTML vigente declara `<meta name="verifica-version" content="2026-11-10.1">`.
+
+### Verificado (Playwright Chromium 390 px, local y producción; decodificación del QR real)
+
+- QR decodificado del PDF del certificado `016-2026-11-AJJ-BPMISO` (`jsQR` sobre render de `pdftoppm`): `https://proinocuidad.com/verifica-tu-certificado.html?codigo=016-2026-11-AJJ-BPMISO`.
+- Código válido → tarjeta persistente (la URL no cambia ni recarga); código inválido → aviso "Por favor, verifique…"; JSON bloqueado (red offline) → aviso de error y botón restablecido; copia sin marca de versión → un solo redirect con `&v=` y tarjeta. 0 excepciones sin manejar en consola.
+- Producción responde con `cache-control: no-cache, must-revalidate` en la página, `main.js` y `certificados.json`; md5 repo = servidor (página `3301df74…`, `main.js` `a60dca10…`, `.htaccess` `95b1c276…`).
+
 ## 2026-10-31 (certificados: emisión sobre plantilla editable AcroForm + QR real)
 
 ### Added

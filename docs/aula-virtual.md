@@ -577,10 +577,65 @@ Pendiente para Juan (no se tocó):
 - Fechas reales de los 83 si llegan (se regeneran).
 - No ejecutar `tools/publicar.sh` (deploy) sin autorización expresa.
 
+## 10. Incidente del QR del certificado (2026-11-10)
+
+**Síntoma**: al escanear el QR de un certificado la página mostraba
+"Buscando…" y después se quedaba en blanco o volvía al inicio; en una de las
+pruebas la ficha aparecía y desaparecía a los pocos segundos.
+
+**Causas encontradas, en orden**:
+
+1. La búsqueda automática por `?codigo=` podía ejecutarse antes de que
+   `certificados.json` estuviera cargado. `buscar()` trabajaba sobre
+   `DATA === undefined` y lanzaba una excepción no manejada: el spinner
+   quedaba activo y no había tarjeta ni aviso. `autoBuscar` ahora espera a la
+   promesa `carga` (timeout de 8 s), y el flujo de búsqueda tiene guardia y
+   `try/catch`.
+2. El submit sintético `form.dispatchEvent(new Event('submit'))` **no era
+   cancelable**: `preventDefault()` no surtía efecto y el formulario hacía un
+   GET completo (`?q=…`), recargando la página y perdiendo el resultado. Se
+   probó con `{cancelable:true}` y con `btn.click()`; ambos dependen de que el
+   navegador respete la cancelación del evento.
+3. Solución en el código: la búsqueda se extrajo a `ejecutarBusqueda(q)` y la
+   auto-búsqueda la llama directamente, sin pasar por el evento `submit` ni
+   por el botón (`fe052df`).
+4. El teléfono seguía igual porque el servidor **no enviaba `Cache-Control`**
+   para `verifica-tu-certificado.html` ni para `certificados.json`: el
+   navegador podía ejecutar la copia vieja (la que recargaba) y servir un JSON
+   anterior a la emisión de los 83 certificados. Se añadió
+   `no-cache, must-revalidate` para todo `.html`, `.css`, `.js` y para
+   `certificados.json`, y un autorrescate en `main.js`.
+
+**Autorrescate** (`assets/js/main.js`): si existe `#form-verifica` y falta
+`<meta name="verifica-version">` (copia cacheada anterior), se recarga una sola
+vez la misma URL con `&v=<timestamp>`; el guardia `v=` y una marca en
+`sessionStorage` impiden bucles. El HTML vigente declara
+`<meta name="verifica-version" content="2026-11-10.1">`.
+
+**Comprobaciones**:
+
+- QR decodificado del PDF real (`jsQR` sobre `pdftoppm` del certificado 016):
+  `https://proinocuidad.com/verifica-tu-certificado.html?codigo=016-2026-11-AJJ-BPMISO`.
+- Producción sirve el código vigente y las cabeceras (`cache-control:
+  no-cache, must-revalidate` en la página, `main.js` y `certificados.json`).
+- Playwright (Chromium, 390 px), local y producción: código válido → tarjeta
+  persistente; código inválido → aviso rojo; JSON bloqueado → aviso de error y
+  botón restablecido; copia sin marca de versión → un solo redirect con `&v=`
+  y tarjeta. 0 excepciones en consola.
+- md5 repo = servidor: página `3301df74bb02ab7af941c8aec1465658`, `main.js`
+  `a60dca10d5bd6bbde23223e8dfa23dfc`, `.htaccess`
+  `95b1c27634e270d919e3b59de2609c7e`.
+
+**Pendiente**: confirmar en el teléfono de Juan. Si vuelve a fallar con la
+página ya fresca, la siguiente vía es renderizar la ficha en el servidor (PHP)
+para que no dependa de `fetch` ni de JS, y/o versionar la URL del QR en los
+PDFs nuevos.
+
 ## 8. Bitácora
 
 | Fecha | Evento |
 |---|---|
+| 2026-11-10 | QR del certificado: búsqueda automática sin submit sintético (`ejecutarBusqueda`), `no-cache` para HTML/JS/CSS/JSON y autorrescate de copias cacheadas en `main.js`. Verificado en Chromium local y producción; pendiente confirmar en el teléfono de Juan |
 | 2026-11-10 | Búsqueda automática por `?codigo=` (escaneo de QR) robustecida: autoBuscar espera a la carga de datos, guardia en submit, try/catch y timeout de 8 s. Probado en Chromium desktop/móvil con código válido, inválido y red bloqueada: siempre se muestra tarjeta o aviso y el spinner no queda activo |
 | 2026-11-10 | Rect del registro corregido a la celda real de la plantilla nueva (rect 696-804, fuente 8). 83 PDFs regenerados con código de registro en una sola línea. Verificado visualmente y con QR |
 | 2026-11-10 | Plantilla del certificado actualizada en Canva: etiqueta "CALIFICACIÓN" eliminada; 83 PDFs regenerados con plantilla nueva (sin etiqueta, sin nota). QR verificado por decodificación |

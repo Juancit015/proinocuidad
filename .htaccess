@@ -10,11 +10,12 @@ ErrorDocument 404 /404.html
 # Página índice de cada carpeta
 DirectoryIndex index.html
 
-# HTML, JS y CSS clave NO se cachean a largo plazo: LiteSpeed los sirve
-# con max-age=604800 por defecto, y un HTML/JS viejo cacheado en el
-# navegador del usuario revive bugs ya corregidos y esconde mejoras nuevas
+# TODO el HTML, JS y CSS, y la base de certificados, NO se cachean a largo
+# plazo: LiteSpeed los sirve con max-age=604800 por defecto, y una copia
+# vieja en el navegador revive bugs ya corregidos y esconde mejoras nuevas
 # tras cada deploy (p. ej. el formulario que saltaba a la página "Thanks"
-# pese al fix del 2026-10-25). Son ficheros pequeños: el coste de
+# pese al fix del 2026-10-25, o la página de verificación que recargaba al
+# escanear el QR del 2026-11-10). Son ficheros pequeños: el coste de
 # revalidar es mínimo frente al riesgo.
 <IfModule mod_headers.c>
   <FilesMatch "\.(html|js|css)$">
