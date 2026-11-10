@@ -161,17 +161,9 @@ class emisor {
             return ['estado' => cola::SALTADA, 'motivo' => get_string('motivo_sin_completado', 'local_certificados'), 'codigo' => null];
         }
 
-        $notaMin = isset($map['nota_minima'])
-            ? (float)$map['nota_minima']
-            : (float)get_config('local_certificados', 'nota_minima_default');
-        $nota = self::nota($courseid, $userid, $map);
-        if ($nota <= 0 || $nota < $notaMin) {
-            return [
-                'estado' => cola::SALTADA,
-                'motivo' => get_string('motivo_sin_nota', 'local_certificados') . " (nota {$nota}, minimo {$notaMin})",
-                'codigo' => null,
-            ];
-        }
+        // La nota ya no se imprime en el certificado (decisión del cliente):
+        // la emisión gatilla solo por la finalización del curso, que ya implica
+        // haber aprobado el examen. `nota()` se conserva por compatibilidad.
 
         $nombre = fullname($user);
         $nombreNorm = fichas::normalizar($nombre);
@@ -210,7 +202,7 @@ class emisor {
 
         // Corrida en seco: se calcula todo y no se toca nada.
         if ($seco) {
-            return ['estado' => cola::PENDIENTE, 'motivo' => "SECO: {$codigo} / nota {$nota}", 'codigo' => $codigo];
+            return ['estado' => cola::PENDIENTE, 'motivo' => "SECO: {$codigo}", 'codigo' => $codigo];
         }
 
         $endpoint = (string)get_config('local_certificados', 'endpoint_url');
@@ -227,7 +219,6 @@ class emisor {
                 'horas'        => (string)$map['horas'],
                 'codigo'       => $codigo,
                 'creditos'     => (string)($map['creditos'] ?? '2'),
-                'nota'         => number_format($nota, 2, '.', ''),
                 'lugar'        => (string)($map['lugar'] ?? 'Trujillo'),
             ];
 

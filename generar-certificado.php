@@ -2,7 +2,8 @@
 /**
  * Emisión de certificados (capacidad emision-certificados).
  *
- * GET público: /generar-certificado.php?nombre&programa&fecha&horas&codigo[&fecha_inicio&lugar&nota&creditos]
+ * GET público: /generar-certificado.php?nombre&programa&fecha&horas&codigo[&fecha_inicio&lugar&creditos]
+ * (parametro legacy `nota` aceptado e ignorado; ya no se imprime en el certificado)
  * Responde con redirect a certificados/<codigo>.pdf.
  *
  * Pipeline (PHP puro; el server no tiene pdftk/qpdf/gs ni python útil):
@@ -59,7 +60,6 @@ $CAMPOS = array(
     'nombre'       => array('pag' => 1, 'rect' => array(230.0, 372.1, 765.0, 408.1), 'align' => 'C', 'style' => 'B', 'size' => 20,   'min' => 11,  'lh' => 1.25, 'color' => array(15, 15, 15)),
     'programa'     => array('pag' => 1, 'rect' => array(170.0, 268.1, 840.0, 318.1), 'align' => 'C', 'style' => '',  'size' => 15,   'min' => 8,   'lh' => 1.35, 'color' => array(16, 20, 119)),
     'parrafo'      => array('pag' => 1, 'rect' => array(205.0, 206.1, 835.0, 263.1), 'align' => 'C', 'style' => '',  'size' => 12,   'min' => 8,   'lh' => 1.32, 'color' => array(61, 61, 61)),
-    'calificacion' => array('pag' => 1, 'rect' => array(440.0, 170.1, 560.0, 188.1), 'align' => 'C', 'style' => '',  'size' => 12,   'min' => 7,   'lh' => 1.15, 'color' => array(2, 2, 2)),
     'lugar_fecha'  => array('pag' => 1, 'rect' => array(560.0, 151.1, 805.0, 168.1), 'align' => 'R', 'style' => '',  'size' => 12,   'min' => 7,   'lh' => 1.15, 'color' => array(4, 4, 4)),
     // Página 2 (sílabo)
     'modulo1'      => array('pag' => 2, 'rect' => array(46.0,  404.1, 209.0, 454.1), 'align' => 'C', 'style' => '',  'size' => 11.5, 'min' => 7,   'lh' => 1.3,  'color' => array(0, 0, 0)),
@@ -70,7 +70,6 @@ $CAMPOS = array(
     'contenido3'   => array('pag' => 2, 'rect' => array(235.0,  74.1, 548.0, 202.1), 'align' => 'L', 'style' => '',  'size' => 11,   'min' => 6.5, 'lh' => 1.35, 'color' => array(0, 0, 0)),
     'horas'        => array('pag' => 2, 'rect' => array(728.0, 514.1, 772.0, 536.1), 'align' => 'C', 'style' => '',  'size' => 14,   'min' => 8,   'lh' => 1.15, 'color' => array(0, 0, 0)),
     'creditos'     => array('pag' => 2, 'rect' => array(728.0, 444.1, 772.0, 466.1), 'align' => 'C', 'style' => '',  'size' => 14,   'min' => 8,   'lh' => 1.15, 'color' => array(0, 0, 0)),
-    'nota'         => array('pag' => 2, 'rect' => array(722.0, 374.1, 778.0, 396.1), 'align' => 'C', 'style' => '',  'size' => 14,   'min' => 8,   'lh' => 1.15, 'color' => array(0, 0, 0)),
     'registro'     => array('pag' => 2, 'rect' => array(688.0, 308.1, 796.0, 334.1), 'align' => 'C', 'style' => '',  'size' => 10.5, 'min' => 5,   'lh' => 1.15, 'color' => array(11, 18, 121)),
     // Página 3 (continuación del sílabo): solo si el programa tiene más de 3 módulos.
     // Los rects son los de la página 2; la plantilla de 3 páginas duplica la tabla.
@@ -325,7 +324,7 @@ $pHoras    = $param('horas');
 $pCodigo   = $param('codigo');
 $pIni      = $param('fecha_inicio');
 $pLugar    = $param('lugar', 'Trujillo');
-$pNota     = $param('nota');
+// $pNota (legacy): aceptado e ignorado; la nota ya no se imprime en el certificado.
 $pCred     = $param('creditos', '2');
 
 foreach (array('nombre' => $pNombre, 'programa' => $pPrograma, 'fecha' => $pFecha, 'horas' => $pHoras, 'codigo' => $pCodigo) as $k => $v) {
@@ -335,9 +334,6 @@ foreach (array('nombre' => $pNombre, 'programa' => $pPrograma, 'fecha' => $pFech
 }
 if (!preg_match('/^[A-Za-z0-9_\-]{1,60}$/', $pCodigo)) {
     json_error(400, 'El codigo es invalido.');
-}
-if ($pNota === '' || floatval($pNota) <= 0) {
-    json_error(422, 'El certificado requiere una nota mayor de 0.');
 }
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $pFecha) || !checkdate((int)substr($pFecha, 5, 2), (int)substr($pFecha, 8, 2), (int)substr($pFecha, 0, 4))) {
     json_error(400, 'La fecha es invalida (formato AAAA-MM-DD).');
@@ -411,12 +407,10 @@ $valores = array(
     'nombre'       => $pNombre,
     'programa'     => $pPrograma,
     'parrafo'      => $parrafo,
-    'calificacion' => 'Calificación: ' . $pNota,
     'lugar_fecha'  => $pLugar . ', ' . mes_es($mesFin) . ' del ' . $anioFin,
     // Página 2 (sílabo): se añaden abajo solo los módulos que el programa tenga.
     'horas'        => $pHoras,
     'creditos'     => $pCred,
-    'nota'         => $pNota,
     'registro'     => $pCodigo,
 );
 

@@ -387,6 +387,18 @@ Cuando llegue el temario hay que hacer, en este orden:
   4 con 19, 6 con 18, 2 con 17, 1 con 16, 2 con 14). Solo falta que el cliente
   entregue las notas y fechas de los 84 restantes (los PDFs que ya les entregó,
   o un Excel).
+- **Nota del certificado (2026-11-10):** el cliente pidió retirar la nota del
+  certificado. El generador ya no imprime "Calificación" ni la nota del sílabo
+  (`calificacion` y `nota` retirados de `$CAMPOS`/`$valores`; `nota` pasa a
+  parámetro legacy aceptado e ignorado). La emisión gatilla solo por
+  `timecompleted` (la finalización ya implica aprobación). Los 28 certificados
+  históricos (Canva) siguen mostrando su nota; no se reemiten.
+- **Eslabón 9 (2026-11-10): en pruebas.** Se marcaron los 83 alumnos
+  pendientes como completados con la fecha actual y se ejecutó la tarea de
+  emisión: 83 PDFs nuevos (códigos 016..098) y 83 fichas nuevas. Total de
+  fichas: 111 (28 históricas + 83 nuevas). PDFs verificados por muestra: sin
+  "Calificación" ni nota, con QR y registro. Si las fechas reales llegan
+  después, se regeneran con fechas correctas.
 - **Tokens de GitHub** expuestos en el chat: siguen sin revocar.
 
 ---
@@ -528,5 +540,5 @@ Consecuencias que hay que respetar:
 | 2026-11-06 | Eslabón 7 cerrado: prueba de punta a punta con usuario descartable |
 | 2026-11-07 | Auditoría con 4 subagentes: correcciones del generador y del plugin, códigos del JSON normalizados y campo `dni` reparado |
 | 2026-11-07 | Eslabón 8 cerrado: redeploy verificado por md5 y E2E con tildes, partículas y DNI |
-| 2026-11-08 | Documentadas las 3 cuentas de servicio sin DNI (`Alumno Invitado`, `Proinocuidad -`, Claudia Rubio): son 47 alumnos reales, no 50 |
+| 2026-11-10 | Nota retirada del certificado: generador y plugin actualizados; 83 alumnos marcados completados con fecha actual y emitidos (códigos 016..098). Total fichas: 111. Eslabón 9 en pruebas |
 | 2026-11-08 | Arreglado el detector de duplicados (`fichas::existe`): formato viejo `SUFIJO-...` y fichas sin código; código de Lorena a `007-2026-05-LCJ-CHICP`; fechas de Manuel a `2026-02-11 → 2026-02-13`. Verificado en producción |
