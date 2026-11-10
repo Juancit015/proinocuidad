@@ -2,6 +2,25 @@
 (function () {
   "use strict";
 
+  // --- Autorrescate de la página de verificación (QR de certificados) ---
+  // Los QR apuntan a verifica-tu-certificado.html?codigo=… Si el navegador
+  // conserva en caché una copia antigua de esa página, su script viejo puede
+  // recargar y perder el resultado. El HTML vigente marca su versión en el
+  // <head>; si esa marca falta, se fuerza una carga fresca con un parámetro
+  // que cambia la clave de caché. El guardia `v=` y la marca de sesión evitan
+  // bucles si el navegador sirviera otra vez la copia vieja.
+  (function () {
+    if (!document.getElementById("form-verifica")) return;
+    if (document.querySelector('meta[name="verifica-version"]')) return;
+    if (/[?&]v=/.test(window.location.search)) return;
+    try {
+      if (window.sessionStorage.getItem("verifica-fresco")) return;
+      window.sessionStorage.setItem("verifica-fresco", "1");
+    } catch (e) { /* sin sessionStorage se sigue con el guardia v= */ }
+    var sep = window.location.search ? "&" : "?";
+    window.location.replace(window.location.pathname + window.location.search + sep + "v=" + Date.now());
+  })();
+
   var header = document.querySelector(".site-header");
   var toggle = document.querySelector(".nav-toggle");
   var menu = document.querySelector(".nav-menu");

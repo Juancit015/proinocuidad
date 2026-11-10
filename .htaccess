@@ -17,13 +17,10 @@ DirectoryIndex index.html
 # pese al fix del 2026-10-25). Son ficheros pequeños: el coste de
 # revalidar es mínimo frente al riesgo.
 <IfModule mod_headers.c>
-  <Files "index.html">
+  <FilesMatch "\.(html|js|css)$">
     Header set Cache-Control "no-cache, must-revalidate"
-  </Files>
-  <Files "main.js">
+  </FilesMatch>
+  <FilesMatch "certificados\.json$">
     Header set Cache-Control "no-cache, must-revalidate"
-  </Files>
-  <Files "main.css">
-    Header set Cache-Control "no-cache, must-revalidate"
-  </Files>
+  </FilesMatch>
 </IfModule>
