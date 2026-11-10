@@ -397,28 +397,13 @@
         });
     }
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (buscando) return;
-      const aviso = validar(input.value);
-      if (aviso) {
-        mostrarAviso(aviso);
-        input.focus();
-        return;
-      }
-      mostrarAviso('');
-      const q = input.value;
-      if (!q.trim()) { input.focus(); return; }
-
+    function ejecutarBusqueda(q) {
       buscando = true;
       setBoton(true);
       mostrarCargando();
       const minDuracion = new Promise(function (ok) { setTimeout(ok, 420); });
       const movimientoReducido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // Espera a que los datos estén disponibles antes de buscar: evita ejecutar
-      // buscar() sobre DATA === undefined (excepción no manejada que dejaba el
-      // spinner activo sin mostrar resultado ni aviso).
       function asegurarDatos() {
         if (DATA !== undefined) return Promise.resolve();
         if (!carga) carga = cargarDatos();
@@ -453,12 +438,25 @@
         buscando = false;
         setBoton(false);
       });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (buscando) return;
+      const aviso = validar(input.value);
+      if (aviso) {
+        mostrarAviso(aviso);
+        input.focus();
+        return;
+      }
+      mostrarAviso('');
+      const q = input.value;
+      if (!q.trim()) { input.focus(); return; }
+      ejecutarBusqueda(q);
     });
 
     // Auto-búsqueda por ?codigo= (para QR del certificado): al escanear el QR
     // se abre esta página con el código y se muestra la ficha automáticamente.
-    // Se lanza la carga de datos primero y la búsqueda espera a que termine
-    // (o falle, con timeout de seguridad) en lugar de sondear DATA.
     if (!carga) carga = cargarDatos();
     const params = new URLSearchParams(window.location.search);
     const codigoParam = params.get('codigo');
@@ -472,7 +470,7 @@
             mostrarErrorCarga();
             return;
           }
-          btn.click();
+          ejecutarBusqueda(codigoParam);
         }).catch(function () {
           mostrarErrorCarga();
         });
