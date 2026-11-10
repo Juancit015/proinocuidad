@@ -581,6 +581,7 @@ Pendiente para Juan (no se tocó):
 
 | Fecha | Evento |
 |---|---|
+| 2026-11-10 | Búsqueda automática por `?codigo=` (escaneo de QR) robustecida: autoBuscar espera a la carga de datos, guardia en submit, try/catch y timeout de 8 s. Probado en Chromium desktop/móvil con código válido, inválido y red bloqueada: siempre se muestra tarjeta o aviso y el spinner no queda activo |
 | 2026-11-10 | Rect del registro corregido a la celda real de la plantilla nueva (rect 696-804, fuente 8). 83 PDFs regenerados con código de registro en una sola línea. Verificado visualmente y con QR |
 | 2026-11-10 | Plantilla del certificado actualizada en Canva: etiqueta "CALIFICACIÓN" eliminada; 83 PDFs regenerados con plantilla nueva (sin etiqueta, sin nota). QR verificado por decodificación |
 | 2026-11-10 | Nota retirada del certificado: generador y plugin actualizados; 83 alumnos marcados completados con fecha actual y emitidos (códigos 016..098). Total fichas: 111 |
