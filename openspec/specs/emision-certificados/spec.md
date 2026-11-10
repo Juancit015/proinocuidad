@@ -7,7 +7,7 @@ Emisión del PDF de certificado del alumno por código: la URL pública del gene
 ## Requirements
 
 ### Requirement: URL pública del generador
-El sitio SHALL atender `generar-certificado.php` como GET público con los parámetros `nombre`, `programa`, `fecha`, `horas` y `codigo`, y SHALL responder con un redirect al PDF generado en `certificados/<codigo>.pdf` (comportamiento actual conservado). Los parámetros opcionales `fecha_inicio`, `lugar`, `nota` y `creditos` SHALL tener valores por defecto coherentes con documentarse en el propio script.
+El sitio SHALL atender `generar-certificado.php` como GET público con los parámetros `nombre`, `programa`, `fecha`, `horas` y `codigo`, y SHALL responder con un redirect al PDF generado en `certificados/<codigo>.pdf` (comportamiento actual conservado). Los parámetros opcionales `fecha_inicio`, `lugar` y `creditos` SHALL tener valores por defecto coherentes con documentarse en el propio script. El parámetro `nota` ya no se acepta ni se usa.
 
 #### Scenario: Generación exitosa
 - **WHEN** se llama a la URL con los parámetros requeridos y datos válidos
@@ -18,22 +18,22 @@ El sitio SHALL atender `generar-certificado.php` como GET público con los pará
 - **THEN** la respuesta es JSON de error con código HTTP 400 y no se escribe ningún archivo
 
 ### Requirement: Llenado por nombre de campo sobre la plantilla AcroForm
-El generador SHALL llenar el PDF exclusivamente por **nombre de campo** de la plantilla editable (página 1: `nombre`, `programa`, `parrafo`, `calificacion`, `lugar_fecha`; página 2: `modulo1-3`, `contenido1-3`, `horas`, `creditos`, `nota`, `registro`), reemplazando los valores por defecto sin texto sobrepuesto. La composición visual (fuentes y layout Canva) pertenece a la plantilla, no al código.
+El generador SHALL llenar el PDF exclusivamente por **nombre de campo** de la plantilla editable (página 1: `nombre`, `programa`, `parrafo`, `lugar_fecha`; página 2: `modulo1-3`, `contenido1-3`, `horas`, `creditos`, `registro`), reemplazando los valores por defecto sin texto sobrepuesto. La composición visual (fuentes y layout Canva) pertenece a la plantilla, no al código. Los campos `calificacion` (página 1) y `nota` (página 2) ya no se llenan ni se imprimen.
 
 #### Scenario: Página 1 con datos del alumno
 - **WHEN** se genera un certificado con nombre, programa, período y lugar
-- **THEN** la primera página muestra esos datos en los campos del diseño y no hay texto de ejemplo sobrepuesto ni superposición con sellos o firmas
+- **THEN** la primera página muestra esos datos en los campos del diseño y no hay texto de ejemplo sobrepuesto ni superposición con sellos o firmas, ni campo de calificación
 
 #### Scenario: Página 2 (sílabo) con datos del curso
 - **WHEN** se genera un certificado de un curso registrado en la configuración del script
-- **THEN** la página 2 muestra los módulos y contenidos de ese programa, y horas, créditos, nota y el código de registro del alumno
+- **THEN** la página 2 muestra los módulos y contenidos de ese programa, y horas, créditos y el código de registro del alumno, sin nota
 
 #### Scenario: Campo registro sin partirse
 - **WHEN** el código de registro se dibuja en el campo `registro`
 - **THEN** el código completo (por ejemplo `015-2026-11-PAG-CIABPPH`) cabe en el campo en una sola línea legible sin partirse en dos
 
 ### Requirement: Derivación única de los datos del alumno
-El período, la nota, el registro, las horas, los créditos y el lugar SHALL derivarse de los parámetros y de un único juego de constantes del script — sin duplicar literales del certificado en dos lados del pipeline.
+El período, el registro, las horas, los créditos y el lugar SHALL derivarse de los parámetros y de un único juego de constantes del script — sin duplicar literales del certificado en dos lados del pipeline. La nota deja de derivarse.
 
 #### Scenario: Cambio de datos en un solo lado
 - **WHEN** se cambia el texto guía del párrafo o un valor por defecto en el script
@@ -52,7 +52,7 @@ El PDF generado SHALL incluir en la **página 2 (sílabo)** un código QR apunta
 
 #### Scenario: Ubicación del QR sin colisiones
 - **WHEN** se inspecciona visualmente la página 2 del PDF generado
-- **THEN** el QR queda en la esquina inferior derecha, debajo de la tabla azul de horas/créditos/calificación/registro y a la derecha del Módulo III, sin tocar la tabla, los textos del sílabo ni los bordes de la hoja
+- **THEN** el QR queda en la esquina inferior derecha, debajo de la tabla azul de horas/créditos/registro y a la derecha del Módulo III, sin tocar la tabla, los textos del sílabo ni los bordes de la hoja
 
 ### Requirement: Guardas del pipeline de generación
 El generador SHALL fallar con mensaje claro cuando la plantilla no exista o los datos faltantes fueran inválidos, SHALL no exponer rutas del sistema en una respuesta pública, y SHALL no escribir fuera de `certificados/` en el docroot. La plantilla AcroForm y las librerías (FPDM fuera del docroot; TCPDF/FPDI reutilizados de `aula/`) SHALL vivir fuera del árbol público y SHALL omitirse del despliegue del sitio estático.
