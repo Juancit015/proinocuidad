@@ -167,8 +167,8 @@ descartada escrita en el change archivado.
 
 - Flyers de curso: `assets/img/flyer-curso-NN-<slug>.webp` (derivados de `_archivo/FOTOS-(1)/FOTOS/FLYER CURSOS/`).
 - La cohorte en vivo usa dos derivados del mismo flyer: `flyer-curso-09-bpm-haccp-en-vivo.webp`
-  (cuadrado, sidebar de la ficha) y `flyer-curso-09-bpm-haccp-en-vivo-card.webp` (1200×675 con
-  fondo desenfocado, tarjeta del listado, que recorta a 16:10).
+  (cuadrado, sidebar de la ficha) y `flyer-curso-09-bpm-haccp-en-vivo-card.webp` (1080×675,
+  recorte 16:10 que llena la tarjeta del listado sin bandas).
 - Fotos reales: `capacitacion-laredo-auditorio.jpg`, `capacitacion-laredo-aula.jpg`,
   `conferencia-razzeto-zoom.jpg`, `capacitacion-cevicheria-dsumare.jpg`, `consultoria-planta.jpg`,
   `inspeccion-calidad.jpg`, `registro-sanitario-alimentos.webp`, `qr-pago-bbva.webp`.

@@ -10,7 +10,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 - **Ficha del curso en vivo `cursos/bpm-haccp-en-vivo/`**: plantilla completa de curso con la cohorte del 8, 9 y 10 de diciembre de 2026, de 7:30 a 10:00 PM (hora Perú), dictada por Zoom. Incluye temario de tres módulos (BPM, POES/POE, HACCP y auditoría), formulario de inscripción con el curso precargado, JSON-LD `Course` con `courseMode: "En vivo (Zoom)"`, 40 horas académicas y ofertas de S/ 60 (no incluye IGV) y US$ 17. Pronto pago de S/ 45 / US$ 15 hasta el 4 de diciembre; el precio regular se mantiene publicado.
 - **Certificado digital opcional, sin costo adicional**, con código QR por las 40 horas, solicitado al finalizar el curso. La ficha no publica nota mínima ni examen final, a diferencia de las fichas asíncronas.
 - **Pestaña «En vivo» del listado** (`#lista-envivo` en `cursos/index.html`): tarjeta generada desde `cursos-data.js` con modalidad, fechas, precio y pronto pago. Si no hay cohortes, el generador emite un aviso que ocupa la rejilla completa en lugar de una sección vacía.
-- **Flyer en dos derivados WebP**: cuadrado 1080×1080 para el sidebar de la ficha y 1200×675 para la tarjeta (flyer completo sobre fondo desenfocado del mismo flyer; el recorte 16:10 directo cortaba las etiquetas de los iconos).
+- **Flyer en dos derivados WebP**: cuadrado 1080×1080 para el sidebar de la ficha y 1080×675 (16:10) para la tarjeta, con un recorte que llena todo el marco y conserva título, fechas, iconos y etiquetas. La versión anterior (16:9 sobre fondo desenfocado) dejaba bandas y se descartó.
 
 ### Changed
 
