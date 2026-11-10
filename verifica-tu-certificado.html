@@ -472,7 +472,7 @@
             mostrarErrorCarga();
             return;
           }
-          form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+          btn.click();
         }).catch(function () {
           mostrarErrorCarga();
         });
