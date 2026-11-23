@@ -121,7 +121,7 @@ El sistema SHALL alimentar la búsqueda exclusivamente de un JSON estático `ass
 - **THEN** aplica las mismas reglas de normalización que la búsqueda en la página (DNI solo dígitos; nombre en minúsculas, sin tildes, espacios colapsados)
 
 ### Requirement: Integración en la navegación global
-Todas las páginas del sitio SHALL incluir el enlace "Verifica tu certificado" en el nav principal (junto a "Aula Virtual") y en el footer, incluidas las 8 fichas de curso y el 404 generados por `tools/generar-fichas.mjs`. En el nav principal el enlace SHALL mostrarse como un botón destacado (`.btn-verifica-nav`), con fondo rojo de marca y texto blanco, de forma comparable a `.btn-aula-nav` pero visualmente diferenciado, en escritorio y en el acordeón móvil.
+Todas las páginas del sitio SHALL incluir el enlace "Verifica tu certificado" en el nav principal (junto a "Aula Virtual") y en el footer, incluidas las fichas de curso y el 404 generados por `tools/generar-fichas.mjs`. En el nav principal el enlace SHALL mostrarse como un botón destacado (`.btn-verifica-nav`), con fondo rojo de marca y texto blanco, de forma comparable a `.btn-aula-nav` pero visualmente diferenciado, en escritorio y en el acordeón móvil.
 
 #### Scenario: Enlace en páginas no generadas
 - **WHEN** se revisa el nav y el footer de las páginas editables del sitio (inicio, nosotros, servicios, noticias, etc.)

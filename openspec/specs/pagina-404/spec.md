@@ -52,11 +52,11 @@ El sitio SHALL publicar `404.html` en la raíz. La página SHALL tener un `<titl
 - **THEN** son las mismas que antes del cambio y ninguna es `https://proinocuidad.com/404.html`
 
 ### Requirement: El 404 lo genera el generador
-`tools/generar-fichas.mjs` SHALL emitir `404.html` junto con las fichas, con las rutas relativas calculadas para la raíz. Regenerar SHALL NOT modificar el contenido de las 8 fichas de curso. Un cambio en la navegación del generador SHALL NOT requerir tocar `404.html` a mano.
+`tools/generar-fichas.mjs` SHALL emitir `404.html` junto con las fichas, con las rutas relativas calculadas para la raíz. Regenerar SHALL NOT modificar el contenido de las fichas de curso existentes. Un cambio en la navegación del generador SHALL NOT requerir tocar `404.html` a mano.
 
 #### Scenario: El generador escribe el archivo
 - **WHEN** se ejecuta `node tools/generar-fichas.mjs`
-- **THEN** se generan las 8 fichas y también `404.html` en la raíz
+- **THEN** se generan todas las fichas de curso y también `404.html` en la raíz
 
 #### Scenario: Regenerar no altera las fichas
 - **WHEN** se ejecuta el generador y se revisa el estado del repositorio

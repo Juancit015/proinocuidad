@@ -49,7 +49,7 @@ En la sección de cursos (`cursos/index.html`), en las tarjetas de Servicios (`s
 - **THEN** la disposición de tarjetas mantiene el número de columnas actual (Inicio mantiene 4 columnas, cursos 3)
 
 ### Requirement: Auditoría responsive
-La auditoría SHALL revisar las 20 páginas del sitio en los anchos 360, 390, 768, 860, 1024 y 1280px. Por cada hallazgo, el informe SHALL indicar página, anchos afectados, selector o sección, descripción, captura de referencia y estado: corregido, pendiente o sin cambios.
+La auditoría SHALL revisar las 21 páginas del sitio en los anchos 360, 390, 768, 860, 1024 y 1280px. Por cada hallazgo, el informe SHALL indicar página, anchos afectados, selector o sección, descripción, captura de referencia y estado: corregido, pendiente o sin cambios.
 
 #### Scenario: Informe de auditoría
 - **WHEN** se completa la auditoría
@@ -58,6 +58,10 @@ La auditoría SHALL revisar las 20 páginas del sitio en los anchos 360, 390, 76
 #### Scenario: Hallazgo fuera del alcance
 - **WHEN** la auditoría encuentra un problema fuera del footer y de las tarjetas de Cursos y Servicios
 - **THEN** el hallazgo se registra como pendiente y no se corrige sin aprobación
+
+#### Scenario: Ficha en vivo en la auditoría
+- **WHEN** se audita la ficha del curso en vivo en los anchos de la lista
+- **THEN** no presenta desplazamiento horizontal y sus botones y campos caben en el ancho visible
 
 ### Requirement: Contenido sin cambios
 Los cambios de responsive SHALL NOT modificar textos, colores, enlaces ni datos de contacto.
@@ -81,7 +85,6 @@ Los bloques `.identidad-grid` de Inicio, Nosotros y Servicios, y los equivalente
 - **WHEN** el ancho es 1024px o más
 - **THEN** los bloques de dos columnas mantienen su disposición actual
 
-### Requirement: Imagen con proporción conservada
 ### Requirement: Sección CTA de Inicio sin desplazamiento horizontal
 El bloque `.cta-grid` de la sección "¿Listo para fortalecer la inocuidad de tu empresa?" de Inicio (`index.html`) SHALL ajustarse al ancho de la pantalla en móvil y tableta. Ningún texto ni elemento de este bloque (incluido el correo electrónico largo y el teléfono) SHALL sobresalir del ancho visible ni generar desplazamiento horizontal.
 
@@ -205,7 +208,6 @@ Cuando los botones de un grupo se apilen en móvil, el orden en el que se ven SH
 #### Scenario: El botón principal no es el primero por casualidad
 - **WHEN** un grupo tiene un botón destacado por su variante de color
 - **THEN** su posición responde al orden de importancia acordado para ese grupo, no al azar del texto que ocupa cada botón
-
 
 ### Requirement: Footer apilado en tableta
 En el rango 560–860px, el footer SHALL apilarse en una sola columna centrada (como en móvil), en lugar de mantener dos columnas horizontales. El `.footer-bottom` SHALL centrar su contenido en ese rango.
