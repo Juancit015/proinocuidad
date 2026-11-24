@@ -153,6 +153,14 @@ $PROGRAMAS = array(
         'contenido2' => "• Equipos, mantenimiento y calibración\n• Control de contaminación química y física\n• Gestión de plagas y proveedores\n• Recepción, almacenamiento y transporte\n• Trazabilidad y retiro de producto\n• Gestión de alérgenos",
         'contenido3' => "• Personal: formación, higiene y salud\n• Indumentaria y normas de higiene\n• Control de las operaciones\n• Limpieza y saneamiento\n• Actualización Codex 2022 (CXC 1-1969)",
     ),
+    // Curso 3: BPM según el Codex Alimentarius (2 sesiones)
+    'bpm-codex-alimentarius' => array(
+        'coincide' => array('MANUFACTURA', 'CODEX'),
+        'modulo1' => "Módulo I:\nFundamentos del Codex y peligros alimentarios",
+        'modulo2' => "Módulo II:\nBPM, POES, POE y su relación con el HACCP",
+        'contenido1' => "• Cadena alimentaria y grupos que la conforman\n• Definición de peligro: biológico, químico y físico\n• Clasificación de peligros según BRCGS V.9\n• Ubicación y diseño de establecimientos alimentarios\n• Los 4 grupos de las BPM\n• Programa de higiene y saneamiento",
+        'contenido2' => "• POES: definición y procedimientos operativos\n• Las POES según la FDA\n• Elaboración del manual POES y sus registros\n• POE: procedimientos operativos estandarizados\n• Programas prerrequisitos (PPR) del Codex\n• HACCP: relación con los PPR y auditoría",
+    ),
     // Curso 8: legislación sanitaria
     'legislacion' => array(
         'coincide' => array('LEGISLACION'),
