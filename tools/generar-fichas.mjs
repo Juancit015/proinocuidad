@@ -23,9 +23,6 @@ import { fileURLToPath } from "node:url";
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..");
 const img_og = "https://proinocuidad.com/assets/img/proinocuidad-og-1200x630.png";
-/* Respaldo documentado: Google Form externo (antes destino de "Matricularme Ahora";
-   ahora los CTA hacen scroll al formulario embebido #form-inscripcion). */
-const FORM_INSCRIPCION = "https://docs.google.com/forms/d/1OoggGqBor_FDBcKoo807nPf0atujRvqqXrIqDhBiRpI/viewform";
 const WA_NUM = "51981365982";
 
 /* ---------- mensajes prellenados de WhatsApp (spec `contacto-whatsapp`) ----------
