@@ -11,8 +11,9 @@ Decisiones de esa fecha:
 
 - Cursos 8 y 10: la fila 3 del reverso queda **vacía** (son 2 módulos).
 - Curso 9: temario único repartido en **3 bloques** para no dejar dos filas vacías.
-- Curso 3: **no emite certificado** hasta que se defina su temario (no tiene
-  página en el sitio).
+- Curso 3: ~~no emite certificado hasta que se defina su temario~~.
+  **Resuelto el 2026-11-25**: se cargó su sílabo (ver más abajo) y emite con
+  sufijo `BPMCA`.
 
 ---
 
@@ -278,8 +279,32 @@ La plantilla tiene 3 filas fijas. Los cursos 8, 9 y 10 tienen 1 o 2 módulos:
 | 9 | 1 | repartido en 3 bloques | temario largo, se ve completo |
 | 10 | 2 | vacía | fiel al temario |
 
-## Pendiente: curso 3
+## Curso 3 — BPM según el Codex Alimentarius (resuelto el 2026-11-25)
 
-"Buenas Prácticas de Manufactura según el Codex Alimentarius" **no tiene
-página en el sitio** y no tiene sílabo propio. Decisión del 2026-11-06:
-**no emite certificado** hasta que se defina su temario.
+"Buenas Prácticas de Manufactura según el Codex Alimentarius" no tiene página
+en el sitio, así que su sílabo no se extrajo de ahí: Juan entregó el temario y
+se cargó directamente en `$PROGRAMAS` de `generar-certificado.php` (commit
+`cd3b3c6`), con los tokens `MANUFACTURA` + `CODEX` (no chocan con ninguna otra
+entrada), sufijo `BPMCA`, 40 horas y 2 créditos. El aula lo tiene en el
+`mapeo_cursos` con `courseid` 3 y `gradecmid` 31.
+
+**Módulo I: Fundamentos del Codex y peligros alimentarios**
+
+- Cadena alimentaria y grupos que la conforman
+- Definición de peligro: biológico, químico y físico
+- Clasificación de peligros según BRCGS V.9
+- Ubicación y diseño de establecimientos alimentarios
+- Los 4 grupos de las BPM
+- Programa de higiene y saneamiento
+
+**Módulo II: BPM, POES, POE y su relación con el HACCP**
+
+- POES: definición y procedimientos operativos
+- Las POES según la FDA
+- Elaboración del manual POES y sus registros
+- POE: procedimientos operativos estandarizados
+- Programas prerrequisitos (PPR) del Codex
+- HACCP: relación con los PPR y auditoría
+
+La fila del módulo III queda **vacía** (son 2 módulos), como en los cursos 8 y
+10.

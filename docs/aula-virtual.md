@@ -9,7 +9,7 @@ Documento dedicado al **aula virtual**. El `CHANGELOG.md` es del sitio
 - **Datos:** `/home/guanbhctsy/moodledata/`
 - **BD:** MariaDB 11.4, base `guanbhctsy_moodle`
 - **PHP del dominio:** 8.3, binario `/opt/alt/php83/usr/bin/php`
-- **Última medición:** 2026-11-06
+- **Última medición:** 2026-11-25
 
 Este documento se actualiza **al cerrar cada eslabón**, no al empezar.
 
@@ -23,8 +23,9 @@ Este documento se actualiza **al cerrar cada eslabón**, no al empezar.
 | Alumnos | 50 (más la cuenta de invitado y la de administración) |
 | Páginas de contenido | 43 |
 | Exámenes (quiz) | 11 |
-| Cursos con emisión automática | 9 (el 3 no emite todavía) |
-| Cursos completados | 0 |
+| Cursos con emisión automática | **10** (desde el 2026-11-25; el 3 se sumó) |
+| Cursos completados | 85 (83 de la emisión masiva + 2 de prueba) |
+| Fichas en `certificados.json` | 113 (111 reales + 2 de los usuarios de prueba) |
 
 ### Los 10 cursos
 
@@ -122,13 +123,15 @@ idénticos.
   15 s (antes decía «no hay certificado», que era falso).
 - Estados con motivo: `pendiente`, `emitida`, `saltada`, `duplicado`,
   `fallada` (3 reintentos).
-- **Mapeo configurado**: 9 cursos (el 3 no emite). Horas 40 / 384, créditos
-  2 / 24. `nota_minima_default=14`, `modo_seco=0`.
+- **Mapeo configurado**: 10 cursos (2–11). Horas 40 / 384, créditos
+  2 / 24. `nota_minima_default=14`, `modo_seco=0`. El curso 3 se sumó el
+  2026-11-25 (40 h, 2 créditos, sufijo `BPMCA`, `gradecmid` 31).
 - **Botón "Descargar certificado"** (`mod_url`, abre en ventana nueva) en la
-  sección del examen de los 9 cursos, apuntando a `mio.php?course=N`.
+  sección del examen de los 10 cursos, apuntando a `mio.php?course=N`.
 - **Criterio de finalización de curso**: "aprobar el examen" (criterio de
   actividad sobre el quiz, con `gradepass=14`). Sin ese criterio los cursos no
-  se completaban nunca y el observer no se disparaba jamás.
+  se completaban nunca y el observer no se disparaba jamás. El curso 3 era el
+  único de los 10 mapeados sin criterio; se le añadió el 2026-11-25.
 
 md5 desplegados el 2026-11-06: generador
 `9c9eaa231ddec16c3c0e97abba0286b6`, `classes/emisor.php`
@@ -153,9 +156,8 @@ La plantilla del certificado tiene 2 páginas. La página 2 tiene 11 campos:
 El endpoint (`generar-certificado.php`) tenía sílabo solo para **BPM + HACCP**.
 El 2026-11-06 se cargaron los **9 sílabos** (cursos 2, 4/6, 5, 7, 8, 9, 10, 11)
 en `$PROGRAMAS`, con los textos de `docs/silabos-certificado.md`. El curso 3
-sigue sin sílabo: no emite hasta que se defina su temario. Cuando Juan traiga
-la ficha del curso 3, se abre un **change de OpenSpec** con el temario y se
-agrega a `$PROGRAMAS` como una entrada más.
+quedó fuera hasta tener temario; **el 2026-11-25 se añadió su sílabo** (commit
+`cd3b3c6`, sufijo `BPMCA`), de modo que hoy los 10 cursos mapeados emiten.
 
 **Desplegado el 2026-11-06** (md5 `9c9eaa23…`, idéntico al repo). Backup del
 generador anterior y del plugin en `~/backups/deploy-sufijo-20261106-2044/`.
@@ -327,31 +329,32 @@ su código. Es el precio de que nadie pueda pisar un certificado ajeno.
 | 7 | ~~Configurar `mapeo_cursos`~~ (9 entradas) | hecho |
 | 8 | ~~Añadir el botón "Descargar certificado" por curso~~ (9 cursos) | hecho |
 | 9 | ~~Testeo de punta a punta~~ (eslabón 7) | hecho |
-| 10 | **Curso 3**: sílabo y entrada en el mapeo cuando Juan traiga el temario | Juan |
+| 10 | ~~Curso 3: sílabo y entrada en el mapeo~~ (2026-11-25: sufijo `BPMCA`, 40 h, 2 créditos) | hecho |
 | 11 | ~~Decidir si las 5 tareas "SUBIR TALLER" del curso 7 se borran~~ (2026-11-07: **se quedan**) | resuelto |
 | 12 | Revocar los dos tokens de GitHub expuestos en el chat | Juan |
 | 13 | ~~Decidir el código correcto de Lorena Pilar Cáceres Junes~~ (2026-11-08: `007-2026-05-LCJ-CHICP`) | resuelto |
 | 14 | ~~Decidir el código de la ficha de Manuel Renan Aliaga Abanto~~ (2026-11-08: se deja vacío; las fechas pasan a `2026-02-11 → 2026-02-13`) | resuelto |
+| 15 | Borrar los usuarios de prueba `juancito` (57) y `pepito` (58) con sus intentos, y sus PDFs `099-2026-11-JP-BPMCA.pdf` y `100-2026-11-PP-BPMISO.pdf` con sus fichas, cuando Juan cierre las pruebas | Juan |
+| 16 | Rotar la contraseña temporal del admin de Moodle | Juan |
 
-### Nota pendiente — curso 3
+### Curso 3 — habilitado el 2026-11-25
 
-**Decisión de Juan (2026-11-07): esperar el temario.** El curso 3 (BPM según
-Codex Alimentarius) tiene páginas y examen en el aula, pero no emite
-certificado: no existe su ficha en el sitio de donde extraer el sílabo, y sin
-sílabo el reverso del PDF saldría con los módulos de otro programa.
+**Resuelto.** El curso 3 (BPM según el Codex Alimentarius) ya emite
+certificado. Juan entregó el temario y el trabajo quedó así:
 
-Cuando llegue el temario hay que hacer, en este orden:
-
-1. Abrir un **change de OpenSpec** con el temario (3 módulos + contenidos, o
-   más si los tiene). No se toca el generador sin ese change.
-2. Agregar la entrada en `$PROGRAMAS` de `generar-certificado.php`, con sus
-   tokens `coincide`. Ojo: los tokens se comparan sin acentos y en mayúsculas
-   contra el nombre del programa, y el orden importa si dos entradas podrían
-   encajar en el mismo nombre.
-3. Agregar la fila al `mapeo_cursos` del aula (`courseid` 3, sufijo, horas,
-   créditos, `gradecmid` del examen del curso 3).
-4. Repetir el ensayo del eslabón 7 con un usuario descartable antes de darlo
-   por bueno.
+1. El sílabo entró en el commit `cd3b3c6` («Agregar sílabo del curso BPM según
+   el Codex Alimentarius»), que añade el bloque a `$PROGRAMAS` de
+   `generar-certificado.php`. No se abrió un change de OpenSpec aparte: fue un
+   único archivo y el temario vino cerrado.
+2. Entrada en `$PROGRAMAS`: programa «Buenas Prácticas de Manufactura según el
+   Codex Alimentarius», 40 horas, 2 créditos, sufijo `BPMCA`.
+3. Fila en el `mapeo_cursos` del aula: `courseid` 3, `gradecmid` 31.
+4. Criterio de finalización «aprobar el examen» (era el único de los 10 cursos
+   mapeados sin criterio) y botón «Descargar certificado» (cm 86 →
+   `mio.php?course=3`).
+5. Ensayo de punta a punta con `juancito` (id 57): 20/20 → curso completado →
+   cola → `099-2026-11-JP-BPMCA.pdf` (782 KB) → ficha con DNI 152356 →
+   búsqueda pública por DNI → descarga del PDF.
 
 ---
 
@@ -361,7 +364,11 @@ Cuando llegue el temario hay que hacer, en este orden:
   Amerson Viller Florido Malpartida está en el Excel pero no en el aula.
 - **Fichas:** 26 de 50 alumnos ya tienen ficha; ~22 reales no. Juan lo maneja
   aparte.
-- **Opciones de examen:** los distractores actuales son genéricos.
+- **Opciones de examen:** ~~los distractores actuales son genéricos.~~
+  **Resuelto el 2026-11-25**: se reescribieron los distractores de los 11
+  quizzes para que cada opción sea verosímil y del tema; barrido final con
+  **0 opciones repetidas** (fuera de Verdadero/Falso y «TODAS»). El quiz 12
+  (curso 3) se reescribió completo.
 - **5 tareas "SUBIR TALLER"** del curso 7 (creadas a mano el 28/10, sin
   descripción, vencidas, 0 envíos): **ocultas y se quedan**. Juan decidió el
   2026-11-07 no borrarlas: los 50 alumnos actuales ya terminaron, pero la
@@ -575,7 +582,8 @@ se verificaron con `pdftotext`, `pdftoppm` + inspección de imagen y
 
 Pendiente para Juan (no se tocó):
 - Tokens de GitHub expuestos sin revocar.
-- Curso 3 sin temario (no emite hasta que se traiga).
+- ~~Curso 3 sin temario (no emite hasta que se traiga).~~ **Resuelto el
+  2026-11-25** con el sílabo del Codex Alimentarius (`BPMCA`).
 - Fechas reales de los 83 si llegan (se regeneran).
 - No ejecutar `tools/publicar.sh` (deploy) sin autorización expresa.
 
@@ -633,10 +641,92 @@ página ya fresca, la siguiente vía es renderizar la ficha en el servidor (PHP)
 para que no dependa de `fetch` ni de JS, y/o versionar la URL del QR en los
 PDFs nuevos.
 
+## 11. Resumen de cambios (2026-11-25)
+
+Sesión dedicada a cerrar el flujo del alumno de punta a punta. Todo lo
+siguiente está medido en el server, no supuesto.
+
+**1. El examen nunca marcaba «realizado» (defecto de raíz).**
+
+Los 11 quizzes tenían `completionpassgrade = 1` con
+`completiongradeitemnumber = NULL`. Con NULL, `inform_grade_changed()` y
+`get_core_completion_state()` salen antes de mirar la nota: aprobar el examen
+no marcaba la actividad como completada, el curso no se completaba y el
+observer nunca encolaba nada. Se corrigió a `0` en **11/11** quizzes (0 coincide
+con `grade_items.itemnumber` de cada uno). Es el motivo real de los «Debes
+completar el curso» que veían los alumnos.
+
+**2. Consistencia de la estructura del curso.**
+
+- `cm.section` de 80 módulos estaba desalineado respecto de `course_sections`;
+  alineado. Contextos mal colgados: 0. Notas de quiz en curso ajeno: 0.
+  Módulos fuera de `sequence`: 0.
+- El HTTP 500 de `mod/quiz/view.php?id=31` (curso 3) se debía a un contexto
+  movido sin `update_moved()`: se corrigió con
+  `$ctx->update_moved(context_course::instance(3))` y se realineó la sección de
+  los cm 31 y 86.
+
+**3. Exámenes.**
+
+- Distractores genéricos reemplazados en los quizzes 2–11; el último duplicado
+  real (quiz 2, slot 13) corregido. Barrido final: **0 opciones repetidas**
+  (fuera de Verdadero/Falso y «TODAS»).
+- Quiz 12 (curso 3) reescrito: preguntas específicas, «¿cuál NO es…?» y
+  «marque la INCORRECTA» donde toca, PPR y Codex en sus sesiones. Verificado en
+  navegador real.
+
+**4. Curso 3 habilitado** — ver «Curso 3 — habilitado el 2026-11-25».
+
+**5. Emisión cada minuto y aviso de espera** (commits `eeeba87` y `f2b238e`).
+
+- El crontab del aula pasó de `*/5` a `*` (conservando `HAI_MCP_JOB_ID`) y la
+  tarea `emitir_pendientes` de `*/5` a `*` en `db/tasks.php`, con versión del
+  plugin `2026112500` y `upgrade.php` para re-registrarla. Cron no admite
+  «cada 1 minuto y medio»: el minuto es la espera máxima posible.
+- `mio.php` distingue ahora tres casos: curso sin completar, certificado en
+  cola (mensaje «tu certificado se está generando» + refresco automático cada
+  15 s, que abre el PDF en cuanto la tarea emite) y emisión fallada (con el
+  correo de contacto). Antes, durante la espera, decía «todavía no hay un
+  certificado emitido», que era falso.
+- Cadenas nuevas en `lang/es` y `lang/en`.
+
+**6. Pruebas de punta a punta (dos usuarios reales del aula).**
+
+| Alumno | Curso | Nota | Certificado | Tiempo hasta el PDF |
+|---|---|---|---|---|
+| `juancito` (57) | 3 | 20/20 | `099-2026-11-JP-BPMCA.pdf` | inmediato (tarea a mano) |
+| `pepito` (58) | 2 | 20/20 | `100-2026-11-PP-BPMISO.pdf` | 1 min 31 s (cron solo) |
+
+Ambos con ficha publicada en `certificados.json` y el botón «Descargar
+certificado» abriendo su PDF. La búsqueda pública por DNI se probó con
+`juancito` (152356). `pepito` se emitió sin intervención, para probar el cron.
+
+**7. Limpieza.**
+
+- 9 PDFs de prueba que habían quedado públicos en `/certificados/` borrados.
+- El usuario `juancito` viejo (id 56) y sus intentos, borrados.
+- Usuario temporal de la prueba del mensaje de espera creado y borrado en la
+  misma sesión; la tarea se reactivó y la cola quedó en 0 pendientes.
+
+**Verificado al cerrar:** mapeo con **10 cursos** (2–11); cola **85 emitidas**,
+0 pendientes/falladas/duplicadas; **85** cursos completados; **11/11** quizzes
+con `completiongradeitemnumber = 0`; **113** fichas en el JSON y **87** PDFs en
+`certificados/` (85 reales + los 2 de prueba); `php -l` limpio y md5 idéntico
+repo = server en los 5 archivos tocados del plugin.
+
+**Pendiente (de Juan):** borrar `juancito` y `pepito` con sus PDFs y fichas
+cuando cierre las pruebas; rotar la contraseña temporal del admin de Moodle;
+revocar los dos tokens de GitHub expuestos.
+
 ## 8. Bitácora
 
 | Fecha | Evento |
 |---|---|
+| 2026-11-25 | Emisión cada minuto (crontab y tarea) y aviso «tu certificado se está generando» con refresco de 15 s en `mio.php`. Plugin `2026112500`, md5 repo = server |
+| 2026-11-25 | Curso 3 habilitado para certificado (`BPMCA`, 40 h, 2 créditos, `gradecmid` 31) y criterio de finalización añadido: 10/10 cursos emiten |
+| 2026-11-25 | Defecto de raíz corregido: `completiongradeitemnumber` NULL → 0 en los 11 quizzes; el examen ya marca la actividad realizada y el curso se completa |
+| 2026-11-25 | Exámenes: distractores reescritos en los quizzes 2–11 y quiz 12 (curso 3) completo; 0 opciones repetidas |
+| 2026-11-25 | Flujo verificado con dos alumnos: `juancito` (curso 3, `099-…-JP-BPMCA`) y `pepito` (curso 2, `100-…-PP-BPMISO`, emitido por el cron en 1 min 31 s) |
 | 2026-11-10 | QR del certificado: búsqueda automática sin submit sintético (`ejecutarBusqueda`), `no-cache` para HTML/JS/CSS/JSON y autorrescate de copias cacheadas en `main.js`. Verificado en Chromium local y producción; pendiente confirmar en el teléfono de Juan |
 | 2026-11-10 | Búsqueda automática por `?codigo=` (escaneo de QR) robustecida: autoBuscar espera a la carga de datos, guardia en submit, try/catch y timeout de 8 s. Probado en Chromium desktop/móvil con código válido, inválido y red bloqueada: siempre se muestra tarjeta o aviso y el spinner no queda activo |
 | 2026-11-10 | Rect del registro corregido a la celda real de la plantilla nueva (rect 696-804, fuente 8). 83 PDFs regenerados con código de registro en una sola línea. Verificado visualmente y con QR |
