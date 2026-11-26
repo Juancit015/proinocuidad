@@ -15,14 +15,14 @@
 ## 3. Deploy al aula y prueba real
 
 - [x] 3.1 Deploy del plugin vía MCP al server: `git_snapshot` del dominio ANTES, subir árbol a `/aula/local/certificados/`, `md5sum` idéntico repo/server por fichero, permisos coherentes con el aula (propietario `guanbhctsy`), verificar makeover `/aula/admin/` ve el plugin pendiente de instalación y luego la instalación (upgrade del aula genera la tabla `local_certificados_cola`), y la tarea programada aparece con su cron definido. `/aula/login` sigue en 200. Verificar con `/aula/admin/index.php` upgrade ejecutado (o CLI de Moodle `/opt/alt/php83/usr/bin/php admin/cli/upgrade.php`).
-- [x] 3.2 Configurar el mapeo de cursos (setting del aula): 9 entradas con id numérico real, nombre EXACTO del programa del endpoint, horas 40 (384 el diplomado), créditos 2 (24 el diplomado), sufijo, `gradecmid` del examen y `nota_min` 14. El curso 3 queda fuera hasta que tenga temario. Verificado: el JSON se parsea y los 9 quizzes existen con `grademax=20`.
+- [x] 3.2 Configurar el mapeo de cursos (setting del aula): 9 entradas con id numérico real, nombre EXACTO del programa del endpoint, horas 40 (384 el diplomado), créditos 2 (24 el diplomado), sufijo, `gradecmid` del examen y `nota_min` 14. El curso 3 queda fuera hasta que tenga temario. Verificado: el JSON se parsea y los 9 quizzes existen con `grademax=20`. **Actualizado el 2026-11-25:** el curso 3 entró (sufijo `BPMCA`, 40 h, 2 créditos, `gradecmid` 31) al cargarse su sílabo; el mapeo tiene **10** entradas (cursos 2–11).
 - [x] 3.3 Ensayo completo con usuario de prueba: nota 16 en el examen del curso 2 → actividad completada → criterio de curso → `timecompleted` → cola `pendiente` → tarea → `emitida`. Verificado: PDF de 2 páginas en `certificados/`, ficha en `certificados.json`, `mio.php?course=2` 302 al PDF (200), QR decodificado a `verifica-tu-certificado.html?codigo=…`, y la página de verificación encuentra la ficha por código, DNI y nombre. Estados `saltada` y `duplicado` cubiertos por el código y las guardas del endpoint.
 - [x] 3.4 Deshacer ensayo: PDF y ficha borrados, `certificados.json` restaurado a 28 fichas, usuario de prueba eliminado, cola vacía, `course_completions` huérfano borrado, directorios temporales `dl-*` eliminados. Muestra del PDF guardada en `~/Descargas/certificados-prueba/`.
 
 ## 4. Cierre y sincronización
 
 - [x] 4.1 Documentación del aula en `docs/aula-virtual.md` (documento dedicado, separado del CHANGELOG del sitio): eslabones 6 y 7 cerrados, tabla de tareas, hechos técnicos nuevos y bitácora. El sílabo aprobado vive en `docs/silabos-certificado.md`.
-- [ ] 4.2 Commits separados (plugin / openspec / docs) y push SOLO con confirmación de Juan. Deploy ya verificado en 3.x; el aula emite sola mediante la tarea programada activa (cada 5 min) y la siguiente corrida queda pendiente solo de completados reales.
+- [ ] 4.2 Commits separados (plugin / openspec / docs) y push SOLO con confirmación de Juan. Deploy ya verificado en 3.x; el aula emite sola mediante la tarea programada activa (cada minuto desde el 2026-11-25) y la siguiente corrida queda pendiente solo de completados reales.
 
 ## 5. Auditoría posterior al cierre (2026-11-07)
 
@@ -33,7 +33,8 @@
 
 ## Desvíos respecto al plan original
 
-- El mapeo no quedó con un curso sino con **9** (todos menos el 3).
+- El mapeo no quedó con un curso sino con **9** (todos menos el 3), y el
+  2026-11-25 pasó a **10** al habilitarse el curso 3.
 - Horas: **40** por curso y **384** el diplomado (valores oficiales del sitio), no 32.
 - Nota mínima: **14**, no 10.5. La nota del curso 7 sale del **Examen Final** (cmid 25), no de la nota total del curso (escala 500).
 - El duplicado compara además el **sufijo del código**, porque 26 alumnos ya tienen ficha con redacciones viejas del programa.
