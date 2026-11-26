@@ -65,7 +65,26 @@ if ($ficha) {
     redirect($ficha['certificado_url']);
 }
 
+// El curso está completo pero el PDF todavía no existe: casi siempre es que la
+// tarea programada aún no ha pasado. Decir "no hay certificado" ahí era
+// engañoso, porque el certificado está en camino.
+$estadoCola = $DB->get_field('local_certificados_cola', 'estado', [
+    'courseid' => $courseid,
+    'userid'   => $USER->id,
+]);
+
+if ($estadoCola === cola::PENDIENTE) {
+    // Se refresca sola: cuando la tarea emita, esta misma página redirige al PDF.
+    $PAGE->set_periodic_refresh_delay(15);
+}
+
 echo $OUTPUT->header();
-echo $OUTPUT->notification(get_string('sin_certificado', 'local_certificados'), 'info');
+if ($estadoCola === cola::PENDIENTE) {
+    echo $OUTPUT->notification(get_string('certificado_generando', 'local_certificados'), 'info');
+} else if ($estadoCola === cola::FALLADA) {
+    echo $OUTPUT->notification(get_string('certificado_fallido', 'local_certificados'), 'error');
+} else {
+    echo $OUTPUT->notification(get_string('sin_certificado', 'local_certificados'), 'info');
+}
 echo $OUTPUT->continue_button(new moodle_url('/course/view.php', ['id' => $courseid]));
 echo $OUTPUT->footer();

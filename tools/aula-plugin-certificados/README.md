@@ -9,7 +9,8 @@ por fichero. **No entra en la lista blanca de `tools/publicar.sh`.**
 
 1. `course_completed` → `classes/observer.php` **solo encola** en
    `local_certificados_cola` (idempotente por curso+alumno).
-2. La tarea programada `emitir_pendientes` (cada 5 min) procesa la cola:
+2. La tarea programada `emitir_pendientes` (cada minuto; el cron del aula
+   también corre cada minuto) procesa la cola:
    - busca el mapeo del curso en los ajustes del plugin;
    - toma la nota (examen mapeado o total del curso) y exige `nota_minima`;
    - calcula el código `NNN-AAAA-MM-INI-SUFIJO`;
@@ -17,7 +18,10 @@ por fichero. **No entra en la lista blanca de `tools/publicar.sh`.**
    - si el endpoint responde 302 y deja el PDF, agrega la ficha en
      `assets/data/certificados.json` (escritura atómica con `flock` + `rename`).
 3. `mio.php?course=<id>` es la URL que ve el alumno: exige sesión y curso
-   completado, busca su ficha y redirige al PDF.
+   completado, busca su ficha y redirige al PDF. Si el curso ya está completo
+   pero la tarea aún no ha emitido, la página dice que el certificado se está
+   generando y **se refresca sola cada 15 s**; cuando la fila pasa a `emitida`,
+   esa misma recarga lo lleva al PDF.
 
 ## Estados de la cola
 
