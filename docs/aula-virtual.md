@@ -113,11 +113,13 @@ No se combinan cursos ni se suman notas entre cursos.
 idénticos.
 
 - Plugin `local_certificados` (15 archivos). Flujo: `course_completed` → encola
-  → tarea cada 5 min → calcula el código `NNN-AAAA-MM-INI-SUFIJO` → llama a
+  → tarea cada minuto → calcula el código `NNN-AAAA-MM-INI-SUFIJO` → llama a
   `generar-certificado.php` → si hay PDF, agrega la ficha a
   `assets/data/certificados.json` (escritura atómica).
 - `mio.php?course=N`: URL por curso para que el alumno descargue; exige sesión
-  y curso completado.
+  y curso completado. Si el curso está completo y el certificado todavía no se
+  emitió, muestra «tu certificado se está generando» y se refresca sola cada
+  15 s (antes decía «no hay certificado», que era falso).
 - Estados con motivo: `pendiente`, `emitida`, `saltada`, `duplicado`,
   `fallada` (3 reintentos).
 - **Mapeo configurado**: 9 cursos (el 3 no emite). Horas 40 / 384, créditos

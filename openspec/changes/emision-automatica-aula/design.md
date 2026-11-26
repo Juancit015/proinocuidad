@@ -21,7 +21,7 @@ El pipeline de emisión vigente (`generar-certificado.php`, md5 `bd6c066f…` id
 
 ## Decisions
 
-1. **Arquitectura: cola en BD del aula (tabla del plugin `local_certificados_cola`) + tarea programada (`\task\` scheduled cada 5 min).** El observer del evento `course_completed` SOLO inserta el pendiente (curso, usuario, fecha de completado, estado `pendiente`); la tarea procesa la cola. No se emite dentro del handler: la acción de completado podría quedar colgada ~10 s detrás de la llamada HTTP y duplicarse si la UI reintenta. La tarea da reintento gratis y corrida en seco.
+1. **Arquitectura: cola en BD del aula (tabla del plugin `local_certificados_cola`) + tarea programada (`\task\` scheduled cada minuto).** El observer del evento `course_completed` SOLO inserta el pendiente (curso, usuario, fecha de completado, estado `pendiente`); la tarea procesa la cola. No se emite dentro del handler: la acción de completado podría quedar colgada ~10 s detrás de la llamada HTTP y duplicarse si la UI reintenta. La tarea da reintento gratis y corrida en seco. (Cadencia original: 5 min; bajada a 1 min el 2026-11-25 junto con el cron del aula, porque el alumno veía «no hay certificado» durante la espera.)
 
 2. **Emisión por HTTP loopback al endpoint vigente** (curl del server a `https://proinocuidad.com/generar-certificado.php?...`, con los parámetros derivados del mapeo). Alternativa descartada: refactorizar el endpoint para extraer una librería interna — tocaría el production file recién estable y duplicaría el punto de verdad de las guardas; con loopback los códigos 400/422 del endpoint son justamente las señales de la decisión 4. El PDF resultante se comprueba con `is_file` + tamaño > 0 antes de dar la ficha por buena.
 
