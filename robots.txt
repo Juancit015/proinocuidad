@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /aula/
 
 Sitemap: https://proinocuidad.com/sitemap.xml

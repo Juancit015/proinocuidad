@@ -6,13 +6,13 @@
 # Uso en el server (desde una sesión efímera /tmp):
 #   git clone --depth 1 https://github.com/Juancit015/proinocuidad.git /tmp/dep
 #   cp -r index.html 404.html .htaccess robots.txt sitemap.xml llms.txt \
-#         llms-full.txt assets servicios cursos noticias nosotros \
+#         llms-full.txt favicon.ico assets servicios cursos noticias nosotros \
 #         inocuidad-alimentaria /home/guanbhctsy/proinocuidad.com/
 #   rm -rf /tmp/dep
 #
 # LISTA BLANCA del sitio público (12 ítems):
 #   index.html  404.html  .htaccess  robots.txt  sitemap.xml
-#   llms.txt  llms-full.txt  verifica-tu-certificado.html
+#   llms.txt  llms-full.txt  favicon.ico  verifica-tu-certificado.html
 #   assets/  servicios/  cursos/  noticias/  nosotros/  inocuidad-alimentaria/
 #   ajax/ (endpoint PHP del formulario: /ajax/envio-inscripcion.php)
 #
@@ -32,7 +32,7 @@ SRC="${1:-.}"
 DST="${2:-/home/guanbhctsy/proinocuidad.com}"
 cd "$SRC"
 for item in index.html verifica-tu-certificado.html 404.html .htaccess robots.txt sitemap.xml llms.txt \
-            llms-full.txt assets servicios cursos noticias nosotros \
+            llms-full.txt favicon.ico assets servicios cursos noticias nosotros \
             inocuidad-alimentaria ajax; do
   cp -r "$item" "$DST/"
 done
