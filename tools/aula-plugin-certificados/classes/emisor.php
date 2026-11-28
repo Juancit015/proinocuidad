@@ -128,6 +128,32 @@ class emisor {
         return $cabecera === '%PDF-' && strpos($cola, '%%EOF') !== false;
     }
 
+    /**
+     * Un mes antes de $ts, con el día recortado al último del mes destino.
+     *
+     * El período del certificado se imprime junto a las horas académicas: con
+     * una semana, un diplomado de 384 horas quedaba en 48 h por día. Ahora es
+     * de un mes.
+     *
+     * No vale strtotime('-1 month'): desborda. El 31 de marzo menos un mes da
+     * el 3 de marzo (el 31 de febrero se normaliza), y el período saldría con
+     * 28 días y un mes equivocado. Aquí el 31 de marzo va al 28 de febrero.
+     */
+    private static function unMesAntes(int $ts): string {
+        $y = (int)date('Y', $ts);
+        $m = (int)date('n', $ts);
+        $d = (int)date('j', $ts);
+        $mAnt = $m - 1;
+        $yAnt = $y;
+        if ($mAnt < 1) {
+            $mAnt = 12;
+            $yAnt--;
+        }
+        $ultimo = (int)date('t', mktime(12, 0, 0, $mAnt, 1, $yAnt));
+
+        return date('Y-m-d', mktime(12, 0, 0, $mAnt, min($d, $ultimo), $yAnt));
+    }
+
     /** Siguiente correlativo global. */
     public static function siguienteNumero(): int {
         $usados = fichas::numerosUsados();
@@ -198,7 +224,7 @@ class emisor {
         $fechaFin = date('Y-m-d', $timecompleted);
         $fechaIni = !empty($map['fecha_inicio'])
             ? (string)$map['fecha_inicio']
-            : date('Y-m-d', strtotime('-7 days', $timecompleted));
+            : self::unMesAntes($timecompleted);
 
         // Corrida en seco: se calcula todo y no se toca nada.
         if ($seco) {

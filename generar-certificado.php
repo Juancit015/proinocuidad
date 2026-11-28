@@ -215,6 +215,31 @@ function rango_fechas(string $ini, string $fin): string {
 }
 
 /**
+ * Un mes antes de $ts, con el día recortado al último del mes destino.
+ *
+ * El período del certificado se imprime en el párrafo de la página 1 junto a
+ * las horas académicas: con una semana, un diplomado de 384 horas quedaba en
+ * 48 h por día. Ahora el período es de un mes.
+ *
+ * No vale strtotime('-1 month'): desborda. El 31 de marzo menos un mes da el
+ * 3 de marzo (porque el 31 de febrero se normaliza), y el período saldría con
+ * 28 días y un mes equivocado. Aquí el 31 de marzo va al 28 de febrero.
+ */
+function un_mes_antes(int $ts): int {
+    $y = (int)date('Y', $ts);
+    $m = (int)date('n', $ts);
+    $d = (int)date('j', $ts);
+    $mAnt = $m - 1;
+    $yAnt = $y;
+    if ($mAnt < 1) {
+        $mAnt = 12;
+        $yAnt--;
+    }
+    $ultimo = (int)date('t', mktime(12, 0, 0, $mAnt, 1, $yAnt));
+    return mktime(12, 0, 0, $mAnt, min($d, $ultimo), $yAnt);
+}
+
+/**
  * Corta $texto en líneas de ancho ≤ $w con la fuente activa: respeta los saltos
  * de línea del valor y reparte las palabras.
  */
@@ -355,7 +380,7 @@ if ($pIni !== '' && (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $pIni)
 
 $tsFin = mktime(12, 0, 0, (int)substr($pFecha, 5, 2), (int)substr($pFecha, 8, 2), (int)substr($pFecha, 0, 4));
 $tsIni = ($pIni === '')
-    ? strtotime('-7 days', $tsFin)
+    ? un_mes_antes($tsFin)
     : mktime(12, 0, 0, (int)substr($pIni, 5, 2), (int)substr($pIni, 8, 2), (int)substr($pIni, 0, 4));
 $fechaIni = date('Y-m-d', $tsIni);
 
