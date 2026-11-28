@@ -19,7 +19,7 @@ El sitio SHALL atender `generar-certificado.php` como GET público con los pará
 
 #### Scenario: Fecha de inicio por defecto
 - **WHEN** no se proporciona `fecha_inicio`
-- **THEN** el generador calcula la fecha de inicio como 7 días antes de `fecha` (fecha de emisión)
+- **THEN** el generador calcula la fecha de inicio como un mes antes de `fecha` (fecha de emisión), con el día recortado al último del mes destino si ese día no existe en el mes anterior
 
 #### Scenario: Fecha de inicio explícita
 - **WHEN** se proporciona `fecha_inicio` con formato válido (AAAA-MM-DD)
@@ -45,7 +45,7 @@ El generador SHALL llenar el PDF exclusivamente por **nombre de campo** de la pl
 - **THEN** el código completo (por ejemplo `015-2026-11-PAG-CIABPPH`) cabe en el campo en una sola línea legible sin partirse en dos
 
 ### Requirement: Derivación única de los datos del alumno
-El período, el registro, las horas, los créditos y el lugar SHALL derivarse de los parámetros y de un único juego de constantes del script — sin duplicar literales del certificado en dos lados del pipeline. La nota deja de derivarse. La fecha de emisión (`fecha`) y la fecha de inicio (`fecha_inicio`) SHALL derivarse automáticamente: si no se proporciona `fecha_inicio`, se calcula como 7 días antes de `fecha`.
+El período, el registro, las horas, los créditos y el lugar SHALL derivarse de los parámetros y de un único juego de constantes del script — sin duplicar literales del certificado en dos lados del pipeline. La nota deja de derivarse. La fecha de emisión (`fecha`) y la fecha de inicio (`fecha_inicio`) SHALL derivarse automáticamente: si no se proporciona `fecha_inicio`, se calcula como un mes antes de `fecha`.
 
 #### Scenario: Cambio de datos en un solo lado
 - **WHEN** se cambia el texto guía del párrafo o un valor por defecto en el script
@@ -53,7 +53,7 @@ El período, el registro, las horas, los créditos y el lugar SHALL derivarse de
 
 #### Scenario: Fecha de inicio calculada automáticamente
 - **WHEN** se genera un certificado sin proporcionar `fecha_inicio`
-- **THEN** el período impreso en el certificado va del (fecha - 7 días) al (fecha), y ambas fechas son coherentes con el mes y año de `fecha`
+- **THEN** el período impreso en el certificado va del (fecha - un mes) al (fecha), ambas fechas caen en meses distintos y son coherentes con el mes y año de `fecha`
 
 #### Scenario: Fecha de inicio explícita respetada
 - **WHEN** se proporciona `fecha_inicio` con formato válido
