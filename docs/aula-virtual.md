@@ -420,6 +420,22 @@ certificado. Juan entregó el temario y el trabajo quedó así:
   fichas: 111 (28 históricas + 83 nuevas). PDFs verificados por muestra: sin
   "Calificación" ni nota, con QR y registro. Si las fechas reales llegan
   después, se regeneran con fechas correctas.
+- **Correo saliente del aula (2026-11-27):** `mail()` del servidor acepta
+  buzones locales pero **devuelve `false` para destinatarios externos**
+  (`Could not instantiate mail function.`); el aula no tiene SMTP
+  (`smtphosts` vacío). Efecto: ningún correo del aula llega a alumnos
+  (bienvenida, contraseñas, avisos) y, al completar un curso, Moodle manda la
+  notificación «Curso finalizado» dentro de la transacción del envío del
+  examen; al confirmarla, el fallo lanza `Message was not sent.` y el alumno
+  ve la página de error. **El intento, la finalización y el certificado sí se
+  guardan** (verificado con el intento 27, curso 6, 2026-11-27 14:43:19).
+  Mitigación aplicada: `message_provider_moodle_coursecompleted_enabled` pasó
+  de `popup,email,airnotifier` a `popup` (solo el aviso dentro del aula), lo
+  que elimina la excepción sin tocar código. Arreglo de fondo pendiente:
+  configurar SMTP de Zoho en `mdl_config` (`smtphosts=smtp.zoho.com:465`,
+  `smtpsecure=ssl`, usuario `formacion_academica@proinocuidad.com` y la clave
+  de aplicación de `~/datos-formularios/credenciales-smtp.php`). Para revertir
+  la mitigación: volver a `popup,email,airnotifier` y purgar caches.
 - **Tokens de GitHub** expuestos en el chat: siguen sin revocar.
 
 ---
@@ -435,6 +451,12 @@ certificado. Juan entregó el temario y el trabajo quedó así:
   "Error al leer de la base de datos".
 - `course_completed` no trae `timecompleted`; hay que leerlo de
   `course_completions`.
+- **`message_send()` no lanza; `process_buffer()` sí.** Si el mensaje se envía
+  dentro de una transacción, Moodle lo bufferea y lo procesa al hacer commit;
+  ahí `send_message_to_processors()` lanza `Message was not sent.` si algún
+  procesador falla. Por eso un fallo de correo puede tumbar la página que
+  completa el curso aunque los datos ya estén guardados (el commit ocurre
+  antes del envío).
 - **Sin criterios en `course_completion_criteria` el curso no se completa
   nunca** y el observer no se dispara: `enablecompletion=1` no basta. El
   criterio de actividad (tipo 4) guarda el **cmid** en `moduleinstance`.
@@ -544,6 +566,54 @@ Consecuencias que hay que respetar:
   único campo de búsqueda que no imprime el PDF).
 - El plugin ya las tolera: una ficha sin DNI se genera y se busca igual por
   nombre normalizado; lo que no habría es la segunda vía de búsqueda.
+
+### Aviso bajo el campo y sección abierta (2026-11-26)
+
+Dos defectos de usabilidad que Juan encontró al matricular a mano:
+
+1. **La sección «Datos personales» venía colapsada** (`#id_category_1container`
+   con `collapse` y sin `show`), así que el campo DNI no se veía al abrir
+   «Añadir un usuario». El formulario no está roto: el campo existe, solo que
+   dentro de un desplegable cerrado.
+2. **El campo «Nueva contraseña» también venía oculto** (`d-none`) con
+   «Generar contraseña» desmarcado. Al guardar, Moodle exigía la contraseña y
+   el formulario fallaba sin decir dónde. El JS del bloque muestra el campo
+   cuando la casilla está desmarcada.
+
+Se resolvió con un bloque en **Administración del sitio → Apariencia → HTML
+adicional → «Antes de cerrar la etiqueta HEAD»** (`additionalhtmlhead`), sin
+tocar código de Moodle:
+
+- CSS que pinta el aviso con el azul de marca (`#101477`) y el gris del sitio.
+- JS que añade `show` a `#id_category_1container` y ajusta `aria-expanded` del
+  botón, que inserta el aviso dentro de `.felement` de
+  `#fitem_id_profile_field_dni`, y que sincroniza `#id_newpassword` con
+  `#id_createpassword`.
+- Solo actúa si el contenedor existe, así que no se cuela en otras páginas
+  (medido: 0 avisos en el panel y en Participantes).
+- El bloque está delimitado por `<!-- dni-aviso:inicio -->` /
+  `<!-- dni-aviso:fin -->`; para revertirlo, se vacía `additionalhtmlhead`.
+
+Si un cambio de tema renombra `#fitem_id_profile_field_dni` o
+`#id_category_1container`, el aviso desaparece en silencio: es lo primero que
+hay que revisar si deja de verse.
+
+### DNI obligatorio (2026-11-26)
+
+`user_info_field.required = 1` para `dni`. **Ojo con el alcance real:** Moodle
+solo aplica la regla `required` de un campo de perfil cuando el usuario se
+edita **a sí mismo** (`edit_field_set_required()` compara `$this->userid` con
+`$USER->id`). Para el administrador que crea o edita a otros **no hace nada**.
+Por eso el bloque de `additionalhtmlhead` añade además una validación en el
+submit del formulario: si el DNI está vacío, cancela el envío, marca el campo
+en rojo y escribe «Escribe el DNI del alumno antes de guardar.»
+
+Medido el 2026-11-26: sin DNI el formulario no envía (0 POST) y muestra el
+mensaje; con DNI crea el usuario y guarda el valor; «Cancelar» no se bloquea.
+
+Cuentas activas sin DNI (no son alumnos): `guest`, `admin`, `alumno`,
+`claudia`, `proinocuidad`. Si se edita su perfil, el formulario pedirá un
+documento. El login del admin no se ve afectado (llega a `/my/`).
 
 ## 9. Resumen de cambios recientes (2026-11-09 / 2026-11-10)
 
@@ -722,6 +792,9 @@ revocar los dos tokens de GitHub expuestos.
 
 | Fecha | Evento |
 |---|---|
+| 2026-11-26 | Preparación de la demo: backup `~/backups/pre-demo-2026-11-26/` (BD, moodledata, plugin+JSON+generador, `MANIFIESTO.md5`), admin en español, categoría 1 → «Cursos», autoinscripción activa solo en cursos nuevos, aviso bajo el campo DNI, sección «Datos personales» abierta y «Nueva contraseña» visible vía `additionalhtmlhead` |
+| 2026-11-26 | DNI obligatorio: `required=1` en el campo de perfil y validación en el submit del formulario de usuario (Moodle solo aplica `required` al autoeditarse). Verificado: sin DNI no hay POST; con DNI crea y guarda |
+| 2026-11-26 | Usuarios de prueba: `demo-baja` (id 62, sin matrículas) y `pepe` (id 63, DNI `87654321`, clave `Pepe2026!`). Borrar ambos cuando termine la demo |
 | 2026-11-25 | Emisión cada minuto (crontab y tarea) y aviso «tu certificado se está generando» con refresco de 15 s en `mio.php`. Plugin `2026112500`, md5 repo = server |
 | 2026-11-25 | Curso 3 habilitado para certificado (`BPMCA`, 40 h, 2 créditos, `gradecmid` 31) y criterio de finalización añadido: 10/10 cursos emiten |
 | 2026-11-25 | Defecto de raíz corregido: `completiongradeitemnumber` NULL → 0 en los 11 quizzes; el examen ya marca la actividad realizada y el curso se completa |
