@@ -10,6 +10,30 @@ ErrorDocument 404 /404.html
 # Página índice de cada carpeta
 DirectoryIndex index.html
 
+# Una sola URL por página: /carpeta/index.html redirige a /carpeta/.
+# Los enlaces internos ya se emiten limpios (tools/generar-fichas.mjs,
+# tools/generar-listados.mjs y las páginas escritas a mano). Esta regla cubre
+# lo que Google ya tenga indexado, los enlaces externos y los marcadores
+# antiguos: en la inspección de Search Console, 8 de las 21 variantes
+# .../index.html estaban indexadas con canonical propio e ignoraban el
+# canonical declarado (p. ej. /servicios/ figuraba como "descubierta sin
+# indexar" mientras /servicios/index.html sí estaba indexada).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # /index.html -> /   y   /cursos/index.html -> /cursos/
+  RewriteRule ^(.*/)?index\.html$ /$1 [R=301,L]
+
+  # URLs del WordPress anterior: siguen en el índice de Google y hoy dan 404
+  # (/portfolio/ todavía registraba impresiones en posición 6).
+  RewriteRule ^contact/?$ /nosotros/ [R=301,L]
+  RewriteRule ^portfolio/?$ /cursos/ [R=301,L]
+  RewriteRule ^login/?$ /aula/login/ [R=301,L]
+
+  # La verificación de certificados siempre con su .html
+  RewriteRule ^verifica-tu-certificado/?$ /verifica-tu-certificado.html [R=301,L]
+</IfModule>
+
 # TODO el HTML, JS y CSS, y la base de certificados, NO se cachean a largo
 # plazo: LiteSpeed los sirve con max-age=604800 por defecto, y una copia
 # vieja en el navegador revive bugs ya corregidos y esconde mejoras nuevas

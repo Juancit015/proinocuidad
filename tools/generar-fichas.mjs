@@ -25,6 +25,21 @@ const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..");
 const img_og = "https://proinocuidad.com/assets/img/proinocuidad-og-1200x630.png";
 const WA_NUM = "51981365982";
 
+/* ---------- URLs limpias ----------
+   Los enlaces internos se escriben con "index.html" porque así se componen los
+   prefijos `ruta` y `cursos`. Eso hacía que Google rastreara e indexara
+   `.../index.html` como URL propia: en la inspección de Search Console, 8 de
+   las 21 variantes estaban indexadas con canonical propio e ignoraban el
+   canonical declarado (el caso visible: /servicios/ "descubierta sin indexar"
+   mientras /servicios/index.html sí estaba indexada).
+   Se reescribe al emitir:  "cursos/x/index.html" -> "cursos/x/"  e
+   "index.html" -> "./". Solo toca atributos href, nunca el texto. */
+function enlacesLimpios(html) {
+  return html
+    .replace(/href="index\.html(#[^"]*)?"/g, (_, hash = "") => `href="./${hash}"`)
+    .replace(/href="([^"]*\/)index\.html(#[^"]*)?"/g, (_, dir, hash = "") => `href="${dir}${hash}"`);
+}
+
 /* ---------- mensajes prellenados de WhatsApp (spec `contacto-whatsapp`) ----------
    El texto viaja en el propio href (sin JavaScript), codificado con
    encodeURIComponent. Catálogo completo documentado en STRUCTURE.md. */
@@ -769,6 +784,10 @@ function ficha(curso) {
 <meta property="og:image" content="${img_og}">
 <meta property="og:url" content="${url}">
 <meta property="og:description" content="${(curso.seoDesc || curso.desc).replace(/"/g, "&quot;")}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Proinocuidad">
+<meta property="og:locale" content="es_PE">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="${curso.seoDesc || curso.desc}">
 <link rel="canonical" href="${url}">
 <script type="application/ld+json">
@@ -831,6 +850,10 @@ function pagina404() {
 <meta property="og:title" content="${titulo}">
 <meta property="og:url" content="${url}">
 <meta property="og:description" content="La página solicitada no existe en Proinocuidad. Vuelve al inicio o escríbenos por WhatsApp.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Proinocuidad">
+<meta property="og:locale" content="es_PE">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="La página solicitada no existe en Proinocuidad. Vuelve al inicio o escríbenos por WhatsApp.">
 <link rel="canonical" href="${url}">
 <link rel="icon" href="${ruta}assets/img/favicon.ico" sizes="any">
@@ -2061,7 +2084,7 @@ for (const f of FICHAS) {
   mkdirSync(dir, { recursive: true });
   const destino = join(dir, "index.html");
   const contenidoFinal = ficha(f);
-  writeFileSync(destino, contenidoFinal, "utf8");
+  writeFileSync(destino, enlacesLimpios(contenidoFinal), "utf8");
   if (!existsSync(destino)) throw new Error("no se generó " + destino);
   console.log("Ficha generada:", destino);
 }
@@ -2069,6 +2092,6 @@ console.log("Total:", FICHAS.length, "fichas");
 
 // La pagina de error vive en la raiz: no entra en el sitemap ni en el menu.
 const destino404 = join(RAIZ, "404.html");
-writeFileSync(destino404, pagina404(), "utf8");
+writeFileSync(destino404, enlacesLimpios(pagina404()), "utf8");
 if (!existsSync(destino404)) throw new Error("no se genero " + destino404);
 console.log("Pagina de error generada:", destino404);

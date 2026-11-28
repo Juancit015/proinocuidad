@@ -47,6 +47,17 @@ funcionando pero cambian de bytes**, porque `../index.html` y `../../cursos/inde
 apuntan al mismo archivo. Por eso el `diff` de arriba no es opcional: es el único
 aviso. Revisar el prefijo es lo primero cuando un enlace de una ficha se rompa.
 
+**Los enlaces internos se emiten sin `index.html`.** Hasta el 2026-11-27 se escribían
+como `href="cursos/index.html"`; Google rastreaba esa variante como URL propia y
+**descartaba el canonical declarado**: en Search Console, 8 de las 21 variantes
+`.../index.html` figuraban indexadas con canonical propio, y `/servicios/` aparecía como
+«descubierta sin indexar» mientras `/servicios/index.html` sí estaba indexada. Ahora
+`enlacesLimpios()` reescribe la salida del generador (`cursos/x/index.html` → `cursos/x/`,
+`index.html` → `./`) y `.htaccess` hace 301 de `/carpeta/index.html` a `/carpeta/`.
+**No volver a escribir `href="...index.html"` a mano**: el generador emite lo que se le
+pide, así que el `diff` no lo detectaría. Comprobación rápida:
+`grep -rc 'href="[^"]*index\.html' --include="*.html" .` debe dar 0 en todo el sitio.
+
 Antes de dar por buena una modificación del generador, **exigir `exit 0`**: si falla,
 `git status` sale limpio porque no se escribió nada, y eso parece un éxito.
 

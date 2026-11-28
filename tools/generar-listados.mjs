@@ -91,7 +91,7 @@ function tarjetaCursos(c, P) {
     '<div class="card-acciones">' +
     '<a class="btn btn-rojo btn-sm" href="' +
     c.slug +
-    '/index.html">' +
+    '/">' +
     SVG_MAS +
     "Más información</a>" +
     '<a class="btn btn-whatsapp btn-sm" href="' +
@@ -130,7 +130,7 @@ function tarjetaHome(c) {
     '<div class="card-acciones">' +
     '<a class="btn btn-rojo btn-sm" href="cursos/' +
     c.slug +
-    '/index.html">' +
+    '/">' +
     SVG_MAS +
     "Más información</a>" +
     '<a class="btn btn-whatsapp btn-sm" href="' +
