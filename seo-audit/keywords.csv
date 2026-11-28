@@ -1,0 +1,21 @@
+keyword,fuente,clics,impresiones,ctr_pct,posicion,intencion,pagina_actual,oportunidad,prioridad,volumen
+proinocuidad,gsc_90d,1,6,16.67,1.7,marca,/,"Mantener; el CTR es bajo para la marca, revisar el snippet",media,no disponible
+digesa consulta registro sanitario,gsc_90d,0,1,0,4,transaccional,/servicios/registro-sanitario-digesa/,"Posiciona en 4 sin página que responda la consulta; crear guía de consulta",alta,no disponible
+son confiables?,gsc_90d,0,1,0,2,informacional,desconocida,"Consulta ambigua; identificar la página que aparece y reforzarla",baja,no disponible
+auditoria interna haccp,gsc_90d,0,1,0,16,comercial,/cursos/formacion-auditor-interno-haccp/,"Página existe; falta autoridad y enlaces internos",media,no disponible
+curso haccp online,gsc_90d,0,1,0,20,comercial,varias fichas,"Canibalización potencial entre fichas de HACCP; definir página principal",media,no disponible
+haccp curso online,gsc_90d,0,1,0,22,comercial,varias fichas,"Misma consulta que la anterior con el orden invertido",media,no disponible
+curso haccp con certificado,gsc_90d,0,1,0,36,comercial,varias fichas,"El certificado con QR es el diferenciador y no está en el título",alta,no disponible
+implementacion de haccp en una empresa de alimentos,autosuggest,,,0,,comercial,/servicios/certificacion-haccp/,"Intención B2B; la página de servicio no usa ese lenguaje",media,no disponible
+curso implementacion haccp,autosuggest,,,0,,comercial,/cursos/haccp-implementacion-certificacion-digesa-senasca/,"El título no dice 'curso de implementación'",media,no disponible
+implementación del sistema haccp bpm y poes,autosuggest,,,0,,comercial,/cursos/implementacion-auditoria-bpm-poes-poe-plan-haccp/,"Cubierto por la ficha; falta enlace desde servicios",media,no disponible
+implementacion de sistema haccp en restaurantes,autosuggest,,,0,,comercial,ninguna,"No hay página orientada a restaurantes; oportunidad de landing B2B local",alta,no disponible
+curso haccp gratis con certificado,autosuggest,,,0,,informacional,ninguna,"Intención de gratis; no perseguir con curso de pago",baja,no disponible
+curso haccp universidad agraria la molina,autosuggest,,,0,,informacional,ninguna,"Marca ajena; no perseguir",baja,no disponible
+curso manipulacion de alimentos online,autosuggest,,,0,,comercial,ninguna,"Mayor demanda del sector y sin página propia; crear landing",alta,no disponible
+curso manipulacion de alimentos gratis,autosuggest,,,0,,informacional,ninguna,"Intención de gratis; capturar solo con contenido informativo",baja,no disponible
+curso manipulacion de alimentos peru,autosuggest,,,0,,comercial,ninguna,"Variante geográfica de la anterior; misma landing",alta,no disponible
+registro sanitario digesa consulta,autosuggest,,,0,,transaccional,/servicios/registro-sanitario-digesa/,"Misma que la consulta de GSC en posición 4",alta,no disponible
+registro sanitario digesa,autosuggest,,,0,,comercial,/servicios/registro-sanitario-digesa/,"Consultar posición real; sin datos de volumen",media,no disponible
+certificacion iso 22000 peru,autosuggest,,,0,,comercial,/servicios/implementacion-iso-22000/,"Título dice 'Implementación ISO 22000 en Perú'; alinear con 'certificación'",media,no disponible
+curso bpm alimentos,autosuggest,,,0,,comercial,varias fichas,"Cuatro fichas compiten por BPM; elegir una como principal",media,no disponible

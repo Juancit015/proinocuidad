@@ -1,0 +1,26 @@
+url,estado_gsc,http_hoy,nota
+/,indexada,,
+/nosotros/,indexada,,
+/servicios/,descubierta_sin_indexar,,/servicios/index.html indexada
+/noticias/,pendiente,,
+/cursos/,pendiente,,/cursos/index.html alternativa
+/cursos/diplomado-gestion-calidad-e-inocuidad/,pendiente,,variante .html alternativa
+/cursos/legislacion-sanitaria-alimentos/,pendiente,,/cursos/legislacion-sanitaria-alimentos/index.html indexada
+/cursos/implementacion-auditoria-bpm-poes-poe-plan-haccp/,pendiente,,variante .html indexada
+/cursos/haccp-implementacion-certificacion-digesa-senasca/,pendiente,,variante .html indexada
+/cursos/bpm-prerrequisitos-codex-2022-iso-22002-1/,pendiente,,variante .html indexada
+/cursos/programas-higiene-saneamiento/,pendiente,,variante .html indexada
+/cursos/sistema-haccp-fssc-22000-codex-2022/,pendiente,,variante .html alternativa
+/cursos/formacion-auditor-interno-haccp/,pendiente,,variante .html alternativa
+/cursos/bpm-haccp-en-vivo/,pendiente,,variante .html indexada
+/servicios/registro-sanitario-digesa/,pendiente,,
+/servicios/certificacion-haccp/,pendiente,,
+/servicios/implementacion-fssc-22000/,pendiente,,variante .html indexada
+/servicios/implementacion-iso-22000/,pendiente,,
+/servicios/brcgs-food-safety/,pendiente,,
+/inocuidad-alimentaria/,pendiente,,
+/noticias/vigencia-indeterminada-haccp/,pendiente,,
+/verifica-tu-certificado.html,pendiente,,
+/contact/,indexada_de_wordpress,404,contenido antiguo en el indice
+/portfolio/,indexada_de_wordpress,404,2 impresiones pos 6 en 90 dias
+/login/,404,404,
